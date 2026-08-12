@@ -42,7 +42,7 @@ function LandingSteps() {
 function LandingPage() {
   const navigate = useNavigate()
   return <main className="landing-page">
-    <section className="landing-hero"><div className="landing-hero-main"><div className="landing-kicker"><strong>업로드 전 검수</strong><span className="landing-kicker-line" /><i /><i /><i className="active" /></div><h1>편집이 끝난 영상 한 편에서,<br />업로드 전에 다시 확인할 구간만 찾습니다.</h1><p className="landing-lead">발언과 화면 자막, 화면 속 삽입 이미지를 분석해 검토가 필요한 지점을 타임라인으로 제시합니다.<br />판정하지 않고, 고치지도 않습니다. 직접 판단할 제작자가 합니다.</p><div className="landing-hero-bottom"><LandingEmailForm /><LandingSteps /></div></div><div className="landing-blue-panel" aria-hidden="true"><span>Oo</span><span>Ps</span></div></section>
+    <section className="landing-hero"><div className="landing-hero-main"><LandingKicker label="업로드 전 검수" /><h1>편집이 끝난 영상 한 편에서,<br />업로드 전에 다시 확인할 구간만 찾습니다.</h1><p className="landing-lead">발언과 화면 자막, 화면 속 삽입 이미지를 분석해 검토가 필요한 지점을 타임라인으로 제시합니다.<br />판정하지 않고, 고치지도 않습니다. 직접 판단할 제작자가 합니다.</p><div className="landing-hero-bottom"><LandingEmailForm /><LandingSteps /></div></div><div className="landing-blue-panel" aria-hidden="true"><span>Oo</span><span>Ps</span></div></section>
     <section className="landing-section landing-belief"><h2>혼자 만든 영상은 혼자 볼 수 없습니다</h2><p>말한 사람, 자른 사람, 자막을 단 사람이 같은 사람입니다. 제작자의 눈에는 의도가 계속 보이지만 시청자는 결과물만 봅니다.<br />주의력의 문제가 아니라 구조적인 사각지대입니다.</p></section>
     <section className="landing-section landing-three"><h2>OoPs!?는 세 가지를 봅니다</h2><div className="landing-three-grid"><LandingInfo title="발언">타임스탬프가 붙은 대본을 만들고, 앞뒤 맥락과 함께 검토 후보를 찾습니다. 문장 단위로 잘라 판단하지 않습니다.</LandingInfo><LandingInfo title="화면 자막">화면 변화가 감지된 시점에서 제작자가 넣은 자막을 추출합니다. 같은 자막이 이어지면 하나로 묶습니다.</LandingInfo><LandingInfo title="화면 속 상징">등록된 참조 이미지와 형태가 유사한 프레임을 표시합니다. 의미는 서비스가 만들어내지 않습니다.</LandingInfo></div></section>
     <section className="landing-section landing-compare"><div className="landing-compare-copy"><span className="landing-orange-label">핵심은 이것입니다</span><h2>발언과 자막을 나란히 놓고 봅니다</h2><p>1인 편집 환경에서는 자막이 발언보다 세지는 일이 자주 일어납니다. 판정 근거가 화면에 전부 보이기 때문에, 검출이 틀렸더라도 제작자가 바로 판단할 수 있습니다.</p></div><div className="landing-compare-card"><div><span>실제 발언</span><strong>“조금 아쉬웠습니다.”</strong></div><div><span>화면 자막</span><strong>“역대 최악의 선택”</strong></div><p>실제 발언보다 화면 자막의 비판 강도가 높아, 출연자의 입장이 더 공격적으로 전달될 수 있습니다.</p></div></section>
@@ -95,7 +95,11 @@ function HistoryPage() {
 }
 
 function EmptyUploadPage({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
-  return <main className="landing-empty-page"><div className="landing-empty-kicker"><strong>{eyebrow}</strong><span className="landing-empty-kicker-line" /><i /><i /><i className="active" /></div><h1>{title}</h1><p>{description}</p><Link className="landing-empty-action" to="/upload"><span>영상 업로드하기</span><strong>→</strong></Link></main>
+  return <main className="landing-empty-page"><LandingKicker label={eyebrow} /><h1>{title}</h1><p>{description}</p><Link className="landing-empty-action" to="/upload"><span>영상 업로드하기</span><strong>→</strong></Link></main>
+}
+
+function LandingKicker({ label }: { label: string }) {
+  return <div className="landing-kicker"><strong>{label}</strong><span className="landing-kicker-line" /><i /><i /><i className="active" /></div>
 }
 
 function HistoryRow({ item }: { item: VideoHistoryItem }) {
@@ -105,7 +109,7 @@ function HistoryRow({ item }: { item: VideoHistoryItem }) {
 }
 
 function SettingsPage() {
-  return <main className="settings-page"><h1>설정 · 결제</h1><section className="settings-section settings-plan"><h2>요금제</h2><div className="settings-plan-grid"><article><h3>크리에이터 요금제</h3><strong>0원</strong><p>무료입니다.</p></article><article><h3>스튜디오 요금제</h3><strong>0원</strong><p>무료입니다.</p></article></div></section><section className="settings-section settings-data"><h2>데이터</h2><div className="settings-data-list"><div><div><h3>보관 중인 원본 영상</h3><p>0건 · 업로드 후 자동 삭제 일정이 표시됩니다.</p></div><button disabled>지금 삭제</button></div><div><div><h3>리포트 기록</h3><p>0건 · 업로드 후 텍스트 결과와 대표 프레임이 표시됩니다.</p></div><button disabled>전체 삭제</button></div></div></section><section className="settings-section settings-scope"><h2>분석 범위</h2><p>발언 · 화면 자막 · 발언과 자막 비교가 켜져 있습니다. 화면 속 상징 유사도 탐지는 참조 데이터베이스 연결 후 활성화됩니다. 분석 범위는 결과 리포트에서 확인할 수 있습니다.</p></section></main>
+  return <main className="settings-page"><h1>설정 · 결제</h1><section className="settings-section settings-plan"><h2>요금제</h2><div className="settings-plan-grid"><article><h3>크리에이터 요금제</h3><strong>0원</strong><p>무료입니다.</p></article><article><h3>스튜디오 요금제</h3><strong>0원</strong><p>무료입니다.</p></article></div></section><section className="settings-section settings-data"><h2>데이터</h2><div className="settings-data-list"><div><div><h3>보관 중인 원본 영상</h3><p>0건 · 업로드 후 자동 삭제 일정이 표시됩니다.</p></div><button disabled>지금 삭제</button></div><div><div><h3>리포트 기록</h3><p>0건 · 업로드 후 텍스트 결과와 대표 프레임이 표시됩니다.</p></div><button disabled>전체 삭제</button></div></div></section><section className="settings-section settings-scope"><h2>분석 범위</h2><p>// 문구 수정필 발언 · 화면 자막 · 발언과 자막 비교가 켜져 있습니다. 화면 속 상징 유사도 탐지는 참조 데이터베이스 연결 후 활성화됩니다. 분석 범위는 결과 리포트에서 확인할 수 있습니다.</p></section></main>
 }
 
 export default function App() { return <AppShell><Routes><Route path="/" element={<LandingPage />} /><Route path="/upload" element={<UploadPage />} /><Route path="/report" element={<EmptyReportPage />} /><Route path="/history" element={<HistoryPage />} /><Route path="/settings" element={<SettingsPage />} /><Route path="/videos/:videoId/analysis" element={<AnalysisPage />} /><Route path="/videos/:videoId/report" element={<ReportPage />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></AppShell> }
