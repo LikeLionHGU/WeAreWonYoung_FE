@@ -68,23 +68,23 @@ MOCK_FAIL_FIRST_JOB=true npm run dev
 서비스가 무엇을 보고 무엇을 보지 않는지 설명하고, 두 CTA 모두 업로드 화면으로 연결됩니다.
 
 <p align="center">
-  <img src="docs/screenshots/landing.jpg" alt="OoPs!? 랜딩 페이지" width="900" />
+  <img src="assets/screenshots/landing.jpg" alt="OoPs!? 랜딩 페이지" width="900" />
 </p>
 
 ### 업로드 · 빈 상태 · 설정
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/upload.jpg" alt="영상 업로드 화면" /></td>
-    <td width="50%"><img src="docs/screenshots/settings.jpg" alt="설정 및 결제 화면" /></td>
+    <td width="50%"><img src="assets/screenshots/upload.jpg" alt="영상 업로드 화면" /></td>
+    <td width="50%"><img src="assets/screenshots/settings.jpg" alt="설정 및 결제 화면" /></td>
   </tr>
   <tr>
     <td align="center"><sub>영상 업로드</sub></td>
     <td align="center"><sub>설정 · 결제</sub></td>
   </tr>
   <tr>
-    <td width="50%"><img src="docs/screenshots/report-empty.jpg" alt="빈 검수 리포트 화면" /></td>
-    <td width="50%"><img src="docs/screenshots/history-empty.jpg" alt="빈 검수 이력 화면" /></td>
+    <td width="50%"><img src="assets/screenshots/report-empty.jpg" alt="빈 검수 리포트 화면" /></td>
+    <td width="50%"><img src="assets/screenshots/history-empty.jpg" alt="빈 검수 이력 화면" /></td>
   </tr>
   <tr>
     <td align="center"><sub>검수 리포트 빈 상태</sub></td>
@@ -140,8 +140,6 @@ npm run dev
 - 영상: `GET /videos/:id/stream` (`Range`, `206`, `416` 지원)
 - 진행률: STOMP `/topic/videos/:id/progress`
 
-상세 요청·응답 DTO, 에러 코드, STOMP 메시지 형식은 [`docs/API_CONNECTIONS.md`](docs/API_CONNECTIONS.md)에 정리되어 있습니다.
-
 > **Vercel 배포 참고**<br />
 > Vercel 정적 배포에는 `server/index.ts`가 포함되지 않습니다. 배포 환경에서는 `VITE_API_BASE_URL`과 `VITE_WS_URL`을 실제 API 서버로 지정하고, API 서버에서 프런트 도메인 CORS와 WebSocket origin을 허용해야 합니다. 주소를 지정하지 않은 정적 데모에서는 이력 화면이 연결 안내가 포함된 빈 상태로 표시됩니다.
 
@@ -158,7 +156,7 @@ npm run dev
 │   └── assets/logo/         # OoPs!? 로고 SVG
 ├── server/index.ts          # 임시 REST + STOMP Mock 서버
 ├── scripts/contract-smoke.ts # 핵심 API 계약 스모크 테스트
-├── docs/API_CONNECTIONS.md  # 실제 백엔드 교체용 API 명세
+├── assets/screenshots/      # README와 공유용 화면 캡처
 └── mock-data/               # 로컬 업로드·상태 저장 (Git 제외)
 ```
 
