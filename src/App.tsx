@@ -27,10 +27,7 @@ const landingSteps = [
 ] as const
 
 function LandingEmailForm({ compact = false }: { compact?: boolean }) {
-  const [email, setEmail] = useState('')
-  const [sent, setSent] = useState(false)
-  function submit(event: React.FormEvent) { event.preventDefault(); if (!email.trim()) return; setSent(true); setEmail('') }
-  return <form className={`landing-email ${compact ? 'landing-email-compact' : ''}`} onSubmit={submit}><input aria-label="이메일 입력" value={email} onChange={event => { setEmail(event.target.value); setSent(false) }} placeholder={sent ? '설문 메일을 보냈습니다' : '이메일 입력 칸'} type="email" required /><button aria-label="이메일 제출" type="submit">›</button></form>
+  return <Link className={`landing-email ${compact ? 'landing-email-compact' : ''}`} to="/upload"><span>영상 업로드하러가기</span><strong aria-hidden="true">›</strong></Link>
 }
 
 function LandingSteps() {

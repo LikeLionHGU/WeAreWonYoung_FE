@@ -85,6 +85,8 @@
 }
 .landing-compare, .landing-cta { padding-top: 55px; }
 .landing-compare-copy p { max-width: 461px; margin-top: 20px; line-height: 28px; }
+.landing-email > span { min-width: 0; flex: 1; padding: 0 21px; color: #111; font: 500 15px/24px 'Helvetica Neue', 'Noto Sans KR', sans-serif; }
+.landing-email > strong { width: 58px; height: 100%; display: grid; place-items: center; color: #111; font: 700 30px/1 Arial, sans-serif; }
 .landing-compare-card p { margin-top: 28px; font-size: 15px; line-height: 28px; }
 .landing-limit-list .landing-info { padding-top: 19px; }
 .landing-limit-list .landing-info h3, .landing-limit-list .landing-info p { line-height: 28px; }
