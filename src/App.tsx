@@ -83,14 +83,19 @@ function ReportPage() {
 }
 
 function EmptyReportPage() {
-  return <main className="mock-empty-page"><p className="eyebrow">검수 리포트</p><h1>아직 선택된 영상이 없습니다.</h1><p>업로드가 완료되면 이 화면에 실제 검수 결과가 표시됩니다.</p><Link className="button button-dark" to="/upload">영상 업로드하기 →</Link></main>
+  return <EmptyUploadPage eyebrow="검수 리포트" title="아직 검수 리포트가 없습니다." description="영상을 업로드하면 분석이 끝난 뒤 위험 구간과 근거를 이곳에서 확인할 수 있습니다." />
 }
 
 function HistoryPage() {
   const [items, setItems] = useState<VideoHistoryItem[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => { let active = true; void apiClient.videos().then(value => { if (active) setItems(value) }).catch(() => { if (active) setError('검수 이력을 불러오지 못했습니다.') }); return () => { active = false } }, [])
-  return <main className="data-page"><p className="eyebrow">검수 이력</p><h1>업로드한 영상의 검수 기록</h1><p className="data-page-copy">직접 업로드하고 검수를 시작한 영상만 이곳에 표시됩니다.</p>{error && <ErrorNotice message={error} />}{items === null && !error ? <Loading label="검수 이력을 불러오는 중" /> : items?.length === 0 ? <div className="empty-state"><span className="empty-state-mark">—</span><h2>아직 검수 이력이 없습니다.</h2><p>첫 영상을 업로드하면 완료된 리포트와 진행 중인 작업이 이곳에 쌓입니다.</p><Link className="button button-dark" to="/upload">영상 업로드하기 →</Link></div> : <div className="history-list">{items?.map(item => <HistoryRow item={item} key={item.videoId} />)}</div>}</main>
+  if (items?.length === 0 && !error) return <EmptyUploadPage eyebrow="검수 이력" title="아직 검수 이력이 없습니다." description="첫 영상을 업로드하면 진행 중인 작업과 완료된 리포트가 이곳에 쌓입니다." />
+  return <main className="data-page"><p className="eyebrow">검수 이력</p><h1>업로드한 영상의 검수 기록</h1><p className="data-page-copy">직접 업로드하고 검수를 시작한 영상만 이곳에 표시됩니다.</p>{error && <ErrorNotice message={error} />}{items === null && !error ? <Loading label="검수 이력을 불러오는 중" /> : <div className="history-list">{items?.map(item => <HistoryRow item={item} key={item.videoId} />)}</div>}</main>
+}
+
+function EmptyUploadPage({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
+  return <main className="landing-empty-page"><div className="landing-empty-kicker"><strong>{eyebrow}</strong><span className="landing-empty-kicker-line" /><i /><i /><i className="active" /></div><h1>{title}</h1><p>{description}</p><Link className="landing-empty-action" to="/upload"><span>영상 업로드하기</span><strong>→</strong></Link></main>
 }
 
 function HistoryRow({ item }: { item: VideoHistoryItem }) {
