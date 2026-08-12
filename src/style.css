@@ -121,7 +121,7 @@
 @media (max-width: 1000px) { .analysis-page { display: block; padding: 48px 20px 70px; }.analysis-brand-panel { display: none; }.analysis-main { max-width: 720px; margin: 0 auto; } }
 
 /* S-6 settings frame. User-specific values stay empty until auth/data APIs exist. */
-.settings-page { min-height: 1000px; padding: 80px 96px 0; background: #fff; color: #111; }
+.settings-page { width: 100%; max-width: 1440px; min-height: 1000px; margin: 0 auto; padding: 80px 96px 0; background: #fff; color: #111; }
 .settings-page > h1 { margin: 0; font: 500 27px/36px 'Helvetica Neue', 'Noto Sans KR', sans-serif; letter-spacing: .01em; }
 .settings-section { display: grid; grid-template-columns: 240px minmax(0, 800px); column-gap: 64px; width: 100%; }
 .settings-section > h2 { margin: 0; font: 500 15px/24px 'Helvetica Neue', 'Noto Sans KR', sans-serif; }
