@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict'
+import { spawn } from 'node:child_process'
+
+const port = 3101
+const child = spawn('tsx', ['server/index.ts'], { env: { ...process.env, PORT: String(port), MOCK_STEP_MS: '20', MOCK_DATA_DIR: `/tmp/creator-risk-manager-contract-${process.pid}` }, stdio: 'ignore' })
+const base = `http://localhost:${port}`
+
+async function waitForServer() { for (let attempt = 0; attempt < 50; attempt += 1) { try { await fetch(`${base}/api/v1/videos/999/status`); return } catch { await new Promise(resolve => setTimeout(resolve, 50)) } } throw new Error('Mock server did not start') }
+async function run() { try { await waitForServer(); const form = new FormData(); form.append('file', new Blob([Buffer.from('mock-video-content')], { type: 'video/mp4' }), 'contract.mp4'); const upload = await fetch(`${base}/api/v1/videos`, { method: 'POST', body: form }); assert.equal(upload.status, 201); const uploadBody = await upload.json() as { data: { videoId: number } }; const id = uploadBody.data.videoId; const history = await fetch(`${base}/api/v1/videos`); assert.equal(history.status, 200); const historyBody = await history.json() as { data: Array<{ videoId: number }> }; assert.equal(historyBody.data[0].videoId, id); let status = 'PENDING'; for (let attempt = 0; attempt < 40 && status !== 'COMPLETED'; attempt += 1) { await new Promise(resolve => setTimeout(resolve, 30)); const response = await fetch(`${base}/api/v1/videos/${id}/status`); const body = await response.json() as { data: { status: string } }; status = body.data.status } assert.equal(status, 'COMPLETED'); const report = await fetch(`${base}/api/v1/videos/${id}/report`); assert.equal(report.status, 200); const reportBody = await report.json() as { data: { events: unknown[] } }; assert.equal(reportBody.data.events.length, 3); const range = await fetch(`${base}/api/v1/videos/${id}/stream`, { headers: { Range: 'bytes=0-4' } }); assert.equal(range.status, 206); assert.equal((await range.arrayBuffer()).byteLength, 5); console.log('Contract smoke test passed') } finally { child.kill('SIGTERM') } }
+void run().catch(error => { console.error(error); process.exitCode = 1 })
