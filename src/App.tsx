@@ -88,11 +88,12 @@ function HistoryPage() {
   const [error, setError] = useState<string | null>(null)
   useEffect(() => { let active = true; void apiClient.videos().then(value => { if (active) setItems(value) }).catch(() => { if (active) setError('검수 이력을 불러오지 못했습니다.') }); return () => { active = false } }, [])
   if (items?.length === 0 && !error) return <EmptyUploadPage eyebrow="검수 이력" title="아직 검수 이력이 없습니다." description="첫 영상을 업로드하면 진행 중인 작업과 완료된 리포트가 이곳에 쌓입니다." />
+  if (error) return <EmptyUploadPage eyebrow="검수 이력" title="아직 검수 이력이 없습니다." description="첫 영상을 업로드하면 진행 중인 작업과 완료된 리포트가 이곳에 쌓입니다." notice="검수 이력 서버가 연결되지 않았습니다." />
   return <main className="data-page"><p className="eyebrow">검수 이력</p><h1>업로드한 영상의 검수 기록</h1><p className="data-page-copy">직접 업로드하고 검수를 시작한 영상만 이곳에 표시됩니다.</p>{error && <ErrorNotice message={error} />}{items === null && !error ? <Loading label="검수 이력을 불러오는 중" /> : <div className="history-list">{items?.map(item => <HistoryRow item={item} key={item.videoId} />)}</div>}</main>
 }
 
-function EmptyUploadPage({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
-  return <main className="landing-empty-page"><LandingKicker label={eyebrow} /><h1>{title}</h1><p>{description}</p><Link className="landing-empty-action" to="/upload"><span>영상 업로드하기</span><strong>→</strong></Link></main>
+function EmptyUploadPage({ eyebrow, title, description, notice }: { eyebrow: string; title: string; description: string; notice?: string }) {
+  return <main className="landing-empty-page"><LandingKicker label={eyebrow} /><h1>{title}</h1><p>{description}</p>{notice && <ErrorNotice message={notice} />}<Link className="landing-empty-action" to="/upload"><span>영상 업로드하기</span><strong>→</strong></Link></main>
 }
 
 function LandingKicker({ label }: { label: string }) {

@@ -71,9 +71,10 @@
 .landing-three-grid .landing-info { height: 116px; min-height: 0; padding-top: 23px; }
 .landing-three-grid, .landing-three-grid .landing-info, .landing-three-grid .landing-info p { min-width: 0; }
 .landing-three-grid .landing-info p { white-space: normal; word-break: keep-all; overflow-wrap: anywhere; }
-.landing-empty-page { min-height: calc(100svh - 60px); padding: 120px 96px 160px; background: #fff; color: #111; }
+.landing-empty-page { width: 100%; max-width: 1440px; min-height: calc(100svh - 60px); margin: 0 auto; padding: 120px 96px 160px; background: #fff; color: #111; }
 .landing-empty-page h1 { max-width: 900px; margin: 31px 0 24px; font: 500 clamp(42px, 4vw, 56px)/1.18 'Helvetica Neue', 'Noto Sans KR', sans-serif; letter-spacing: -.055em; }
 .landing-empty-page > p { max-width: 645px; margin: 0; color: #757575; font: 300 16px/1.75 'Helvetica Neue', 'Noto Sans KR', sans-serif; }
+.landing-empty-page > .notice { max-width: 1038px; margin-top: 28px; }
 .landing-empty-action { width: 378px; height: 74px; margin-top: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 21px; border: 1px solid #111; border-radius: 10px; color: #111; font: 500 15px/24px 'Helvetica Neue', 'Noto Sans KR', sans-serif; }
 .landing-empty-action strong { font: 700 30px/1 Arial, sans-serif; }
 .landing-empty-action:hover { background: #111; color: #fff; }
