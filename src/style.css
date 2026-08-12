@@ -154,3 +154,17 @@
   .settings-data { padding: 42px 0; }
   .settings-scope { padding-top: 0; padding-bottom: 42px; }
 }
+
+/* Compact desktop settings layout: keep the full overview within one viewport. */
+@media (min-width: 901px) {
+  .settings-page { min-height: calc(100svh - 60px); padding-top: 48px; padding-bottom: 40px; }
+  .settings-plan { margin-top: 36px; padding-bottom: 28px; }
+  .settings-plan-grid { height: 128px; }
+  .settings-plan-grid article { padding: 24px; }
+  .settings-plan-grid strong { margin-top: 8px; }
+  .settings-data { padding: 28px 0; }
+  .settings-data-list > div { height: 56px; }
+  .settings-data-list > div + div { padding-top: 12px; }
+  .settings-scope { padding-top: 28px; }
+  .settings-scope p { line-height: 24px; }
+}
