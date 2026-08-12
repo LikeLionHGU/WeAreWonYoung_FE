@@ -69,6 +69,8 @@
 .landing-blue-panel span:first-child { top: 331px; }
 .landing-blue-panel span:last-child { top: 406px; left: 179px; }
 .landing-three-grid .landing-info { height: 116px; min-height: 0; padding-top: 23px; }
+.landing-three-grid, .landing-three-grid .landing-info, .landing-three-grid .landing-info p { min-width: 0; }
+.landing-three-grid .landing-info p { white-space: normal; word-break: keep-all; overflow-wrap: anywhere; }
 .landing-compare, .landing-cta { padding-top: 55px; }
 .landing-compare-copy p { max-width: 461px; margin-top: 20px; line-height: 28px; }
 .landing-compare-card p { margin-top: 28px; font-size: 15px; line-height: 28px; }
