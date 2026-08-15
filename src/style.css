@@ -169,6 +169,59 @@
   .settings-scope p { line-height: 24px; }
 }
 
+/* S-6 completion frame: a quiet hand-off after every review decision. */
+.shell-completion { background: #fff; color: #16181d; }
+.shell-completion .topbar { height: 68px; max-width: none; padding: 0 48px; border-bottom-color: #edeef0; background: #fff; }
+.shell-completion .topbar .brand-logo { width: 87px; height: 30px; }
+.shell-completion .main-nav { gap: 30px; font-family: 'Noto Sans KR', sans-serif; }
+.shell-completion .main-nav a { padding: 4px 0; color: #8a8f98; font: 400 14px/1.5 'Noto Sans KR', sans-serif; opacity: 1; }
+.shell-completion .main-nav a:nth-child(2) { color: #16181d; font-weight: 500; box-shadow: inset 0 -2px 0 #16181d; }
+.completion-page { width: 1040px; max-width: calc(100% - 40px); min-height: calc(100svh - 68px); margin: 0 auto; padding: 93px 0 100px; background: #fff; }
+.completion-heading { display: flex; align-items: flex-start; gap: 10px; }
+.completion-mark { width: 35px; height: 56px; display: grid; place-items: center; color: #2e7df7; font: 500 36px/1 Inter, sans-serif; }
+.completion-heading h1 { margin: 0; color: #16181d; font: 700 36px/1.5 'Noto Sans KR', sans-serif; letter-spacing: -.04em; }
+.completion-subtitle { margin: 14px 0 36px; color: #6b7280; font: 400 16px/1.5 'Noto Sans KR', sans-serif; }
+.completion-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 145px; }
+.completion-summary > div { display: flex; flex-direction: column; gap: 8px; padding: 22px 24px; background: #fafbfc; }
+.completion-summary > div + div { border-left: 1px solid #fff; }
+.completion-summary span { color: #8a8f98; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
+.completion-summary strong { color: #16181d; font: 700 26px/1.5 Inter, 'Noto Sans KR', sans-serif; letter-spacing: -.03em; }
+.completion-summary > div:nth-child(2) strong, .completion-summary > div:nth-child(3) strong { color: #6b7280; }
+.completion-actions-section { margin-top: 0; }
+.completion-section-head { height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.completion-section-head h2 { margin: 0; color: #16181d; font: 500 14px/1.5 'Noto Sans KR', sans-serif; }
+.completion-section-head button { padding: 8px 13px; border: 0; border-radius: 6px; background: #2e7df7; color: #fff; font: 500 12px/1.5 'Noto Sans KR', sans-serif; }
+.completion-list { overflow: hidden; border: 1px solid #edeef0; border-radius: 16px; background: #fff; }
+.completion-row { min-height: 55px; padding: 14px 24px; display: grid; grid-template-columns: 58px 44px minmax(0, 1fr) auto; align-items: center; gap: 14px; border-bottom: 1px solid #f2f3f5; }
+.completion-row:last-child { border-bottom: 0; }
+.completion-time { justify-self: start; padding: 4px 8px; border-radius: 999px; background: #16181d; color: #fff; font: 500 11px/1.5 Inter, sans-serif; }
+.completion-kind { color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
+.completion-row p { min-width: 0; margin: 0; overflow: hidden; color: #16181d; font: 400 14px/1.5 'Noto Sans KR', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
+.completion-row > strong { color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.completion-row > strong:first-letter { color: #2e7df7; }
+.completion-bottom { margin-top: 32px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.completion-bottom > div { display: flex; align-items: center; gap: 10px; }
+.completion-primary, .completion-secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 18px; border-radius: 8px; font: 500 14px/1.5 'Noto Sans KR', sans-serif; }
+.completion-primary { background: #2e7df7; color: #fff; }
+.completion-secondary { border: 1px solid #e3e5e8; color: #4b5058; }
+.completion-bottom p { margin: 0; color: #9aa0a6; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
+@media (max-width: 900px) {
+  .shell-completion .topbar { height: 68px; padding: 0 20px; }
+  .completion-page { width: auto; max-width: none; min-height: calc(100svh - 68px); padding: 56px 20px 70px; }
+  .completion-heading h1 { font-size: 32px; }
+  .completion-subtitle { margin-top: 10px; font-size: 14px; }
+  .completion-summary { min-height: 0; grid-template-columns: 1fr; }
+  .completion-summary > div { min-height: 88px; padding: 18px 20px; }
+  .completion-summary > div + div { border-top: 1px solid #fff; border-left: 0; }
+  .completion-section-head { height: auto; min-height: 62px; align-items: flex-start; padding-top: 24px; }
+  .completion-row { grid-template-columns: auto 38px minmax(0, 1fr); gap: 9px; padding: 13px 16px; }
+  .completion-row > strong { grid-column: 3; }
+  .completion-bottom { align-items: flex-start; flex-direction: column; }
+  .completion-bottom > div { width: 100%; }
+  .completion-primary, .completion-secondary { flex: 1; }
+  .completion-bottom p { margin-top: 2px; }
+}
+
 /* Figma retouch: landing page only (01 · 랜딩). */
 .shell-landing .topbar { height: 68px; padding: 0 48px; }
 .shell-landing .topbar .brand-logo { width: 87px; height: 30px; }
@@ -752,7 +805,55 @@
 
 /* Never allow a stale horizontal scroll position to crop the responsive shell. */
 html, body, #root { max-width: 100%; overflow-x: hidden; }
-.shell-upload, .shell-analysis, .shell-report { max-width: 100%; overflow-x: hidden; }
+.shell-upload, .shell-analysis, .shell-report, .shell-completion { max-width: 100%; overflow-x: hidden; }
+
+/* S-5 history frame: compact, scannable rows backed by the history API. */
+.shell-history { background: #fff; color: #16181d; }
+.shell-history .topbar { height: 68px; max-width: none; padding: 0 48px; border-bottom-color: #edeef0; background: #fff; }
+.shell-history .topbar .brand-logo { width: 87px; height: 30px; }
+.shell-history .main-nav { gap: 30px; font-family: 'Noto Sans KR', sans-serif; }
+.shell-history .main-nav a { padding: 4px 0; color: #8a8f98; font: 400 14px/1.5 'Noto Sans KR', sans-serif; opacity: 1; }
+.shell-history .main-nav a:nth-child(3) { color: #16181d; font-weight: 500; box-shadow: inset 0 -2px 0 #16181d; }
+.shell-history .history-page { width: 1040px; max-width: calc(100% - 40px); min-height: calc(100svh - 68px); margin: 0 auto; padding: 64px 0 100px; background: #fff; }
+.shell-history .history-page h1 { margin: 0; color: #16181d; font: 700 36px/1.5 'Noto Sans KR', sans-serif; }
+.shell-history .history-intro { max-width: 900px; margin: 14px 0 28px; color: #6b7280; font: 400 16px/1.7 'Noto Sans KR', sans-serif; }
+.shell-history .history-filters { display: flex; gap: 8px; padding-bottom: 24px; }
+.shell-history .history-filters button { padding: 6px 12px; border: 1px solid #e3e5e8; border-radius: 20px; background: #fff; color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
+.shell-history .history-filters button.is-selected { border-color: #16181d; background: #16181d; color: #fff; font-weight: 500; }
+.shell-history .history-card { width: 100%; overflow: hidden; border: 1px solid #edeef0; border-radius: 16px; background: #fff; }
+.shell-history .history-empty { min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #9aa0a6; font: 400 13px/1.7 'Noto Sans KR', sans-serif; }
+.shell-history .history-empty p { margin: 0; }
+.shell-history .history-empty a { color: #2e7df7; font: 500 13px/1.5 'Noto Sans KR', sans-serif; }
+.shell-history .history-row { width: 100%; height: 59px; padding: 18px 24px; display: grid; grid-template-columns: minmax(0, 1fr) 44px 70px 60px; gap: 28px; align-items: center; border: 0; border-bottom: 1px solid #f2f3f5; background: #fff; color: #16181d; text-align: left; }
+.shell-history .history-row:last-child { border-bottom: 0; }
+.shell-history .history-row:hover { background: #fafbfc; }
+.shell-history .history-file { min-width: 0; display: flex; align-items: center; gap: 16px; }
+.shell-history .history-file strong { width: 300px; min-width: 0; overflow: hidden; color: #16181d; font: 500 15px/1.5 'Noto Sans KR', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
+.shell-history .history-file small { color: #b6bac0; font: 400 12px/1.5 Inter, sans-serif; white-space: nowrap; }
+.shell-history .history-event-count { color: #6b7280; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
+.shell-history .history-edited { color: #9aa0a6; font: 400 13px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-history .history-status { color: #b6bac0; font: 400 13px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-history .history-status-failed { color: #2e7df7; font-weight: 500; }
+.shell-history .history-status-processing, .shell-history .history-status-pending { color: #2e7df7; }
+.shell-history .landing-empty-page { min-height: calc(100svh - 68px); }
+@media (min-width: 901px) and (max-width: 1120px) {
+  .shell-history .history-page { width: auto; max-width: none; margin-inline: 64px; }
+  .shell-history .history-file strong { width: min(300px, 28vw); }
+}
+@media (max-width: 900px) {
+  .shell-history .topbar { height: 68px; padding: 0 20px; }
+  .shell-history .history-page { width: auto; max-width: none; min-height: calc(100svh - 68px); margin: 0; padding: 56px 20px 70px; }
+  .shell-history .history-page h1 { font-size: 32px; }
+  .shell-history .history-intro { font-size: 14px; }
+  .shell-history .history-card { border-radius: 12px; }
+  .shell-history .history-row { height: auto; min-height: 78px; padding: 16px; grid-template-columns: minmax(0, 1fr) auto; gap: 7px 12px; }
+  .shell-history .history-file { grid-column: 1 / -1; align-items: flex-start; flex-direction: column; gap: 2px; }
+  .shell-history .history-file strong { width: 100%; font-size: 14px; }
+  .shell-history .history-file small { font-size: 11px; }
+  .shell-history .history-event-count { grid-column: 1; grid-row: 2; }
+  .shell-history .history-edited { grid-column: 1; grid-row: 3; }
+  .shell-history .history-status { grid-column: 2; grid-row: 2 / span 2; align-self: center; }
+}
 
 /* Analysis scales continuously between the desktop frame and the compact layout. */
 @media (min-width: 901px) {
