@@ -611,3 +611,130 @@
   .shell-analysis .retry-box { display: block; }
   .shell-analysis .retry-box .button { width: 100%; margin-top: 10px; }
 }
+
+/* S-4 report frame: a review-first workspace for the real report response. */
+.shell-report { background: #fff; color: #16181d; }
+.shell-report .topbar {
+  height: 68px;
+  max-width: none;
+  padding: 0 48px;
+  border-bottom-color: #edeef0;
+  background: #fff;
+}
+.shell-report .topbar .brand-logo { width: 87px; height: 30px; }
+.shell-report .main-nav { gap: 30px; font-family: 'Noto Sans KR', sans-serif; }
+.shell-report .main-nav a { padding: 4px 0; color: #8a8f98; font: 400 14px/1.5 'Noto Sans KR', sans-serif; opacity: 1; }
+.shell-report .main-nav a:nth-child(2) { color: #16181d; font-weight: 500; box-shadow: inset 0 -2px 0 #16181d; }
+.shell-report .report-page {
+  width: 100%;
+  max-width: none;
+  min-height: calc(100svh - 68px);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  background: #fff;
+}
+.shell-report .report-content { width: calc(100% - 320px); min-width: 0; padding: 48px 176px 100px; overflow: hidden; }
+.shell-report .report-heading { padding-bottom: 26px; }
+.shell-report .report-meta { margin: 0; color: #9aa0a6; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-heading h1 { width: 100%; margin: 14px 0 8px; color: #16181d; font: 700 40px/1.3 'Noto Sans KR', sans-serif; letter-spacing: 0; }
+.shell-report .report-heading > p:last-child { margin: 0; color: #6b7280; font: 400 15px/1.65 'Noto Sans KR', sans-serif; }
+.shell-report .report-toolbar { height: 64px; border-top: 1px solid #edeef0; padding-bottom: 18px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.shell-report .report-filter-count { display: flex; align-items: center; gap: 8px; color: #16181d; font: 500 12px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-filter-count span { color: #b6bac0; font: 400 12px/1.5 Inter, sans-serif; }
+.shell-report .report-filters { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+.shell-report .report-filters button { padding: 5px 10px; border: 1px solid #e3e5e8; border-radius: 20px; background: #fff; color: #6b7280; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-filters button.is-selected { border-color: #16181d; background: #16181d; color: #fff; }
+.shell-report .report-sort { color: #b6bac0; font: 400 12px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-report .report-selected-card { width: 100%; padding: 28px 30px 26px; border: 1px solid #dfe1e4; border-radius: 16px; background: #fff; }
+.shell-report .report-card-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 16px; }
+.shell-report .report-card-meta, .shell-report .report-card-position { display: flex; align-items: center; gap: 10px; color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-report .report-evidence { color: #b6bac0; }
+.shell-report .report-time-pill { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 20px; background: #16181d; color: #fff; font: 500 11px/1.5 Inter, sans-serif; }
+.shell-report .report-card-position { gap: 12px; color: #b6bac0; font: 400 11px/1.5 Inter, sans-serif; }
+.shell-report .report-scrubber-mini { width: 84px; height: 12px; display: block; border-radius: 6px; background: #edeef0; overflow: hidden; }
+.shell-report .report-scrubber-mini i { display: block; height: 100%; border-radius: inherit; background: #2e7df7; }
+.shell-report .report-selected-card h2 { width: 100%; margin: 0; color: #16181d; font: 700 24px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-reason { width: 100%; margin: 10px 0 0; color: #6b7280; font: 400 15px/1.7 'Noto Sans KR', sans-serif; }
+.shell-report .report-player { position: relative; width: 100%; aspect-ratio: 708 / 398; margin-top: 22px; overflow: hidden; border-radius: 10px; background: #1f2328; }
+.shell-report .report-player video { width: 100%; height: 100%; display: block; object-fit: contain; cursor: pointer; }
+.shell-report .report-play { position: absolute; top: 50%; left: 50%; width: 60px; height: 60px; transform: translate(-50%, -50%); border: 0; border-radius: 50%; background: #2e7df7; color: #1f2328; font: 20px/1 Inter, sans-serif; }
+.shell-report .report-scrubber { padding: 14px 0 22px; display: flex; flex-direction: column; gap: 9px; }
+.shell-report .report-scrubber input { width: 100%; height: 4px; accent-color: #2e7df7; }
+.shell-report .report-scrubber > div { display: flex; align-items: center; justify-content: space-between; color: #b6bac0; font: 400 11px/1.5 Inter, sans-serif; }
+.shell-report .report-scrubber > div > div { display: flex; gap: 14px; align-items: center; color: #9aa0a6; font: 400 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-scrubber b { color: #dfe1e4; font-weight: 400; }
+.shell-report .report-context-label { padding-bottom: 12px; color: #9aa0a6; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-context { padding-left: 20px; border-left: 2px solid #edeef0; }
+.shell-report .report-context-row { position: relative; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 16px; align-items: start; padding: 9px 0; color: #9aa0a6; }
+.shell-report .report-context-row > span { color: #c9ccd1; font: 500 11px/1.5 Inter, sans-serif; }
+.shell-report .report-context-row p { margin: 0; font: 400 14px/1.75 'Noto Sans KR', sans-serif; }
+.shell-report .report-context-row.is-current { color: #16181d; }
+.shell-report .report-context-row.is-current > span { color: #16181d; }
+.shell-report .report-caption { grid-column: 2; display: flex; align-items: center; gap: 10px; padding: 9px 0 9px 14px; border-left: 2px solid #16181d; white-space: nowrap; }
+.shell-report .report-caption span { color: #9aa0a6; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-caption strong { color: #16181d; font: 700 15px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-interpretation { padding-top: 24px; }
+.shell-report .report-interpretation h3 { margin: 0 0 8px; color: #9aa0a6; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-interpretation p { margin: 0; color: #6b7280; font: 400 14px/1.7 'Noto Sans KR', sans-serif; }
+.shell-report .report-actions { display: flex; align-items: center; gap: 10px; padding-top: 26px; }
+.shell-report .report-actions button { padding: 12px 22px; border: 1px solid #e3e5e8; border-radius: 22px; background: #fff; color: #4b5058; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-actions button.is-active { border-color: #2e7df7; background: #2e7df7; color: #fff; font-weight: 500; }
+.shell-report .report-actions > span { flex: 1; }
+.shell-report .report-actions .report-muted-action { padding: 12px 14px; border-color: transparent; color: #9aa0a6; }
+.shell-report .report-next { margin: 14px 0 0; color: #c9ccd1; font: 400 12px/1.5 'Noto Sans KR', sans-serif; text-align: right; }
+.shell-report .report-candidates { margin-top: 64px; }
+.shell-report .report-candidates-card { width: 100%; overflow: hidden; border: 1px solid #edeef0; border-radius: 16px; background: #fff; }
+.shell-report .report-candidate-row { width: 100%; min-height: 58px; padding: 17px 24px; display: grid; grid-template-columns: auto 44px minmax(0, 1fr) auto auto; align-items: center; gap: 14px; border: 0; border-bottom: 1px solid #f2f3f5; background: #fff; color: #16181d; text-align: left; }
+.shell-report .report-candidate-row:last-child { border-bottom: 0; }
+.shell-report .report-candidate-row:hover { background: #fafbfc; }
+.shell-report .report-candidate-row > .report-time-pill { padding: 4px 9px; }
+.shell-report .report-candidate-row > span:not(.report-time-pill) { color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-candidate-row strong { overflow: hidden; font: 400 15px/1.5 'Noto Sans KR', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
+.shell-report .report-candidate-row small { color: #c9ccd1; font: 400 11px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-report .report-candidate-row em { color: #9aa0a6; font: 400 12px/1.5 'Noto Sans KR', sans-serif; font-style: normal; white-space: nowrap; }
+.shell-report .report-footnote { margin: 26px 0 0; color: #b6bac0; font: 400 12px/1.7 'Noto Sans KR', sans-serif; }
+.shell-report .report-sidebar { width: 320px; flex: 0 0 320px; padding: 28px 24px; border-left: 1px solid #edeef0; background: #fff; }
+.shell-report .report-file-context { display: flex; flex-direction: column; gap: 6px; padding-bottom: 20px; }
+.shell-report .report-file-context span { color: #9aa0a6; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-file-context strong { max-width: 272px; color: #16181d; font: 500 15px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-file-context small { color: #b6bac0; font: 400 12px/1.5 Inter, sans-serif; }
+.shell-report .report-decision-progress { padding: 20px 0; border-top: 1px solid #edeef0; border-bottom: 1px solid #edeef0; }
+.shell-report .report-decision-progress > div:first-child { display: flex; align-items: center; justify-content: space-between; color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-decision-progress strong { color: #16181d; font: 500 12px/1.5 Inter, sans-serif; }
+.shell-report .report-sidebar-track { height: 5px; margin-top: 10px; overflow: hidden; border-radius: 3px; background: #edeef0; }
+.shell-report .report-sidebar-track i { display: block; height: 100%; border-radius: inherit; background: #2e7df7; }
+.shell-report .report-finish-button { width: 100%; margin: 20px 0 22px; padding: 12px; border: 0; border-radius: 10px; background: #2e7df7; color: #fff; font: 500 14px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-outline { padding-top: 22px; border-top: 1px solid #edeef0; }
+.shell-report .report-outline > span, .shell-report .report-outline > strong { display: block; }
+.shell-report .report-outline > span { color: #9aa0a6; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-outline > strong { padding: 6px 0 14px; color: #16181d; font: 500 12px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-outline button { width: 100%; min-height: 32px; padding: 7px 12px; display: flex; align-items: center; gap: 9px; border: 0; border-left: 2px solid #edeef0; background: transparent; color: #8a8f98; text-align: left; }
+.shell-report .report-outline button.is-current { border-left-color: #2e7df7; color: #2e7df7; }
+.shell-report .report-outline button i { width: 10px; color: #c9ccd1; font: 400 10px/1 Inter, sans-serif; font-style: normal; }
+.shell-report .report-outline button b { font: 500 12px/1.5 Inter, sans-serif; }
+.shell-report .report-outline button span { font: 400 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-outline > small { display: block; padding-top: 14px; color: #c9ccd1; font: 400 10px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .landing-empty-page { min-height: calc(100svh - 68px); }
+@media (max-width: 1200px) and (min-width: 901px) { .shell-report .report-content { padding-left: 80px; padding-right: 80px; } }
+@media (max-width: 900px) {
+  .shell-report .topbar { padding: 0 20px; }
+  .shell-report .report-page { display: block; }
+  .shell-report .report-content { width: 100%; padding: 56px 20px 70px; }
+  .shell-report .report-heading h1 { font-size: 34px; }
+  .shell-report .report-toolbar { height: auto; min-height: 92px; flex-wrap: wrap; align-items: center; padding: 20px 0; }
+  .shell-report .report-filters { order: 3; width: 100%; margin-left: 0; }
+  .shell-report .report-sort { margin-left: auto; }
+  .shell-report .report-selected-card { padding: 22px 18px; }
+  .shell-report .report-card-top { align-items: flex-start; flex-direction: column; }
+  .shell-report .report-card-position { width: 100%; }
+  .shell-report .report-selected-card h2 { font-size: 21px; }
+  .shell-report .report-caption { white-space: normal; }
+  .shell-report .report-actions { flex-wrap: wrap; }
+  .shell-report .report-actions > span { display: none; }
+  .shell-report .report-actions .report-muted-action { margin-left: auto; }
+  .shell-report .report-candidate-row { grid-template-columns: auto 36px minmax(0, 1fr); gap: 8px; padding: 14px 16px; }
+  .shell-report .report-candidate-row small, .shell-report .report-candidate-row em { grid-column: 3; }
+  .shell-report .report-sidebar { width: 100%; padding: 28px 20px 48px; border-top: 1px solid #edeef0; border-left: 0; }
+}
