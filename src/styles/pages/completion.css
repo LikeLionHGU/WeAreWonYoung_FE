@@ -8,7 +8,8 @@
 .shell-completion .main-nav a:nth-child(2) { color: #16181d; font-weight: 500; box-shadow: inset 0 -2px 0 #16181d; }
 .completion-page { width: 1040px; max-width: calc(100% - 40px); min-height: calc(100svh - 68px); margin: 0 auto; padding: 93px 0 100px; background: #fff; }
 .completion-heading { display: flex; align-items: flex-start; gap: 10px; }
-.completion-mark { width: 35px; height: 56px; display: grid; place-items: center; color: #2e7df7; font: 500 36px/1 Inter, sans-serif; }
+.completion-mark { width: 35px; height: 56px; display: grid; place-items: center; color: #2e7df7; }
+.completion-mark svg { width: 28px; height: 28px; display: block; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .completion-heading h1 { margin: 0; color: #16181d; font: 700 36px/1.5 'Noto Sans KR', sans-serif; letter-spacing: -.04em; }
 .completion-subtitle { margin: 14px 0 36px; color: #6b7280; font: 400 16px/1.5 'Noto Sans KR', sans-serif; }
 .completion-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 145px; }
@@ -28,7 +29,6 @@
 .completion-kind { color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
 .completion-row p { min-width: 0; margin: 0; overflow: hidden; color: #16181d; font: 400 14px/1.5 'Noto Sans KR', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
 .completion-row > strong { color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
-.completion-row > strong:first-letter { color: #2e7df7; }
 .completion-bottom { margin-top: 32px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
 .completion-bottom > div { display: flex; align-items: center; gap: 10px; }
 .completion-primary, .completion-secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 18px; border-radius: 8px; font: 500 14px/1.5 'Noto Sans KR', sans-serif; }
