@@ -184,6 +184,11 @@
 .shell-report .report-outline button.is-current { border-left-color: #2e7df7; color: #2e7df7; }
 .shell-report .report-empty-page > p { margin-bottom: 0; }
 
+@media (min-width: 901px) {
+  .shell-report .topbar { position: fixed; inset: 0 0 auto; width: 100%; }
+  .shell-report .report-page { margin-top: 68px; }
+}
+
 @media (max-width: 1200px) and (min-width: 901px) {
   .shell-report .report-content { padding-left: clamp(36px, 6vw, 80px); padding-right: clamp(36px, 6vw, 80px); }
 }
