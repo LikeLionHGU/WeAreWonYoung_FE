@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AppShell, ErrorNotice, Loading } from './components/AppShell'
-import { assetUrl } from './api/client'
+import { assetUrl, hasConfiguredApi } from './api/client'
 import type { CandidateType, TimelineEvent } from './api/types'
 import type { VideoHistoryItem } from './api/types'
 import { apiClient } from './api/client'
@@ -143,7 +143,7 @@ function EmptyReportPage() {
 function HistoryPage() {
   const [items, setItems] = useState<VideoHistoryItem[] | null>(null)
   const [error, setError] = useState<string | null>(null)
-  useEffect(() => { let active = true; void apiClient.videos().then(value => { if (active) setItems(value) }).catch(() => { if (active) setError('검수 이력을 불러오지 못했습니다.') }); return () => { active = false } }, [])
+  useEffect(() => { let active = true; void apiClient.videos().then(value => { if (active) setItems(value) }).catch(() => { if (!active) return; if (hasConfiguredApi()) setError('검수 이력을 불러오지 못했습니다.'); else setItems([]) }); return () => { active = false } }, [])
   if (error) return <EmptyUploadPage eyebrow="검수 이력" title="아직 검수 이력이 없습니다." description="첫 영상을 업로드하면 진행 중인 작업과 완료된 리포트가 이곳에 쌓입니다." notice="검수 이력 서버가 연결되지 않았습니다." />
   if (items === null) return <main className="center-page"><Loading label="검수 이력을 불러오는 중" /></main>
   const completedCount = items.filter(item => item.status === 'COMPLETED').length

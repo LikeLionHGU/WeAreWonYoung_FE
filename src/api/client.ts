@@ -3,6 +3,10 @@ import { ApiRequestError } from './types'
 
 const baseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 
+export function hasConfiguredApi() {
+  return Boolean(baseUrl)
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, init)
   let body: ApiResponse<T>
