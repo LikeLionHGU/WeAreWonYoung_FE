@@ -1,0 +1,168 @@
+/* pages/analysis.css */
+.analysis-page { max-width: 1288px; min-height: calc(100svh - 60px); margin: 0 auto; padding: 64px 0 80px; display: grid; grid-template-columns: 720px 326px; column-gap: 242px; background: #fff; }.analysis-main { min-width: 0; }.analysis-main .page-kicker { margin-bottom: 25px; }.analysis-file { color: #757575; font: 400 12px/20px 'Helvetica Neue', 'Noto Sans KR', sans-serif; }.analysis-hero { display: block; padding: 12px 0 48px; }.analysis-copy h1 { font: 500 40px/52px 'Helvetica Neue', 'Noto Sans KR', sans-serif; letter-spacing: 0; }.analysis-copy > p:not(.eyebrow) { margin-top: 18px; color: #757575; font: 400 15px/24px 'Helvetica Neue', 'Noto Sans KR', sans-serif; }.analysis-progress { margin: 0; height: 2px; background: #e5e5e5; }.analysis-progress span { background: #111; }.analysis-steps { margin-top: 47px; }.analysis-step { display: grid; grid-template-columns: 24px minmax(0, 1fr) 55px; gap: 16px; align-items: center; height: 60px; border-bottom: 1px solid #e5e5e5; color: #757575; }.analysis-step strong { font: 400 15px/24px 'Helvetica Neue', 'Noto Sans KR', sans-serif; }.analysis-step > span:last-child { font: 400 12px/20px 'Helvetica Neue', 'Noto Sans KR', sans-serif; text-align: right; }.analysis-step .step-dot { width: 8px; height: 8px; border-radius: 50%; background: #e5e5e5; }.analysis-step.done, .analysis-step.active { color: #111; }.analysis-step.active strong { font-weight: 500; }.analysis-step.active .step-dot { background: #9e3500; }.analysis-step.done .step-dot { background: #111; }.analysis-brand-panel { min-height: 840px; margin-top: -64px; background: #4bb1fd; color: #fff; overflow: hidden; position: relative; }.analysis-brand-panel span { position: absolute; font: 700 128px/.22 'Helvetica Neue', Arial, sans-serif; }.analysis-brand-panel span:first-child { top: 420px; left: 8px; }.analysis-brand-panel span:last-child { top: 540px; left: 185px; }.analysis-page .progress-orb, .analysis-page .progress-panel, .analysis-page .stage-list { display: none; }
+@media (max-width: 1000px) { .analysis-page { display: block; padding: 48px 20px 70px; }.analysis-brand-panel { display: none; }.analysis-main { max-width: 720px; margin: 0 auto; } }
+
+/* S-3 analysis frame: keep the live progress behaviour, matching the latest Figma layout. */
+.shell-analysis { background: #fff; color: #16181d; }
+.shell-analysis .topbar {
+  height: 68px;
+  max-width: none;
+  padding: 0 48px;
+  border-bottom-color: #edeef0;
+  background: #fff;
+}
+.shell-analysis .topbar .brand-logo { width: 87px; height: 30px; }
+.shell-analysis .main-nav { gap: 30px; font-family: 'Noto Sans KR', sans-serif; }
+.shell-analysis .main-nav a { padding: 4px 0; color: #8a8f98; font: 400 14px/1.5 'Noto Sans KR', sans-serif; opacity: 1; }
+.shell-analysis .main-nav a:first-child { color: #16181d; font-weight: 500; box-shadow: inset 0 -2px 0 #16181d; }
+.shell-analysis .analysis-page {
+  width: auto;
+  max-width: none;
+  min-height: calc(100svh - 68px);
+  margin: 0 96px;
+  padding: 80px 0 56px;
+  display: block;
+  background: #fff;
+}
+.shell-analysis .analysis-main { width: 100%; max-width: none; }
+.shell-analysis .analysis-main > .page-kicker { display: none; }
+.shell-analysis .analysis-file {
+  height: 20px;
+  color: #9aa0a6;
+  font: 400 13px/1.5 'Noto Sans KR', sans-serif;
+  white-space: nowrap;
+}
+.shell-analysis .analysis-hero {
+  display: block;
+  height: 83px;
+  padding: 14px 0 12px;
+}
+.shell-analysis .analysis-copy h1 {
+  margin: 0;
+  color: #16181d;
+  font: 700 38px/1.5 'Noto Sans KR', sans-serif;
+  letter-spacing: 0;
+}
+.shell-analysis .analysis-copy .eyebrow { display: none; }
+.shell-analysis .analysis-subtitle {
+  height: 24px;
+  margin: 0;
+  color: #6b7280;
+  font: 400 16px/1.5 'Noto Sans KR', sans-serif;
+  white-space: nowrap;
+}
+.shell-analysis .analysis-progress-wrap {
+  width: 100%;
+  height: 120px;
+  padding: 40px 0 44px;
+}
+.shell-analysis .analysis-progress {
+  width: 100%;
+  height: 6px;
+  margin: 0;
+  border-radius: 3px;
+  background: #edeef0;
+}
+.shell-analysis .analysis-progress span { background: #2e7df7; border-radius: 3px; }
+.shell-analysis .analysis-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 18px;
+  margin-top: 12px;
+  color: #9aa0a6;
+  font: 400 12px/1.5 'Noto Sans KR', sans-serif;
+}
+.shell-analysis .analysis-progress-meta strong {
+  color: #2e7df7;
+  font: 500 12px/1.5 Inter, 'Noto Sans KR', sans-serif;
+}
+.shell-analysis .analysis-steps {
+  width: 100%;
+  margin: 0;
+}
+.shell-analysis .analysis-step {
+  width: 100%;
+  height: 64px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  border-bottom: 1px solid #edeef0;
+  color: #b6bac0;
+}
+.shell-analysis .analysis-step strong {
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  font: 400 16px/1.5 'Noto Sans KR', sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.shell-analysis .analysis-step > span:last-child {
+  color: inherit;
+  font: 400 12px/1.5 'Noto Sans KR', sans-serif;
+  text-align: right;
+  white-space: nowrap;
+}
+.shell-analysis .analysis-step .step-dot { width: 8px; height: 8px; background: #b6bac0; }
+.shell-analysis .analysis-step.done { color: #6b7280; }
+.shell-analysis .analysis-step.done .step-dot { background: #9aa0a6; }
+.shell-analysis .analysis-step.active { color: #16181d; }
+.shell-analysis .analysis-step.active strong { font-weight: 500; }
+.shell-analysis .analysis-step.active > span:last-child { color: #2e7df7; font-weight: 500; }
+.shell-analysis .analysis-step.active .step-dot { background: #2e7df7; }
+.shell-analysis .analysis-note {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 36px;
+  color: #9aa0a6;
+  font: 400 13px/1.5 'Noto Sans KR', sans-serif;
+  white-space: nowrap;
+}
+.shell-analysis .analysis-cancel { color: #2e7df7; }
+.shell-analysis .connection-note { margin: 20px 0 0; color: #9aa0a6; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
+.shell-analysis .retry-box { max-width: none; margin-top: 24px; }
+.shell-analysis .analysis-page > .button-wide { max-width: none; margin-top: 24px; }
+.shell-analysis .analysis-brand-panel { display: none; }
+@media (max-width: 900px) {
+  .shell-analysis .topbar { padding: 0 20px; }
+  .shell-analysis .analysis-page { margin: 0; padding: 56px 20px 70px; }
+  .shell-analysis .analysis-file { overflow: hidden; text-overflow: ellipsis; }
+  .shell-analysis .analysis-subtitle { height: auto; min-height: 24px; white-space: normal; }
+  .shell-analysis .analysis-progress-wrap { height: 120px; }
+  .shell-analysis .analysis-step { padding: 20px 12px; }
+  .shell-analysis .analysis-step strong { white-space: normal; }
+  .shell-analysis .analysis-note { align-items: flex-start; white-space: normal; }
+  .shell-analysis .retry-box { display: block; }
+  .shell-analysis .retry-box .button { width: 100%; margin-top: 10px; }
+}
+
+/* Analysis scales continuously between the desktop frame and the compact layout. */
+@media (min-width: 901px) {
+  .shell-analysis .topbar { height: clamp(60px, 4.72vw, 68px); padding-inline: clamp(24px, 3.33vw, 48px); }
+  .shell-analysis .topbar .brand-logo { width: clamp(76px, 5.67vw, 87px); height: clamp(26px, 1.95vw, 30px); }
+  .shell-analysis .main-nav { gap: clamp(18px, 2.08vw, 30px); }
+  .shell-analysis .main-nav a { font-size: clamp(12px, .97vw, 14px); }
+  .shell-analysis .analysis-page {
+    min-height: calc(100svh - clamp(60px, 4.72vw, 68px));
+    margin-inline: clamp(24px, 6.67vw, 96px);
+    padding-top: clamp(56px, 5.56vw, 80px);
+    padding-bottom: clamp(40px, 3.89vw, 56px);
+  }
+  .shell-analysis .analysis-file { height: clamp(18px, 1.39vw, 20px); font-size: clamp(11px, .9vw, 13px); }
+  .shell-analysis .analysis-hero { height: clamp(74px, 5.76vw, 83px); padding-block: clamp(10px, .97vw, 14px) clamp(9px, .83vw, 12px); }
+  .shell-analysis .analysis-copy h1 { font-size: clamp(30px, 2.64vw, 38px); }
+  .shell-analysis .analysis-subtitle { height: clamp(21px, 1.67vw, 24px); font-size: clamp(13px, 1.11vw, 16px); }
+  .shell-analysis .analysis-progress-wrap { height: clamp(94px, 8.33vw, 120px); padding-block: clamp(30px, 2.78vw, 40px) clamp(34px, 3.06vw, 44px); }
+  .shell-analysis .analysis-progress { height: clamp(4px, .42vw, 6px); }
+  .shell-analysis .analysis-progress-meta { height: clamp(16px, 1.25vw, 18px); margin-top: clamp(8px, .83vw, 12px); font-size: clamp(10px, .83vw, 12px); }
+  .shell-analysis .analysis-progress-meta strong { font-size: clamp(10px, .83vw, 12px); }
+  .shell-analysis .analysis-step { height: clamp(50px, 4.44vw, 64px); padding: clamp(14px, 1.39vw, 20px); gap: clamp(10px, .97vw, 14px); }
+  .shell-analysis .analysis-step strong { font-size: clamp(13px, 1.11vw, 16px); }
+  .shell-analysis .analysis-step > span:last-child { font-size: clamp(10px, .83vw, 12px); }
+  .shell-analysis .analysis-step .step-dot { width: clamp(6px, .56vw, 8px); height: clamp(6px, .56vw, 8px); }
+  .shell-analysis .analysis-note { gap: clamp(10px, 1.11vw, 16px); padding-top: clamp(26px, 2.5vw, 36px); font-size: clamp(11px, .9vw, 13px); }
+}

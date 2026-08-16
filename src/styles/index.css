@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
+
+@import './components/shell.css';
+@import './base.css';
+@import './pages/upload.css';
+@import './pages/landing.css';
+@import './pages/settings.css';
+@import './pages/completion.css';
+@import './pages/analysis.css';
+@import './pages/report.css';
+@import './pages/history.css';

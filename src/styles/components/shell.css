@@ -1,0 +1,8 @@
+/* Shared application shell: header, brand, and navigation. */
+.shell { min-height: 100svh; background: radial-gradient(circle at 75% -10%, #e6ebff 0, transparent 32rem), #f5f6f8; }
+.topbar { height: 76px; max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-bottom: 1px solid rgba(32,35,43,.1); }.brand { display: flex; gap: 11px; align-items: center; font-size: 14px; font-weight: 800; letter-spacing: -.02em; }.brand-mark { display: grid; place-items: center; width: 31px; height: 31px; border-radius: 9px; background: var(--ink); color: #fff; font: 500 11px var(--mono); letter-spacing: -.1em; }.topbar-note, .limit, .eyebrow, .event-time, .event-type, .severity-label { font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; }.topbar-note { color: var(--muted); }
+/* OoPs! Figma shell and real-data states */
+.brand-logo { width: 92px; height: 28px; color: var(--ink); overflow: visible; }
+.main-nav { display: flex; align-items: center; gap: 30px; color: var(--ink); font-size: 13px; }
+.main-nav a { padding: 7px 0; color: var(--muted); }
+.main-nav a:hover, .main-nav a.active { color: var(--ink); }

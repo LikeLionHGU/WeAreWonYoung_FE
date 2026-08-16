@@ -1,0 +1,45 @@
+/* pages/settings.css */
+/* S-7 settings frame: data-first account and billing overview. */
+.shell-settings { background: #fff; color: #16181d; }
+.shell-settings .topbar { height: 68px; max-width: none; padding: 0 48px; border-bottom-color: #edeef0; background: #fff; }
+.shell-settings .topbar .brand-logo { width: 87px; height: 30px; }
+.shell-settings .main-nav { gap: 30px; font-family: 'Noto Sans KR', sans-serif; }
+.shell-settings .main-nav a { padding: 4px 0; color: #8a8f98; font: 400 14px/1.5 'Noto Sans KR', sans-serif; opacity: 1; }
+.shell-settings .main-nav a:nth-child(4) { color: #16181d; font-weight: 500; }
+.shell-settings .settings-page { width: 1040px; max-width: calc(100% - 40px); min-height: calc(100svh - 68px); margin: 0 auto; padding: 64px 0 100px; background: #fff; }
+.shell-settings .settings-page > h1 { margin: 0; color: #16181d; font: 700 36px/1.5 'Noto Sans KR', sans-serif; letter-spacing: -.04em; }
+.shell-settings .settings-intro { margin: 0; padding: 12px 0 36px; color: #6b7280; font: 400 15px/1.5 'Noto Sans KR', sans-serif; }
+.shell-settings .settings-group { width: 100%; padding-bottom: 36px; }
+.shell-settings .settings-group > h2 { margin: 0; color: #9aa0a6; font: 500 13px/1.5 'Noto Sans KR', sans-serif; }
+.shell-settings .settings-row-list { width: 100%; padding-top: 4px; }
+.shell-settings .settings-row { min-height: 84px; padding: 18px 0; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid #edeef0; }
+.shell-settings .settings-row > div { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.shell-settings .settings-row h3 { margin: 0; color: #16181d; font: 500 15px/1.5 'Noto Sans KR', sans-serif; }
+.shell-settings .settings-row p { margin: 0; color: #6b7280; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
+.shell-settings .settings-action { flex: 0 0 auto; border: 0; background: transparent; color: #2e7df7; font: 500 13px/1.5 'Noto Sans KR', sans-serif; }
+.shell-settings .settings-action-danger { color: #d9483b; }
+.shell-settings .settings-billing-group { padding-bottom: 36px; }
+.shell-settings .settings-plan-card { min-height: 104px; margin-top: 12px; padding: 24px 26px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-radius: 16px; background: #fafbfc; }
+.shell-settings .settings-plan-card > div { min-width: 0; }
+.shell-settings .settings-plan-title { display: flex; align-items: center; gap: 10px; }
+.shell-settings .settings-plan-title strong { color: #16181d; font: 700 18px/1.5 'Noto Sans KR', sans-serif; }
+.shell-settings .settings-plan-title span { padding: 3px 9px; border-radius: 20px; background: #e8f1fe; color: #2e7df7; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-settings .settings-plan-card p { max-width: 560px; margin: 8px 0 0; color: #6b7280; font: 400 13px/1.6 'Noto Sans KR', sans-serif; }
+.shell-settings .settings-action-primary { padding: 12px 22px; border-radius: 10px; background: #2e7df7; color: #fff; font-size: 14px; }
+.shell-settings .settings-payment-list { padding-top: 6px; }
+.shell-settings .settings-account-group { padding-bottom: 36px; }
+.shell-settings .settings-row-compact { min-height: 59px; }
+.shell-settings .settings-row-compact > div { gap: 0; }
+@media (max-width: 900px) {
+  .shell-settings .topbar { height: 68px; padding: 0 20px; }
+  .shell-settings .settings-page { width: auto; max-width: none; min-height: calc(100svh - 68px); padding: 56px 20px 70px; }
+  .shell-settings .settings-page > h1 { font-size: 32px; }
+  .shell-settings .settings-intro { padding-bottom: 28px; font-size: 14px; }
+  .shell-settings .settings-group { padding-bottom: 30px; }
+  .shell-settings .settings-row { min-height: 78px; gap: 14px; }
+  .shell-settings .settings-row h3 { font-size: 14px; }
+  .shell-settings .settings-row p { font-size: 12px; }
+  .shell-settings .settings-plan-card { align-items: flex-start; flex-direction: column; padding: 20px; }
+  .shell-settings .settings-plan-card p { max-width: none; }
+  .shell-settings .settings-action-primary { align-self: flex-start; }
+}
