@@ -34,6 +34,12 @@
 .shell-report .report-filters button { padding: 5px 10px; border: 1px solid #e3e5e8; border-radius: 20px; background: #fff; color: #6b7280; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
 .shell-report .report-filters button.is-selected { border-color: #16181d; background: #16181d; color: #fff; }
 .shell-report .report-sort { color: #b6bac0; font: 400 12px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-report .report-sort-wrap { position: relative; margin-left: auto; }
+.shell-report .report-sort { padding: 0; border: 0; background: transparent; color: #9aa0a6; cursor: pointer; }
+.shell-report .report-sort:hover, .shell-report .report-sort:focus-visible { color: #16181d; }
+.shell-report .report-sort-menu { position: absolute; z-index: 5; top: calc(100% + 8px); right: 0; min-width: 92px; padding: 5px; border: 1px solid #dceefa; border-radius: 8px; background: #fff; box-shadow: 0 10px 24px rgba(54, 125, 183, .12); }
+.shell-report .report-sort-menu button { width: 100%; padding: 7px 9px; border: 0; border-radius: 5px; background: transparent; color: #6b7280; font: 400 11px/1.5 'Noto Sans KR', sans-serif; text-align: left; cursor: pointer; }
+.shell-report .report-sort-menu button:hover, .shell-report .report-sort-menu button.is-selected { background: #f2f8fc; color: #16181d; }
 .shell-report .report-selected-card { width: 100%; padding: 28px 30px 26px; border: 1px solid #dfe1e4; border-radius: 16px; background: #fff; }
 .shell-report .report-card-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 16px; }
 .shell-report .report-card-meta, .shell-report .report-card-position { display: flex; align-items: center; gap: 10px; color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
@@ -82,7 +88,7 @@
 .shell-report .report-candidate-row small { color: #c9ccd1; font: 400 11px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
 .shell-report .report-candidate-row em { color: #9aa0a6; font: 400 12px/1.5 'Noto Sans KR', sans-serif; font-style: normal; white-space: nowrap; }
 .shell-report .report-footnote { margin: 26px 0 0; color: #b6bac0; font: 400 12px/1.7 'Noto Sans KR', sans-serif; }
-.shell-report .report-sidebar { width: 320px; flex: 0 0 320px; padding: 28px 24px; border-left: 1px solid #edeef0; background: #fff; }
+.shell-report .report-sidebar { position: sticky; top: 0; align-self: flex-start; width: 320px; height: calc(100svh - 68px); overflow-y: auto; box-sizing: border-box; flex: 0 0 320px; padding: 28px 24px; border-left: 1px solid #edeef0; background: #fff; }
 .shell-report .report-file-context { display: flex; flex-direction: column; gap: 6px; padding-bottom: 20px; }
 .shell-report .report-file-context span { color: #9aa0a6; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
 .shell-report .report-file-context strong { max-width: 272px; color: #16181d; font: 500 15px/1.5 'Noto Sans KR', sans-serif; }
@@ -124,7 +130,7 @@
   .shell-report .report-actions .report-muted-action { margin-left: auto; }
   .shell-report .report-candidate-row { grid-template-columns: auto 36px minmax(0, 1fr); gap: 8px; padding: 14px 16px; }
   .shell-report .report-candidate-row small, .shell-report .report-candidate-row em { grid-column: 3; }
-  .shell-report .report-sidebar { width: 100%; padding: 28px 20px 48px; border-top: 1px solid #edeef0; border-left: 0; }
+  .shell-report .report-sidebar { position: static; width: 100%; height: auto; overflow: visible; padding: 28px 20px 48px; border-top: 1px solid #edeef0; border-left: 0; }
 }
 
 /* Report retouch: keep the review workspace calm, bright, and connected to the
@@ -164,6 +170,7 @@
 .shell-report .report-candidates { margin-top: 56px; }
 .shell-report .report-candidates-card { border-color: #dceefa; border-radius: 12px; box-shadow: 0 12px 30px rgba(54, 125, 183, .05); }
 .shell-report .report-candidate-row:hover { background: #f7fbff; }
+.shell-report .report-candidate-row.is-current { background: #f7fbff; box-shadow: inset 3px 0 0 #2e7df7; }
 .shell-report .report-sidebar { border-left-color: #dceefa; background: #f7fbff; }
 .shell-report .report-decision-progress { border-top-color: #dceefa; border-bottom-color: #dceefa; }
 .shell-report .report-sidebar-track { background: #e5f2fb; }
