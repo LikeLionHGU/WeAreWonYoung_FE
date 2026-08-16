@@ -137,7 +137,7 @@ function CompletionPage() {
 }
 
 function EmptyReportPage() {
-  return <main className="landing-empty-page report-empty-page"><LandingKicker label="검수 리포트" /><h1>아직 검수 리포트가 없습니다.</h1><p>영상을 업로드하면 분석이 끝난 뒤 위험 구간과 근거를 이곳에서 확인할 수 있습니다.</p><div className="report-empty-counts" aria-label="검수 리포트 건수"><span className="is-selected">전체 <strong>0</strong></span><span>자막 <strong>0</strong></span><span>발언 <strong>0</strong></span></div><Link className="landing-empty-action" to="/upload"><span>영상 업로드하기</span><strong>→</strong></Link></main>
+  return <main className="landing-empty-page report-empty-page"><LandingKicker label="검수 리포트" /><h1>아직 검수 리포트가 없습니다.</h1><p>첫 영상을 업로드하면 분석이 끝난 뒤 검수 후보와 근거가 이곳에 쌓입니다.</p><Link className="landing-empty-action" to="/upload"><span>영상 업로드하기</span><strong>→</strong></Link></main>
 }
 
 function HistoryPage() {

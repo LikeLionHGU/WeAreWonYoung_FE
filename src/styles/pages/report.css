@@ -172,10 +172,6 @@
 .shell-report .report-outline { border-top-color: #dceefa; }
 .shell-report .report-outline button.is-current { border-left-color: #2e7df7; color: #2e7df7; }
 .shell-report .report-empty-page > p { margin-bottom: 0; }
-.shell-report .report-empty-counts { max-width: 645px; margin-top: 36px; padding: 16px 0; display: flex; align-items: center; gap: 28px; border-top: 1px solid #dceefa; border-bottom: 1px solid #dceefa; color: #9aa0a6; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
-.shell-report .report-empty-counts span { display: inline-flex; align-items: center; gap: 7px; }
-.shell-report .report-empty-counts strong { color: #16181d; font: 500 13px/1.5 Inter, sans-serif; }
-.shell-report .report-empty-counts .is-selected { color: #16181d; font-weight: 500; }
 
 @media (max-width: 1200px) and (min-width: 901px) {
   .shell-report .report-content { padding-left: clamp(36px, 6vw, 80px); padding-right: clamp(36px, 6vw, 80px); }
@@ -186,5 +182,4 @@
   .shell-report .report-page { background: #fff; }
   .shell-report .report-selected-card, .shell-report .report-candidates-card { box-shadow: none; }
   .shell-report .report-sidebar { background: #f7fbff; }
-  .shell-report .report-empty-counts { gap: 20px; flex-wrap: wrap; }
 }
