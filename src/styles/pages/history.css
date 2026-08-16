@@ -46,3 +46,14 @@
   .shell-history .history-edited { grid-column: 1; grid-row: 3; }
   .shell-history .history-status { grid-column: 2; grid-row: 2 / span 2; align-self: center; }
 }
+
+@media (min-width: 901px) {
+  .shell-history .history-row { grid-template-columns: minmax(0, 1fr) 90px 110px 90px; }
+  .shell-history .history-file,
+  .shell-history .history-event-count,
+  .shell-history .history-edited,
+  .shell-history .history-status { align-self: center; }
+  .shell-history .history-event-count,
+  .shell-history .history-edited,
+  .shell-history .history-status { justify-self: center; }
+}

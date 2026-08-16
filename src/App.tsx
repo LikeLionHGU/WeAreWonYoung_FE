@@ -85,7 +85,7 @@ function ReportPage() {
   if (!report) return null
   const reportEvents = report.events
   const selected = report.events.find(event => event.id === selectedId) ?? report.events[0]
-  if (!selected) return <main className="center-page"><p>검토할 후보가 없습니다.</p><Link className="button button-dark" to="/upload">새 영상 업로드</Link></main>
+  if (!selected) return <EmptyReportPage />
   const selectedIndex = Math.max(0, report.events.findIndex(event => event.id === selected.id))
   const remaining = report.events.filter(event => !decisions[event.id] || decisions[event.id] === 'pending').length
   const subtitle = `${report.events.length}건의 검토 후보가 있습니다. 하나씩 읽고 직접 결정하세요.`
@@ -135,7 +135,7 @@ function CompletionPage() {
 }
 
 function EmptyReportPage() {
-  return <EmptyUploadPage eyebrow="검수 리포트" title="아직 검수 리포트가 없습니다." description="영상을 업로드하면 분석이 끝난 뒤 위험 구간과 근거를 이곳에서 확인할 수 있습니다." />
+  return <main className="landing-empty-page report-empty-page"><LandingKicker label="검수 리포트" /><h1>아직 검수 리포트가 없습니다.</h1><p>영상을 업로드하면 분석이 끝난 뒤 위험 구간과 근거를 이곳에서 확인할 수 있습니다.</p><div className="report-empty-counts" aria-label="검수 리포트 건수"><span className="is-selected">전체 <strong>0</strong></span><span>자막 <strong>0</strong></span><span>발언 <strong>0</strong></span></div><Link className="landing-empty-action" to="/upload"><span>영상 업로드하기</span><strong>→</strong></Link></main>
 }
 
 function HistoryPage() {
