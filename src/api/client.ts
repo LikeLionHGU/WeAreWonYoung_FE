@@ -1,4 +1,4 @@
-import type { ApiResponse, AnalysisReportResponse, AnalysisRetryResponse, VideoHistoryItem, VideoStatusResponse, VideoUploadResponse } from './types'
+import type { ApiResponse, AnalysisReportResponse, AnalysisRetryResponse, UploadGenre, VideoHistoryItem, VideoStatusResponse, VideoUploadResponse } from './types'
 import { ApiRequestError } from './types'
 
 const baseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
@@ -15,8 +15,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const apiClient = {
-  upload(file: File) {
-    const form = new FormData(); form.append('file', file)
+  upload(file: File, genre?: UploadGenre) {
+    const form = new FormData(); form.append('file', file); if (genre) form.append('genre', genre)
     return request<VideoUploadResponse>('/api/v1/videos', { method: 'POST', body: form })
   },
   videos() { return request<VideoHistoryItem[]>('/api/v1/videos') },

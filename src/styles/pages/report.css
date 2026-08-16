@@ -135,6 +135,9 @@
 .shell-report .report-meta { color: #2e7df7; font-weight: 500; }
 .shell-report .report-heading h1 { font-weight: 600; letter-spacing: -.035em; }
 .shell-report .report-heading > p:last-child { color: #757575; }
+.shell-report .report-warnings { margin-top: 18px; padding: 12px 14px; border: 1px solid #f3dfb4; border-radius: 8px; background: #fffaf0; color: #7a5b1e; font: 400 12px/1.6 'Noto Sans KR', sans-serif; }
+.shell-report .report-warnings strong { display: block; margin-bottom: 3px; font-weight: 600; }
+.shell-report .report-warnings p { margin: 0; }
 .shell-report .report-toolbar { border-top-color: #dceefa; }
 .shell-report .report-filter-count span { color: #2e7df7; font-weight: 500; }
 .shell-report .report-filters button { border-color: #dceefa; color: #757575; }
@@ -145,6 +148,13 @@
 .shell-report .report-scrubber-mini { background: #eaf4fb; }
 .shell-report .report-scrubber-mini i { background: #2e7df7; }
 .shell-report .report-selected-card h2 { font-weight: 600; letter-spacing: -.02em; }
+.shell-report .report-references { margin-top: 18px; padding-top: 16px; border-top: 1px solid #edf4f8; }
+.shell-report .report-references h3 { margin: 0 0 9px; color: #757575; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-references a { display: grid; gap: 2px; padding: 8px 0; color: #2e7df7; text-decoration: none; }
+.shell-report .report-references a + a { border-top: 1px solid #f2f6f8; }
+.shell-report .report-references a strong { overflow: hidden; font: 500 13px/1.5 'Noto Sans KR', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
+.shell-report .report-references a span, .shell-report .report-references a small { color: #9aa0a6; font: 400 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-references a small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .shell-report .report-player { margin-top: 24px; border-radius: 8px; background: #16181d; }
 .shell-report .report-play { background: #4bb1fd; color: #fff; box-shadow: 0 8px 20px rgba(46, 125, 247, .3); }
 .shell-report .report-scrubber input { accent-color: #2e7df7; }
