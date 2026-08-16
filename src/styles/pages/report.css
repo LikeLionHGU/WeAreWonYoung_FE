@@ -88,7 +88,7 @@
 .shell-report .report-candidate-row small { color: #c9ccd1; font: 400 11px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
 .shell-report .report-candidate-row em { color: #9aa0a6; font: 400 12px/1.5 'Noto Sans KR', sans-serif; font-style: normal; white-space: nowrap; }
 .shell-report .report-footnote { margin: 26px 0 0; color: #b6bac0; font: 400 12px/1.7 'Noto Sans KR', sans-serif; }
-.shell-report .report-sidebar { position: sticky; top: 0; align-self: flex-start; width: 320px; height: calc(100svh - 68px); overflow-y: auto; box-sizing: border-box; flex: 0 0 320px; padding: 28px 24px; border-left: 1px solid #edeef0; background: #fff; }
+.shell-report .report-sidebar { position: fixed; z-index: 10; top: 68px; right: 0; bottom: 0; width: 320px; height: auto; overflow-y: auto; box-sizing: border-box; flex: 0 0 320px; padding: 28px 24px; border-left: 1px solid #edeef0; background: #fff; }
 .shell-report .report-file-context { display: flex; flex-direction: column; gap: 6px; padding-bottom: 20px; }
 .shell-report .report-file-context span { color: #9aa0a6; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
 .shell-report .report-file-context strong { max-width: 272px; color: #16181d; font: 500 15px/1.5 'Noto Sans KR', sans-serif; }
