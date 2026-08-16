@@ -1,12 +1,16 @@
 /* pages/report.css */
 /* S-4 report frame: a review-first workspace for the real report response. */
 .shell-report { background: #fff; color: #16181d; }
+.shell-report { overflow-x: clip; }
 .shell-report .topbar {
   height: 68px;
   max-width: none;
   padding: 0 48px;
   border-bottom-color: #edeef0;
   background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 .shell-report .topbar .brand-logo { width: 87px; height: 30px; }
 .shell-report .main-nav { gap: 30px; font-family: 'Noto Sans KR', sans-serif; }
@@ -171,7 +175,7 @@
 .shell-report .report-candidates-card { border-color: #dceefa; border-radius: 12px; box-shadow: 0 12px 30px rgba(54, 125, 183, .05); }
 .shell-report .report-candidate-row:hover { background: #f7fbff; }
 .shell-report .report-candidate-row.is-current { background: #f7fbff; box-shadow: inset 3px 0 0 #2e7df7; }
-.shell-report .report-sidebar { border-left-color: #dceefa; background: #f7fbff; }
+.shell-report .report-sidebar { border-top: 1px solid #cfe7f5; border-left-color: #cfe7f5; background: #f7fbff; }
 .shell-report .report-decision-progress { border-top-color: #dceefa; border-bottom-color: #dceefa; }
 .shell-report .report-sidebar-track { background: #e5f2fb; }
 .shell-report .report-sidebar-track i { background: #2e7df7; }
