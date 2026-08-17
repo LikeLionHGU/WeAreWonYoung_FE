@@ -134,7 +134,7 @@ npm run dev
 
 - 업로드: `POST /api/v1/videos` (`multipart/form-data`, `file`, optional `genre`)
 - 상태: `GET /api/v1/videos/:videoId/status`
-- 이력: `GET /api/v1/videos`
+- 이력: `GET /api/v1/videos/history`
 - 리포트: `GET /api/v1/videos/:videoId/report`
 - 재시도: `POST /api/v1/videos/:videoId/analysis/retry`
 - 영상: `GET /api/v1/videos/:videoId/stream` (`Range`, `206`, `416` 지원)
