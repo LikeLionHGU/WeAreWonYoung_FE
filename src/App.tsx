@@ -59,16 +59,29 @@ function LandingInfo({ title, children }: { title: string; children: React.React
 
 function AnalysisPage() {
   const { videoId } = useParams(); const id = Number(videoId); const navigate = useNavigate(); const { status, isFallback } = useAnalysisProgress(id); const { retry, isRetrying } = useAnalysisRetry()
-  useEffect(() => { if (status?.status === 'COMPLETED') navigate(`/videos/${id}/report`, { replace: true }) }, [id, navigate, status?.status])
+  useEffect(() => {
+    if (status?.status !== 'COMPLETED') return
+    const timer = window.setTimeout(() => navigate(`/videos/${id}/report`, { replace: true }), 650)
+    return () => window.clearTimeout(timer)
+  }, [id, navigate, status?.status])
   if (!Number.isFinite(id)) return <Navigate to="/" replace />
   if (!status) return <main className="center-page"><Loading label="검수 작업을 불러오는 중" /></main>
   const failed = status.status === 'FAILED'
   async function handleRetry() { const result = await retry(id); if (result) window.location.reload() }
-  const stages = [['STT', '음성을 텍스트로 변환'], ['TEXT_RISK', '발언 리스크 후보 탐지'], ['SCENE_DETECTION', '화면 변화 감지 및 대표 프레임 추출'], ['OCR', '화면 자막 OCR'], ['MULTIMODAL', '발언과 자막 대조']] as const
-  const activeIndex = stages.findIndex(([stage]) => stage === status.stage)
+  const stages = [
+    ['STT', '음성을 텍스트로 변환'],
+    ['TEXT_RISK', '발언 검토 후보 분석'],
+    ['SCENE_DETECTION', '사실 정보 확인'],
+    ['OCR', '관련 맥락 확인'],
+    ['MULTIMODAL', '검토 후보와 근거 정리'],
+  ] as const
+  const stageStep: Record<string, number> = { UPLOAD: 1, STT: 1, TEXT_RISK: 2, SCENE_DETECTION: 3, OCR: 4, MULTIMODAL: 5, FINALIZING: 5, COMPLETED: 5 }
   const completed = status.status === 'COMPLETED'
-  const progressStage = completed ? 3 : Math.min(3, Math.max(1, activeIndex + 1))
-  return <main className="analysis-page"><section className="analysis-main"><div className="analysis-file">업로드한 영상 · {status.message}</div><section className="analysis-hero"><div className="analysis-copy"><h1>{failed ? '검수 중 문제가 발생했습니다.' : '분석 중입니다'}</h1></div></section><p className="analysis-subtitle">{failed ? status.message : '남은 시간 약 30초. 음성 분석과 화면 분석은 따로 진행됩니다.'}</p><div className="analysis-progress-wrap"><div className="progress-track analysis-progress"><span style={{ width: `${status.progress}%` }} /></div><div className="analysis-progress-meta"><span>{progressStage}단계 중 {progressStage}번째</span><strong>{status.progress}%</strong></div></div><section className="analysis-steps">{stages.map(([stage, label], index) => { const done = completed || (activeIndex > -1 && index < activeIndex); const active = !done && stage === status.stage; return <div className={`analysis-step ${done ? 'done' : ''} ${active ? 'active' : ''}`} key={stage}><span className="step-dot" /><strong>{label}</strong><span>{done ? '완료' : active ? '진행 중' : '대기'}</span></div> })}</section><div className="analysis-note"><span>이 화면을 닫아도 분석은 계속됩니다. 완료되면 검수 리포트에서 확인할 수 있습니다.</span><span className="analysis-cancel">분석 취소</span></div>{isFallback && !failed && <p className="connection-note">실시간 연결이 잠시 끊겨 상태 조회로 확인하고 있습니다.</p>}{failed && <div className="retry-box"><ErrorNotice message={status.message || '분석에 실패했습니다.'} code={status.errorCode} /><button className="button button-dark" onClick={() => void handleRetry()} disabled={isRetrying}>{isRetrying ? '다시 준비하는 중…' : '다시 분석하기 →'}</button></div>}{completed && <button className="button button-primary button-wide" onClick={() => navigate(`/videos/${id}/report`)}>검수 결과 보기 →</button>}</section></main>
+  const fallbackStep = Math.min(5, Math.max(1, Math.ceil(status.progress / 20)))
+  const currentStep = completed ? 5 : stageStep[status.stage] ?? fallbackStep
+  const title = failed ? '검수 중 문제가 발생했습니다.' : completed ? '분석이 완료되었습니다.' : '분석 중입니다'
+  const subtitle = failed ? status.message : completed ? '검수 리포트를 준비했습니다. 잠시 후 결과 화면으로 이동합니다.' : '발언과 화면 정보를 분석해 다시 확인할 검토 후보를 정리합니다.'
+  return <main className={`analysis-page ${completed ? 'is-completing' : ''}`}><section className="analysis-main"><div className="analysis-file">업로드한 영상 · {status.message}</div><section className="analysis-hero"><div className="analysis-copy"><h1>{title}</h1></div></section><p className="analysis-subtitle">{subtitle}</p><div className="analysis-progress-wrap"><div className="progress-track analysis-progress"><span style={{ width: `${completed ? 100 : status.progress}%` }} /></div><div className="analysis-progress-meta"><span>5단계 중 {currentStep}번째</span><strong>{completed ? 100 : status.progress}%</strong></div></div><section className="analysis-steps">{stages.map(([stage, label], index) => { const done = completed || index < currentStep - 1; const active = !completed && !failed && index === currentStep - 1; return <div className={`analysis-step ${done ? 'done' : ''} ${active ? 'active' : ''} ${failed && index === currentStep - 1 ? 'failed' : ''}`} key={stage}><span className="step-dot" aria-hidden="true" /><strong>{label}</strong><span>{done ? '완료' : failed && index === currentStep - 1 ? '확인 필요' : active ? '진행 중' : '대기'}</span></div> })}</section><div className="analysis-note"><span>이 화면을 닫아도 분석은 계속됩니다. 완료되면 검수 리포트에서 확인할 수 있습니다.</span><span className="analysis-cancel">분석 취소</span></div>{isFallback && !failed && !completed && <p className="connection-note">실시간 연결이 잠시 끊겨 상태 조회로 확인하고 있습니다.</p>}{failed && <div className="retry-box"><ErrorNotice message={status.message || '분석에 실패했습니다.'} code={status.errorCode} /><button className="button button-dark" onClick={() => void handleRetry()} disabled={isRetrying}>{isRetrying ? '다시 준비하는 중…' : '다시 분석하기 →'}</button></div>}</section></main>
 }
 
 function formatTime(ms: number) { const seconds = Math.floor(ms / 1000); return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}` }

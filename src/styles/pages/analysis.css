@@ -63,7 +63,8 @@
   border-radius: 3px;
   background: #edeef0;
 }
-.shell-analysis .analysis-progress span { background: #2e7df7; border-radius: 3px; }
+.shell-analysis .analysis-progress span { background: #2e7df7; border-radius: 3px; transition: width 420ms cubic-bezier(.22, 1, .36, 1), background-color 220ms ease, box-shadow 220ms ease; }
+.shell-analysis .analysis-page.is-completing .analysis-progress span { background: #2e7df7; box-shadow: 0 0 0 4px rgba(46, 125, 247, .08); }
 .shell-analysis .analysis-progress-meta {
   display: flex;
   align-items: center;
@@ -113,6 +114,11 @@
 .shell-analysis .analysis-step.active strong { font-weight: 500; }
 .shell-analysis .analysis-step.active > span:last-child { color: #2e7df7; font-weight: 500; }
 .shell-analysis .analysis-step.active .step-dot { background: #2e7df7; }
+.shell-analysis .analysis-step.failed { color: #b13b2e; }
+.shell-analysis .analysis-step.failed > span:last-child { color: #b13b2e; font-weight: 500; }
+.shell-analysis .analysis-step.failed .step-dot { background: #b13b2e; }
+.shell-analysis .analysis-step.done .step-dot { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin: -4px; border-radius: 50%; background: #2e7df7; color: #fff; }
+.shell-analysis .analysis-step.done .step-dot::after { content: '✓'; font: 700 10px/1 Inter, 'Noto Sans KR', sans-serif; }
 .shell-analysis .analysis-note {
   display: flex;
   align-items: center;
