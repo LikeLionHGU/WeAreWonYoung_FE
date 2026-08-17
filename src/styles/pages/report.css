@@ -58,7 +58,7 @@
 .shell-report .report-card-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 16px; }
 .shell-report .report-card-meta, .shell-report .report-card-position { display: flex; align-items: center; gap: 10px; color: #6b7280; font: 400 12px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
 .shell-report .report-evidence { color: #b6bac0; }
-.shell-report .report-time-pill { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 20px; background: #16181d; color: #fff; font: 500 11px/1.5 Inter, sans-serif; }
+.shell-report .report-time-pill { width: 64px; min-width: 64px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; padding: 5px 6px; border-radius: 20px; background: #16181d; color: #fff; font: 500 11px/1.5 Inter, sans-serif; font-variant-numeric: tabular-nums; }
 .shell-report .report-card-position { gap: 12px; color: #b6bac0; font: 400 11px/1.5 Inter, sans-serif; }
 .shell-report .report-scrubber-mini { width: 84px; height: 12px; display: block; border-radius: 6px; background: #edeef0; overflow: hidden; }
 .shell-report .report-scrubber-mini i { display: block; height: 100%; border-radius: inherit; background: #2e7df7; }

@@ -209,15 +209,8 @@
   text-decoration: none;
   transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
 }
-.shell-landing .landing-email:hover,
-.shell-landing .landing-email:focus-visible,
-.shell-landing .landing-email-compact:hover,
-.shell-landing .landing-email-compact:focus-visible {
-  border-color: #1f65d2;
-  background: #1f65d2;
-}
-.shell-landing .landing-email:active,
-.shell-landing .landing-email-compact:active { transform: translateY(1px); }
+/* The wrapper is layout-only. Keep hover, focus and pressed states on the
+   actual submit button so the input never looks or behaves like a button. */
 .shell-landing .landing-email > span {
   width: auto;
   height: auto;

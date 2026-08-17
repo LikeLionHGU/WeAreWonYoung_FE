@@ -29,10 +29,10 @@ const landingSteps = [
 
 function LandingEmailForm({ compact = false }: { compact?: boolean }) {
   const navigate = useNavigate()
-  return <form className={`landing-email ${compact ? 'landing-email-compact' : ''}`} onSubmit={event => { event.preventDefault(); navigate('/upload') }}>
+  return <div className={`landing-email ${compact ? 'landing-email-compact' : ''}`}>
     <input type="email" aria-label="이메일 주소" placeholder="이메일 주소" />
-    <button type="submit">이메일 보내기</button>
-  </form>
+    <button type="button" onClick={() => navigate('/upload')}>이메일 보내기</button>
+  </div>
 }
 
 function LandingSteps() {
