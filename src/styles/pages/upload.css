@@ -39,3 +39,177 @@
   .shell-upload .upload-subtitle { width: min(700px, 100%); }
   .shell-upload .policy-panel { width: 100%; min-width: 0; }
 }
+
+/* Latest Figma upload frame (02 · 업로드). The upload hook and validation
+   behavior remain unchanged; these rules only align the presentation layer. */
+.shell-upload .topbar {
+  box-sizing: border-box;
+  height: 68px;
+  padding: 0 48px;
+  border-bottom-color: #edeef0;
+}
+.shell-upload .topbar .brand-logo { width: 87px; height: 30px; }
+.shell-upload .main-nav { gap: 30px; }
+.shell-upload .main-nav a { font: 400 14px/21px 'Noto Sans KR', sans-serif; }
+
+.shell-upload .upload-page {
+  box-sizing: border-box;
+  width: auto;
+  max-width: none;
+  min-height: calc(100svh - 68px);
+  margin: 0 96px;
+  padding: 56px 0 0;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  column-gap: 64px;
+  align-items: start;
+}
+.shell-upload .upload-main > h1 {
+  margin: 0;
+  color: #16181d;
+  font: 500 32px/48px 'Noto Sans KR', sans-serif;
+  letter-spacing: 0;
+}
+.shell-upload .upload-subtitle {
+  margin: 12px 0 32px;
+  padding: 0;
+  color: #6b7280;
+  font: 400 15px/26px 'Noto Sans KR', sans-serif;
+}
+.shell-upload .dropzone {
+  box-sizing: border-box;
+  width: 100%;
+  height: 222px;
+  min-height: 222px;
+  margin: 0;
+  padding: 56px 30px 0;
+  gap: 0;
+  border: 0;
+  border-radius: 16px;
+  background: #f5f9ff;
+  justify-content: flex-start;
+}
+.shell-upload .dropzone::before { display: none; }
+.shell-upload .dropzone .upload-icon {
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  margin: 0 0 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #2e7df7;
+  color: #fff;
+}
+.shell-upload .dropzone .upload-icon svg { width: 14px; height: 14px; fill: currentColor; }
+.shell-upload .dropzone > strong {
+  max-width: none;
+  margin: 0;
+  color: #16181d;
+  font: 500 16px/26px 'Noto Sans KR', sans-serif;
+}
+.shell-upload .dropzone > span:not(.upload-icon) {
+  margin: 10px 0 0;
+  color: #6b7280;
+  font: 400 13px/20px 'Noto Sans KR', sans-serif;
+}
+.shell-upload .dropzone.is-dragging,
+.shell-upload .dropzone.has-file { background: #f5f9ff; box-shadow: inset 0 0 0 2px #2e7df7; }
+
+.shell-upload .upload-fields {
+  box-sizing: border-box;
+  height: 108px;
+  margin-top: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+.shell-upload .upload-fields label { display: block; }
+.shell-upload .upload-fields label > span {
+  display: block;
+  margin: 32px 0 9px;
+  color: #9aa0a6;
+  font: 400 12px/18px 'Noto Sans KR', sans-serif;
+}
+.shell-upload .upload-fields input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 49px;
+  padding: 13px 16px;
+  border: 1px solid #edeef0;
+  border-radius: 10px;
+  box-shadow: none;
+  color: #16181d;
+  font: 400 15px/23px 'Noto Sans KR', sans-serif;
+}
+.shell-upload .upload-fields input::placeholder { color: #b6bac0; opacity: 1; }
+.shell-upload .upload-fields input:focus { border-color: #2e7df7; }
+
+.shell-upload .upload-submit {
+  box-sizing: border-box;
+  height: 91px;
+  margin-top: 0;
+  align-items: flex-end;
+}
+.shell-upload .upload-submit p {
+  margin: 0 0 15px;
+  color: #9aa0a6;
+  font: 400 13px/20px 'Noto Sans KR', sans-serif;
+}
+.shell-upload .upload-submit .button {
+  box-sizing: border-box;
+  width: 115px;
+  height: 51px;
+  border-radius: 10px;
+  background: #2e7df7;
+  font: 500 15px/23px 'Noto Sans KR', sans-serif;
+}
+.shell-upload .upload-submit .button:disabled { opacity: 1; background: #2e7df7; }
+
+.shell-upload .policy-panel {
+  box-sizing: border-box;
+  width: 300px;
+  padding-left: 0;
+  border-left: 0;
+}
+.shell-upload .policy-panel h2 { color: #16181d; font: 500 14px/21px 'Noto Sans KR', sans-serif; }
+.shell-upload .policy-panel > p {
+  margin: 8px 0 15px;
+  padding: 0;
+  color: #6b7280;
+  font: 400 13px/22px 'Noto Sans KR', sans-serif;
+}
+.shell-upload .policy-panel dl > div {
+  box-sizing: border-box;
+  width: 300px;
+  height: 79px;
+  padding: 16px 0;
+  margin: 0;
+  border-bottom: 1px solid #edeef0;
+}
+.shell-upload .policy-panel dt { color: #16181d; font: 500 14px/20px 'Noto Sans KR', sans-serif; }
+.shell-upload .policy-panel dd { margin: 6px 0 0; color: #6b7280; font: 400 13px/21px 'Noto Sans KR', sans-serif; }
+
+@media (min-width: 901px) and (max-width: 1439px) {
+  .shell-upload .upload-page {
+    margin-left: clamp(24px, 6.667vw, 96px);
+    margin-right: clamp(24px, 6.667vw, 96px);
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 300px);
+    column-gap: clamp(32px, 4.444vw, 64px);
+  }
+  .shell-upload .policy-panel,
+  .shell-upload .policy-panel dl > div { width: 100%; }
+}
+
+@media (max-width: 900px) {
+  .shell-upload .topbar { height: 68px; padding: 0 20px; }
+  .shell-upload .topbar .brand-logo { width: 77px; height: 28px; }
+  .shell-upload .upload-page { min-height: auto; margin: 0; padding: 56px 20px 70px; }
+  .shell-upload .upload-main > h1 { font-size: 28px; line-height: 42px; }
+  .shell-upload .dropzone { height: 222px; min-height: 222px; }
+  .shell-upload .upload-fields { height: auto; grid-template-columns: 1fr; gap: 0; }
+  .shell-upload .upload-fields label > span { margin-top: 24px; }
+  .shell-upload .upload-submit { height: auto; margin-top: 28px; align-items: flex-start; }
+  .shell-upload .upload-submit p { margin: 0; }
+  .shell-upload .policy-panel { width: 100%; margin-top: 56px; }
+  .shell-upload .policy-panel dl > div { width: 100%; }
+}
