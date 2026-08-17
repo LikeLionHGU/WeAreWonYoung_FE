@@ -135,6 +135,16 @@
 .shell-report .report-outline > small { display: block; padding-top: 14px; color: #c9ccd1; font: 400 10px/1.5 'Noto Sans KR', sans-serif; }
 .shell-report .landing-empty-page { min-height: calc(100svh - 68px); }
 
+.empty-report-page { display: flex; align-items: center; justify-content: center; min-height: calc(100svh - 68px); padding: 40px 20px; background: #fff; }
+.empty-report-content { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 400px; }
+.empty-report-icon { width: 80px; height: 80px; color: #b0b5bd; margin-bottom: 28px; }
+.empty-report-icon svg { width: 100%; height: 100%; }
+.empty-report-page h1 { margin: 0 0 12px; font: 600 28px/1.3 'Noto Sans KR', sans-serif; color: #16181d; letter-spacing: -.02em; }
+.empty-report-page p { margin: 0 0 32px; font: 400 15px/1.7 'Noto Sans KR', sans-serif; color: #6b7280; }
+.empty-report-cta { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 12px; background: #111; color: #fff; font: 500 15px/1 'Noto Sans KR', sans-serif; transition: background .15s; }
+.empty-report-cta:hover { background: #2e7df7; }
+.empty-report-cta svg { width: 18px; height: 18px; }
+
 @media (max-width: 1200px) and (min-width: 901px) { .shell-report .report-content { padding-left: 80px; padding-right: 80px; } }
 @media (max-width: 900px) {
   .shell-report .topbar { padding: 0 20px; }
