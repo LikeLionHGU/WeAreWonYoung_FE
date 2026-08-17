@@ -38,6 +38,11 @@
 .landing-limit-list .landing-info h3, .landing-limit-list .landing-info p { line-height: 28px; }
 .landing-evidence-grid { margin-top: 40px; }
 .landing-email-compact { margin-top: 39px; }
+.landing-upload-cta { margin-top: 39px; }
+.landing-upload-button { display: inline-flex; align-items: center; justify-content: space-between; width: 100%; max-width: 420px; padding: 22px 28px; border-radius: 12px; background: #111; color: #fff; font: 500 16px/1.5 'Noto Sans KR', sans-serif; transition: background .15s; }
+.landing-upload-button:hover { background: #2e7df7; }
+.landing-upload-button strong { font-size: 22px; font-weight: 300; }
+.landing-upload-cta-compact .landing-upload-button { max-width: 320px; padding: 18px 24px; font-size: 15px; }
 .landing-footer-logo { width: 77px; height: auto; margin-top: 8px; filter: grayscale(1) brightness(0) invert(1); }
 .topbar .brand-logo { width: 77px; height: 28px; }
 .main-nav { gap: 28.333px; }
@@ -82,12 +87,12 @@
 .shell-landing .landing-kicker i:nth-of-type(3) { background: #16181d; }
 .shell-landing .landing-hero h1 { max-width: 1000px; margin: 25px 0 0; color: #16181d; font: 700 52px/1.35 'Noto Sans KR', sans-serif; letter-spacing: 0; }
 .shell-landing .landing-lead { margin: 24px 0 0; color: #6b7280; font: 400 17px/1.7 'Noto Sans KR', sans-serif; }
-.shell-landing .landing-hero-bottom { position: absolute; top: 427px; left: 120px; display: block; margin: 0; }
+.shell-landing .landing-hero-bottom { display: block; margin-top: 42px; grid-template-columns: none; gap: 0; }
 .shell-landing .landing-hero-bottom > .landing-email { margin-top: 0; }
 .shell-landing .landing-email { width: 465px; height: 53px; display: flex; gap: 10px; border: 0; border-radius: 0; overflow: visible; background: transparent; }
 .shell-landing .landing-email > span { width: 320px; height: 53px; display: flex; align-items: center; padding: 15px 20px; border: 1px solid #dfe1e4; border-radius: 10px; color: #b6bac0; font: 400 15px/1.5 'Noto Sans KR', sans-serif; }
 .shell-landing .landing-email > strong { width: 135px; height: 51px; display: grid; place-items: center; border-radius: 10px; background: #2e7df7; color: #fff; font: 500 22px/1 Arial, sans-serif; }
-.shell-landing .landing-privacy { position: absolute; top: 480px; left: 120px; margin: 18px 0 0; color: #9aa0a6; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
+.shell-landing .landing-privacy { margin-top: 18px; color: #9aa0a6; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
 .shell-landing .landing-steps { position: absolute; top: 334px; left: 870px; width: 450px; margin: 0; opacity: .67; }
 .shell-landing .landing-step { height: 48px; grid-template-columns: 18px minmax(0, 1fr) 40px; color: #6b7280; font: 400 11.95px/1.5 'Noto Sans KR', sans-serif; }
 .shell-landing .landing-step:last-child { border-bottom: 1px solid #edeef0; }
