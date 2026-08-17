@@ -7,7 +7,7 @@
     "dev": "node scripts/dev.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "dev:server": "tsx server/index.ts",
+    "dev:server": "tsx watch server/index.ts",
     "typecheck": "tsc --noEmit",
     "typecheck:server": "tsc -p tsconfig.server.json",
     "test:contract": "tsx scripts/contract-smoke.ts"

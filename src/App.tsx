@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom'
 import { AppShell, ErrorNotice, Loading } from './components/AppShell'
 import { assetUrl, hasConfiguredApi } from './api/client'
-import type { CandidateType, TimelineEvent } from './api/types'
-import type { VideoHistoryItem } from './api/types'
+import type { CandidateType, ReviewAction, TimelineEvent, VideoHistoryItem } from './api/types'
 import { apiClient } from './api/client'
 import { useAnalysisProgress } from './hooks/useAnalysisProgress'
 import { useAnalysisReport } from './hooks/useAnalysisReport'
@@ -13,10 +12,10 @@ import logoUrl from './assets/logo/oops-logo.svg'
 import landingLogoUrl from './assets/logo/oops-landing-logo.svg'
 
 function UploadPage() {
-  const navigate = useNavigate(); const inputRef = useRef<HTMLInputElement>(null); const { upload, isUploading, error } = useVideoUpload(); const [fileName, setFileName] = useState(''); const [isDragging, setIsDragging] = useState(false); const [title, setTitle] = useState(''); const [channel, setChannel] = useState('')
+  const navigate = useNavigate(); const inputRef = useRef<HTMLInputElement>(null); const { upload, isUploading, error } = useVideoUpload(); const [fileName, setFileName] = useState(''); const [isDragging, setIsDragging] = useState(false)
   async function submit() { const file = inputRef.current?.files?.[0]; if (!file) return; const result = await upload(file); if (result) navigate(`/videos/${result.videoId}/analysis`) }
   function acceptFiles(files: FileList | null) { const file = files?.[0]; if (file) { setFileName(file.name); if (inputRef.current) { const transfer = new DataTransfer(); transfer.items.add(file); inputRef.current.files = transfer.files } } setIsDragging(false) }
-  return <main className="upload-page"><section className="upload-main"><h1>영상 업로드</h1><p className="upload-subtitle">공개 전 다시 확인하고 싶은 영상 한 편을 올려 주세요. (mp4 또는 mov)</p><label className={`dropzone ${fileName ? 'has-file' : ''} ${isDragging ? 'is-dragging' : ''}`} htmlFor="video-file" onDragEnter={event => { event.preventDefault(); setIsDragging(true) }} onDragOver={event => { event.preventDefault(); setIsDragging(true) }} onDragLeave={() => setIsDragging(false)} onDrop={event => { event.preventDefault(); acceptFiles(event.dataTransfer.files) }}><div className="upload-icon" aria-hidden="true"><svg viewBox="0 0 14 14" focusable="false"><path d="M6.5 10.58V1.93L4.17 4.26l-.71-.72L7 0l3.54 3.54-.71.72L7.5 1.93v8.65h-1ZM0 14V9.96h1V13h12V9.96h1V14H0Z" /></svg></div><strong>{fileName || '파일을 이 영역으로 끌어다 놓으세요'}</strong><span>{fileName ? '다른 파일을 선택하려면 클릭' : '또는 눌러서 파일 선택 · 업로드 중 중단하고 다시 이어 올릴 수 있습니다'}</span><input ref={inputRef} id="video-file" type="file" accept=".mp4,.mov,.avi,video/mp4,video/quicktime,video/x-msvideo" onChange={event => acceptFiles(event.target.files)} /></label><div className="upload-fields"><label><span>영상 제목 (선택)</span><input value={title} onChange={event => setTitle(event.target.value)} placeholder="8월 3주차 시사 해설" /></label><label><span>채널 URL (선택)</span><input value={channel} onChange={event => setChannel(event.target.value)} placeholder="youtube.com/@channel" /></label></div>{error && <ErrorNotice message={error.message} code={error.code} />}<div className="upload-submit"><p>업로드가 끝나면 분석이 곧바로 시작됩니다.</p><button className="button button-primary" disabled={!fileName || isUploading} onClick={() => void submit()}>{isUploading ? <><span className="spinner spinner-light" />업로드 중…</> : '분석 시작'}</button></div></section><aside className="policy-panel"><h2>데이터 보관 정책</h2><p>공개 전 영상은 채널의 민감한 자산입니다.</p><dl><div><dt>원본 영상</dt><dd>분석 완료 후 24시간 내 자동 삭제</dd></div><div><dt>모델 학습</dt><dd>사용하지 않습니다</dd></div><div><dt>리포트</dt><dd>텍스트 결과와 대표 프레임만 보관, 언제든 삭제 가능</dd></div><div><dt>전송</dt><dd>전송 구간 암호화</dd></div></dl></aside></main>
+  return <main className="upload-page"><section className="upload-main"><h1>영상 업로드</h1><p className="upload-subtitle">공개 전 다시 확인하고 싶은 영상 한 편을 올려 주세요. (mp4, mov 또는 avi · 최대 90분 · 500MB)</p><label className={`dropzone ${fileName ? 'has-file' : ''} ${isDragging ? 'is-dragging' : ''}`} htmlFor="video-file" onDragEnter={event => { event.preventDefault(); setIsDragging(true) }} onDragOver={event => { event.preventDefault(); setIsDragging(true) }} onDragLeave={() => setIsDragging(false)} onDrop={event => { event.preventDefault(); acceptFiles(event.dataTransfer.files) }}><div className="upload-icon" aria-hidden="true"><svg viewBox="0 0 14 14" focusable="false"><path d="M6.5 10.58V1.93L4.17 4.26l-.71-.72L7 0l3.54 3.54-.71.72L7.5 1.93v8.65h-1ZM0 14V9.96h1V13h12V9.96h1V14H0Z" /></svg></div><strong>{fileName || '파일을 이 영역으로 끌어다 놓으세요'}</strong><span>{fileName ? '다른 파일을 선택하려면 클릭' : '또는 눌러서 파일을 선택하세요'}</span><input ref={inputRef} id="video-file" type="file" accept=".mp4,.mov,.avi,video/mp4,video/quicktime,video/x-msvideo" onChange={event => acceptFiles(event.target.files)} /></label>{error && <ErrorNotice message={error.message} code={error.code} />}<div className="upload-submit"><p>업로드가 끝나면 분석이 곧바로 시작됩니다.</p><button className="button button-primary" disabled={!fileName || isUploading} onClick={() => void submit()}>{isUploading ? <><span className="spinner spinner-light" />업로드 중…</> : '분석 시작'}</button></div></section><aside className="policy-panel"><h2>데이터 보관 정책</h2><p>공개 전 영상은 채널의 민감한 자산입니다.</p><dl><div><dt>원본 영상</dt><dd>분석 완료 후 24시간 내 자동 삭제</dd></div><div><dt>모델 학습</dt><dd>사용하지 않습니다</dd></div><div><dt>리포트</dt><dd>텍스트 결과와 대표 프레임만 보관, 언제든 삭제 가능</dd></div><div><dt>전송</dt><dd>전송 구간 암호화</dd></div></dl></aside></main>
 }
 
 const landingSteps = [
@@ -58,16 +57,21 @@ function LandingPage() {
 function LandingInfo({ title, children }: { title: string; children: React.ReactNode }) { return <article className="landing-info"><h3>{title}</h3><p>{children}</p></article> }
 
 function AnalysisPage() {
-  const { videoId } = useParams(); const id = Number(videoId); const navigate = useNavigate(); const { status, isFallback } = useAnalysisProgress(id); const { retry, isRetrying } = useAnalysisRetry()
+  const { videoId } = useParams(); const id = videoId ?? ''; const navigate = useNavigate(); const { status, isFallback, refresh } = useAnalysisProgress(id); const { retry, isRetrying } = useAnalysisRetry(); const [isCancelling, setIsCancelling] = useState(false); const [cancelError, setCancelError] = useState<string | null>(null)
   useEffect(() => {
     if (status?.status !== 'COMPLETED') return
     const timer = window.setTimeout(() => navigate(`/videos/${id}/report`, { replace: true }), 650)
     return () => window.clearTimeout(timer)
   }, [id, navigate, status?.status])
-  if (!Number.isFinite(id)) return <Navigate to="/" replace />
+  if (!id) return <Navigate to="/" replace />
   if (!status) return <main className="center-page"><Loading label="검수 작업을 불러오는 중" /></main>
   const failed = status.status === 'FAILED'
+  const cancelled = status.status === 'CANCELLED'
   async function handleRetry() { const result = await retry(id); if (result) window.location.reload() }
+  async function handleCancel() {
+    setIsCancelling(true); setCancelError(null)
+    try { await apiClient.cancel(id); await refresh() } catch (error) { setCancelError(error instanceof Error ? error.message : '분석을 취소하지 못했습니다.') } finally { setIsCancelling(false) }
+  }
   const stages = [
     ['STT', '음성을 텍스트로 변환'],
     ['TEXT_RISK', '발언 검토 후보 분석'],
@@ -79,28 +83,33 @@ function AnalysisPage() {
   const completed = status.status === 'COMPLETED'
   const fallbackStep = Math.min(5, Math.max(1, Math.ceil(status.progress / 20)))
   const currentStep = completed ? 5 : stageStep[status.stage] ?? fallbackStep
-  const title = failed ? '검수 중 문제가 발생했습니다.' : completed ? '분석이 완료되었습니다.' : '분석 중입니다'
-  const subtitle = failed ? status.message : completed ? '검수 리포트를 준비했습니다. 잠시 후 결과 화면으로 이동합니다.' : '발언과 화면 정보를 분석해 다시 확인할 검토 후보를 정리합니다.'
-  return <main className={`analysis-page ${completed ? 'is-completing' : ''}`}><section className="analysis-main"><div className="analysis-file">업로드한 영상 · {status.message}</div><section className="analysis-hero"><div className="analysis-copy"><h1>{title}</h1></div></section><p className="analysis-subtitle">{subtitle}</p><div className="analysis-progress-wrap"><div className="progress-track analysis-progress"><span style={{ width: `${completed ? 100 : status.progress}%` }} /></div><div className="analysis-progress-meta"><span>5단계 중 {currentStep}번째</span><strong>{completed ? 100 : status.progress}%</strong></div></div><section className="analysis-steps">{stages.map(([stage, label], index) => { const done = completed || index < currentStep - 1; const active = !completed && !failed && index === currentStep - 1; return <div className={`analysis-step ${done ? 'done' : ''} ${active ? 'active' : ''} ${failed && index === currentStep - 1 ? 'failed' : ''}`} key={stage}><span className="step-dot" aria-hidden="true" /><strong>{label}</strong><span>{done ? '완료' : failed && index === currentStep - 1 ? '확인 필요' : active ? '진행 중' : '대기'}</span></div> })}</section><div className="analysis-note"><span>이 화면을 닫아도 분석은 계속됩니다. 완료되면 검수 리포트에서 확인할 수 있습니다.</span><span className="analysis-cancel">분석 취소</span></div>{isFallback && !failed && !completed && <p className="connection-note">실시간 연결이 잠시 끊겨 상태 조회로 확인하고 있습니다.</p>}{failed && <div className="retry-box"><ErrorNotice message={status.message || '분석에 실패했습니다.'} code={status.errorCode} /><button className="button button-dark" onClick={() => void handleRetry()} disabled={isRetrying}>{isRetrying ? '다시 준비하는 중…' : '다시 분석하기 →'}</button></div>}</section></main>
+  const title = failed ? '검수 중 문제가 발생했습니다.' : cancelled ? '분석이 취소되었습니다.' : completed ? '분석이 완료되었습니다.' : '분석 중입니다'
+  const subtitle = failed ? status.failure?.message ?? status.message : cancelled ? '필요할 때 같은 영상으로 분석을 다시 시작할 수 있습니다.' : completed ? '검수 리포트를 준비했습니다. 잠시 후 결과 화면으로 이동합니다.' : '발언과 화면 정보를 분석해 다시 확인할 검토 후보를 정리합니다.'
+  return <main className={`analysis-page ${completed ? 'is-completing' : ''}`}><section className="analysis-main"><div className="analysis-file">{status.filename} · {status.message}</div><section className="analysis-hero"><div className="analysis-copy"><h1>{title}</h1></div></section><p className="analysis-subtitle">{subtitle}</p><div className="analysis-progress-wrap"><div className="progress-track analysis-progress"><span style={{ width: `${completed ? 100 : status.progress}%` }} /></div><div className="analysis-progress-meta"><span>5단계 중 {currentStep}번째</span><strong>{completed ? 100 : status.progress}%</strong></div></div><section className="analysis-steps">{stages.map(([stage, label], index) => { const done = completed || index < currentStep - 1; const active = !completed && !failed && !cancelled && index === currentStep - 1; return <div className={`analysis-step ${done ? 'done' : ''} ${active ? 'active' : ''} ${(failed || cancelled) && index === currentStep - 1 ? 'failed' : ''}`} key={stage}><span className="step-dot" aria-hidden="true" /><strong>{label}</strong><span>{done ? '완료' : failed && index === currentStep - 1 ? '확인 필요' : cancelled && index === currentStep - 1 ? '취소됨' : active ? '진행 중' : '대기'}</span></div> })}</section><div className="analysis-note"><span>이 화면을 닫아도 분석은 계속됩니다. 완료되면 검수 리포트에서 확인할 수 있습니다.</span>{!failed && !cancelled && !completed && <button type="button" className="analysis-cancel" onClick={() => void handleCancel()} disabled={isCancelling}>{isCancelling ? '취소 중…' : '분석 취소'}</button>}</div>{cancelError && <ErrorNotice message={cancelError} />}{isFallback && !failed && !cancelled && !completed && <p className="connection-note">실시간 연결이 잠시 끊겨 상태 조회로 확인하고 있습니다.</p>}{(failed || cancelled) && <div className="retry-box"><ErrorNotice message={failed ? status.failure?.message ?? status.message : '분석이 취소되었습니다.'} code={status.failure?.code} /><button className="button button-dark" onClick={() => void handleRetry()} disabled={isRetrying}>{isRetrying ? '다시 준비하는 중…' : '다시 분석하기 →'}</button></div>}</section></main>
 }
 
 function formatTime(ms: number) { const seconds = Math.floor(ms / 1000); return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}` }
 
-type ReviewDecision = 'pending' | 'edited' | 'confirmed' | 'hold'
 type ReportFilter = 'ALL' | 'CAPTION' | 'SPEECH'
 type ReportSort = 'ASC' | 'DESC'
 
-function reportEventTitle(event: TimelineEvent) { return event.type === 'SPEECH' ? event.text : event.captionText }
+function reportEventTitle(event: TimelineEvent) { return event.title }
+function reportEventSpeech(event: TimelineEvent) { return event.type === 'SPEECH' ? event.text : event.speechText }
 function reportEventKind(event: TimelineEvent) { return event.type === 'SPEECH' ? '발언' : '사실 확인' }
-const candidateLabels: Record<CandidateType, string> = { SPEECH_REVIEW: '발언 검토', SCREEN_TEXT_REVIEW: '화면 자막 검토', FACT_ENTITY: '사실·대상 확인', CONTEXT_REFERENCE: '맥락 참고', VISUAL_REFERENCE: '화면 참고', CAPTION_CONSISTENCY: '자막 일관성' }
-function reportEventEvidence(event: TimelineEvent) { return event.candidateType ? candidateLabels[event.candidateType] : event.type === 'SPEECH' ? (event.riskTypes[0] ?? '직접 근거') : '직접 근거' }
+const candidateLabels: Record<CandidateType, string> = { SPEECH_REVIEW: '발언 검토', SCREEN_TEXT_REVIEW: '화면 자막 검토', FACT_ENTITY: '사실·대상 확인', CONTEXT_REFERENCE: '맥락 참고' }
+function reportEventEvidence(event: TimelineEvent) { return candidateLabels[event.candidateType] }
 function formatSeconds(seconds: number) { return formatTime(Math.max(0, seconds) * 1000) }
 
 function ReportPage() {
-  const { videoId } = useParams(); const id = Number(videoId); const navigate = useNavigate(); const { report: reportResponse, error } = useAnalysisReport(id)
-  const videoRef = useRef<HTMLVideoElement>(null); const selectedCardRef = useRef<HTMLElement>(null); const [selectedId, setSelectedId] = useState<number | null>(null); const [decisions, setDecisions] = useState<Record<number, ReviewDecision>>({}); const [isPlaying, setIsPlaying] = useState(false); const [duration, setDuration] = useState(0); const [currentTime, setCurrentTime] = useState(0); const [filter, setFilter] = useState<ReportFilter>('ALL'); const [sort, setSort] = useState<ReportSort>('ASC'); const [sortOpen, setSortOpen] = useState(false)
-  useEffect(() => { if (reportResponse && selectedId === null && reportResponse.events[0]) setSelectedId(reportResponse.events[0].id) }, [reportResponse, selectedId])
-  if (!Number.isFinite(id)) return <Navigate to="/" replace />
+  const { videoId } = useParams(); const id = videoId ?? ''; const navigate = useNavigate(); const { report: reportResponse, error } = useAnalysisReport(id)
+  const videoRef = useRef<HTMLVideoElement>(null); const selectedCardRef = useRef<HTMLElement>(null); const [selectedId, setSelectedId] = useState<string | null>(null); const [decisions, setDecisions] = useState<Record<string, ReviewAction | null>>({}); const [isPlaying, setIsPlaying] = useState(false); const [duration, setDuration] = useState(0); const [currentTime, setCurrentTime] = useState(0); const [filter, setFilter] = useState<ReportFilter>('ALL'); const [sort, setSort] = useState<ReportSort>('ASC'); const [sortOpen, setSortOpen] = useState(false); const [decisionError, setDecisionError] = useState<string | null>(null); const [savingEventId, setSavingEventId] = useState<string | null>(null); const [isCompleting, setIsCompleting] = useState(false)
+  useEffect(() => {
+    if (reportResponse?.events[0]) setSelectedId(current => current ?? reportResponse.events[0].id)
+  }, [reportResponse])
+  useEffect(() => {
+    if (reportResponse) setDecisions(Object.fromEntries(reportResponse.events.map(event => [event.id, event.reviewAction])))
+  }, [reportResponse])
+  if (!id) return <Navigate to="/" replace />
   if (!reportResponse && !error) return <main className="center-page"><Loading label="검수 결과를 정리하는 중" /></main>
   if (error) return <main className="center-page"><ErrorNotice message={error.message} code={error.code} /><Link className="button button-dark" to={`/videos/${id}/analysis`}>분석 상태로 돌아가기</Link></main>
   if (!reportResponse) return null
@@ -111,68 +120,74 @@ function ReportPage() {
   const selected = orderedEvents.find(event => event.id === selectedId) ?? orderedEvents[0]
   if (!selected) return <EmptyReportPage />
   const selectedIndex = Math.max(0, report.events.findIndex(event => event.id === selected.id))
-  const remaining = report.events.filter(event => !decisions[event.id] || decisions[event.id] === 'pending').length
+  const remaining = report.events.filter(event => !decisions[event.id]).length
   const subtitle = '판정이 아니라 확인 요청입니다. 하나씩 읽고 직접 결정하세요.'
   const nearbyEvents = report.events.slice(Math.max(0, selectedIndex - 1), Math.min(report.events.length, selectedIndex + 2))
   function chooseFilter(nextFilter: ReportFilter) { setFilter(nextFilter); setSelectedId(null) }
   function chooseSort(nextSort: ReportSort) { setSort(nextSort); setSortOpen(false); setSelectedId(null) }
-  function setDecision(decision: ReviewDecision) { setDecisions(current => ({ ...current, [selected.id]: decision })); const currentIndex = orderedEvents.findIndex(event => event.id === selected.id); const nextEvent = orderedEvents[currentIndex + 1]; if (nextEvent) setSelectedId(nextEvent.id) }
+  async function setDecision(decision: ReviewAction) {
+    const previous = decisions[selected.id] ?? null
+    setDecisionError(null); setSavingEventId(selected.id); setDecisions(current => ({ ...current, [selected.id]: decision }))
+    try {
+      await apiClient.saveReviewAction(id, selected.id, decision)
+      const currentIndex = orderedEvents.findIndex(event => event.id === selected.id)
+      const nextEvent = orderedEvents[currentIndex + 1]
+      if (nextEvent) setSelectedId(nextEvent.id)
+    } catch (error) {
+      setDecisions(current => ({ ...current, [selected.id]: previous }))
+      setDecisionError(error instanceof Error ? error.message : '검수 결정을 저장하지 못했습니다.')
+    } finally { setSavingEventId(null) }
+  }
   function selectEvent(event: TimelineEvent) { setSelectedId(event.id); const nextTime = event.startMs / 1000; setCurrentTime(nextTime); if (videoRef.current) { videoRef.current.currentTime = nextTime; void videoRef.current.play().catch(() => undefined) } window.requestAnimationFrame(() => selectedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })) }
   function togglePlay() { if (!videoRef.current) return; if (videoRef.current.paused) void videoRef.current.play(); else videoRef.current.pause() }
   function seek(value: number) { setCurrentTime(value); if (videoRef.current) videoRef.current.currentTime = value }
-  function decisionLabel(event: TimelineEvent) { const decision = decisions[event.id]; return decision === 'edited' ? '수정함' : decision === 'confirmed' ? '확인함' : decision === 'hold' ? '보류' : '' }
-  function finishReview() {
-    const finalDecisions = Object.fromEntries(reportEvents.map(event => [event.id, decisions[event.id] && decisions[event.id] !== 'pending' ? decisions[event.id] : 'confirmed'])) as Record<number, ReviewDecision>
-    navigate(`/videos/${id}/completed`, { state: { decisions: finalDecisions } })
+  function decisionLabel(event: TimelineEvent) { const decision = decisions[event.id]; return decision === 'EDITED' ? '수정함' : decision === 'CONFIRMED' ? '확인함' : decision === 'HOLD' ? '보류' : decision === 'NOT_USEFUL' ? '검출 끔' : '' }
+  async function finishReview() {
+    if (remaining > 0) { setDecisionError('아직 결정하지 않은 검토 후보가 남아 있습니다.'); return }
+    setIsCompleting(true); setDecisionError(null)
+    try { await apiClient.completeReview(id); navigate(`/videos/${id}/completed`) } catch (error) { setDecisionError(error instanceof Error ? error.message : '검수를 완료하지 못했습니다.') } finally { setIsCompleting(false) }
   }
-  const mediaDuration = Number.isFinite(duration) && duration > 0 ? duration : 0
+  const reportDuration = report.durationMs / 1000
+  const mediaDuration = Number.isFinite(reportDuration) && reportDuration > 0 ? reportDuration : duration
   const scrubberMax = mediaDuration || Math.max(selected.endMs / 1000, 1)
   const scrubberValue = Math.min(currentTime, scrubberMax)
   const durationLabel = mediaDuration ? formatSeconds(mediaDuration) : '--:--'
   const selectedDecision = decisions[selected.id]
   const filterLabel = filter === 'CAPTION' ? '사실 확인' : '발언'
+  const selectedSpeech = reportEventSpeech(selected)
+  const selectedReferences = selected.references
+  const generatedDate = new Date(report.generatedAt)
+  const generatedLabel = Number.isNaN(generatedDate.valueOf()) ? '날짜 확인 불가' : generatedDate.toLocaleDateString('ko-KR')
 
   return <main className="report-page">
     <div className="report-content">
-      <div className="report-heading"><p className="report-meta">검수 리포트 · {new Date().toLocaleDateString('ko-KR')}</p><h1>다시 확인할 구간 {remaining}건 남음</h1><p>{subtitle}</p>{report.warnings && report.warnings.length > 0 && <div className="report-warnings" role="status"><strong>일부 분석 안내</strong>{report.warnings.map(warning => <p key={`${warning.stage}-${warning.code}`}>{warning.message}</p>)}</div>}</div>
+      <div className="report-heading"><p className="report-meta">검수 리포트 · {generatedLabel}</p><h1>다시 확인할 구간 {remaining}건 남음</h1><p>{subtitle}</p>{report.warnings.length > 0 && <div className="report-warnings" role="status"><strong>일부 분석 안내</strong>{report.warnings.map(warning => <p key={`${warning.stage}-${warning.code}`}>{warning.message}</p>)}</div>}{decisionError && <ErrorNotice message={decisionError} />}</div>
       <div className="report-toolbar"><div className="report-filter-count"><strong>남은 검토</strong><span>{remaining}</span></div><div className="report-filters" aria-label="검토 후보 유형"><button type="button" className={filter === 'ALL' ? 'is-selected' : ''} onClick={() => chooseFilter('ALL')}>전체 {report.events.length}</button><button type="button" className={filter === 'CAPTION' ? 'is-selected' : ''} onClick={() => chooseFilter('CAPTION')}>사실 확인 {report.events.filter(event => event.type === 'CAPTION').length}</button><button type="button" className={filter === 'SPEECH' ? 'is-selected' : ''} onClick={() => chooseFilter('SPEECH')}>발언 {report.events.filter(event => event.type === 'SPEECH').length}</button></div><div className="report-sort-wrap"><button type="button" className="report-sort" aria-expanded={sortOpen} onClick={() => setSortOpen(value => !value)}>{sort === 'ASC' ? '시간순' : '최신순'} ▾</button>{sortOpen && <div className="report-sort-menu" role="menu"><button type="button" className={sort === 'ASC' ? 'is-selected' : ''} onClick={() => chooseSort('ASC')}>시간순</button><button type="button" className={sort === 'DESC' ? 'is-selected' : ''} onClick={() => chooseSort('DESC')}>최신순</button></div>}</div></div>
       {filter !== 'ALL' && <section className="report-filter-results" aria-label={`${filterLabel} 검토 후보`}><div className="report-filter-results-head"><strong>{filterLabel} 검토 후보</strong><span>{orderedEvents.length}건</span></div><div className="report-filter-results-list">{orderedEvents.map(event => <button type="button" className={`report-filter-result ${event.id === selected.id ? 'is-current' : ''}`} key={event.id} onClick={() => selectEvent(event)}><span className="report-time-pill">{formatTime(event.startMs)}</span><span>{reportEventKind(event)}</span><strong>{reportEventTitle(event)}</strong><small>{reportEventEvidence(event)}</small>{decisionLabel(event) && <em>{decisionLabel(event)}</em>}</button>)}</div></section>}
-      <article ref={selectedCardRef} className="report-selected-card"><div className="report-card-top"><div className="report-card-meta"><span className="report-time-pill">{formatTime(selected.startMs)}</span><span>{reportEventKind(selected)}</span><span className="report-evidence">· {reportEventEvidence(selected)}</span></div><div className="report-card-position"><span className="report-scrubber-mini"><i style={{ width: `${mediaDuration ? Math.min(100, Math.max(4, selected.startMs / mediaDuration * 100)) : 0}%` }} /></span><span>{durationLabel} 중 {formatTime(selected.startMs)}</span><span>{selectedIndex + 1} / {report.events.length}</span></div></div><h2>{reportEventTitle(selected)}</h2><div className="report-reason"><h3>왜 확인하나요?</h3><p>{selected.reason}</p></div>{selected.references && selected.references.length > 0 && <div className="report-references"><h3>참고 자료</h3>{selected.references.map(reference => <a href={reference.url} target="_blank" rel="noreferrer" key={`${reference.url}-${reference.title}`}><strong>{reference.title}</strong><span>{reference.provider ?? '외부 자료'}{reference.publishedAt ? ` · ${reference.publishedAt}` : ''}</span>{reference.snippet && <small>{reference.snippet}</small>}</a>)}</div>}<div className="report-player"><video ref={videoRef} preload="metadata" poster={selected.frameUrl ? assetUrl(selected.frameUrl) : undefined} src={report.streamUrl ? assetUrl(report.streamUrl) : undefined} onLoadedMetadata={event => setDuration(event.currentTarget.duration)} onTimeUpdate={event => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onClick={togglePlay}><track kind="captions" /></video><button type="button" className="report-play" aria-label={isPlaying ? '일시정지' : '재생'} onClick={togglePlay}>{isPlaying ? 'Ⅱ' : '▶'}</button></div><div className="report-scrubber"><input type="range" min="0" max={scrubberMax} step="0.1" value={scrubberValue} onChange={event => seek(Number(event.target.value))} /><div><span>{formatSeconds(currentTime || selected.startMs / 1000)}</span><div><span>이 구간만 반복 재생</span><b>·</b><span>앞뒤 10초 더 보기</span></div><span>{durationLabel}</span></div></div><div className="report-context-label">앞뒤 발언</div><div className="report-context">{nearbyEvents.map(event => <div className={`report-context-row ${event.id === selected.id ? 'is-current' : ''}`} key={event.id}><span>{formatTime(event.startMs)}</span><p>{reportEventTitle(event)}</p>{event.id === selected.id && event.type === 'CAPTION' && <div className="report-caption"><span>화면 자막</span><strong>{event.captionText}</strong></div>}</div>)}</div><div className="report-interpretation"><h3>다른 해석</h3><p>{selected.reason}</p></div><div className="report-actions"><button type="button" className={selectedDecision === 'edited' ? 'is-active' : ''} onClick={() => setDecision('edited')}>수정함</button><button type="button" className={selectedDecision === 'confirmed' ? 'is-active' : ''} onClick={() => setDecision('confirmed')}>확인함</button><button type="button" className={selectedDecision === 'hold' ? 'is-active' : ''} onClick={() => setDecision('hold')}>보류</button><span /><button type="button" className="report-muted-action">이 검출 끄기</button></div><p className="report-next">결정하면 다음 검토 후보로 이동합니다 →</p></article>
+      <article ref={selectedCardRef} className="report-selected-card"><div className="report-card-top"><div className="report-card-meta"><span className="report-time-pill">{formatTime(selected.startMs)}</span><span>{reportEventKind(selected)}</span><span className="report-evidence">· {reportEventEvidence(selected)}</span></div><div className="report-card-position"><span className="report-scrubber-mini"><i style={{ width: `${mediaDuration ? Math.min(100, Math.max(4, selected.startMs / 1000 / mediaDuration * 100)) : 0}%` }} /></span><span>{durationLabel} 중 {formatTime(selected.startMs)}</span><span>{selectedIndex + 1} / {report.events.length}</span></div></div><h2>{reportEventTitle(selected)}</h2><div className="report-reason"><h3>왜 확인하나요?</h3><p>{selected.reason}</p></div><div className="report-player"><video ref={videoRef} preload="metadata" poster={assetUrl(selected.frameUrl)} src={assetUrl(report.streamUrl)} onLoadedMetadata={event => setDuration(event.currentTarget.duration)} onTimeUpdate={event => setCurrentTime(event.currentTarget.currentTime)} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onClick={togglePlay}><track kind="captions" /></video><button type="button" className="report-play" aria-label={isPlaying ? '일시정지' : '재생'} onClick={togglePlay}>{isPlaying ? 'Ⅱ' : '▶'}</button></div><div className="report-scrubber"><input type="range" min="0" max={scrubberMax} step="0.1" value={scrubberValue} onChange={event => seek(Number(event.target.value))} /><div><span>{formatSeconds(currentTime || selected.startMs / 1000)}</span><div><span>이 구간만 반복 재생</span><b>·</b><span>앞뒤 10초 더 보기</span></div><span>{durationLabel}</span></div></div><div className="report-context-label">앞뒤 발언</div><div className="report-context">{nearbyEvents.map(event => <div className={`report-context-row ${event.id === selected.id ? 'is-current' : ''}`} key={event.id}><span>{formatTime(event.startMs)}</span><p>{reportEventTitle(event)}</p>{event.id === selected.id && event.type === 'CAPTION' && <div className="report-caption"><span>화면 자막</span><strong>{event.captionText}</strong></div>}</div>)}</div>{selectedSpeech && <section className="report-evidence-block"><h3>실제 발언</h3><blockquote>{selectedSpeech}</blockquote></section>}{selectedReferences.length > 0 && <section className="report-evidence-block report-reference-block"><h3>참고 자료</h3><div className="report-reference-items">{selectedReferences.map(reference => <article className="report-reference-item" key={`${reference.url}-${reference.title}`}><div><strong>{reference.title}</strong>{reference.provider && <span>{reference.provider}{reference.publishedAt ? ` · ${reference.publishedAt}` : ''}</span>}{reference.snippet && <small>{reference.snippet}</small>}</div><a href={reference.url} target="_blank" rel="noreferrer">원문 확인 <b aria-hidden="true">→</b></a></article>)}</div></section>}<div className="report-actions"><button type="button" disabled={savingEventId === selected.id} className={selectedDecision === 'EDITED' ? 'is-active' : ''} onClick={() => void setDecision('EDITED')}>수정함</button><button type="button" disabled={savingEventId === selected.id} className={selectedDecision === 'CONFIRMED' ? 'is-active' : ''} onClick={() => void setDecision('CONFIRMED')}>확인함</button><button type="button" disabled={savingEventId === selected.id} className={selectedDecision === 'HOLD' ? 'is-active' : ''} onClick={() => void setDecision('HOLD')}>보류</button><span /><button type="button" disabled={savingEventId === selected.id} className={`report-muted-action ${selectedDecision === 'NOT_USEFUL' ? 'is-active' : ''}`} onClick={() => void setDecision('NOT_USEFUL')}>이 검출 끄기</button></div><p className="report-next">결정하면 다음 검토 후보로 이동합니다 →</p></article>
       <section className="report-candidates"><div className="report-candidates-card">{orderedEvents.map(event => <button type="button" className={`report-candidate-row ${event.id === selected.id ? 'is-current' : ''}`} key={event.id} onClick={() => selectEvent(event)}><span className="report-time-pill">{formatTime(event.startMs)}</span><span>{reportEventKind(event)}</span><strong>{reportEventTitle(event)}</strong><small>{reportEventEvidence(event)}</small>{decisionLabel(event) && <em>{decisionLabel(event)}</em>}</button>)}</div></section><p className="report-footnote">최종 판단은 제작자가 합니다. 원본 영상은 분석 완료 후 24시간 안에 삭제됩니다.</p>
     </div>
-    <aside className="report-sidebar"><div className="report-file-context"><span>검수 중인 영상</span><strong>업로드한 영상 #{id}</strong><small>검수 완료 · 원본 영상</small></div><div className="report-decision-progress"><div><span>결정 진행</span><strong>{report.events.length - remaining} / {report.events.length}</strong></div><div className="report-sidebar-track"><i style={{ width: `${report.events.length ? ((report.events.length - remaining) / report.events.length) * 100 : 0}%` }} /></div></div><button type="button" className="report-finish-button" onClick={finishReview}>검수 마치기</button><div className="report-outline"><span>검토 후보</span><strong>{report.events.length}건 · 남은 {remaining}</strong>{report.events.map(event => <button type="button" className={event.id === selected.id ? 'is-current' : ''} key={event.id} onClick={() => selectEvent(event)}><i>{decisions[event.id] && decisions[event.id] !== 'pending' ? '✓' : ''}</i><b>{formatTime(event.startMs)}</b><span>{reportEventKind(event)}</span></button>)}<small>클릭하면 해당 후보로 이동</small></div></aside>
+    <aside className="report-sidebar"><div className="report-file-context"><span>검수 중인 영상</span><strong>{report.filename}</strong><small>검수 완료 · 원본 영상</small></div><div className="report-decision-progress"><div><span>결정 진행</span><strong>{report.events.length - remaining} / {report.events.length}</strong></div><div className="report-sidebar-track"><i style={{ width: `${report.events.length ? ((report.events.length - remaining) / report.events.length) * 100 : 0}%` }} /></div></div><button type="button" className="report-finish-button" onClick={() => void finishReview()} disabled={isCompleting}>{isCompleting ? '완료 처리 중…' : '검수 마치기'}</button><div className="report-outline"><span>검토 후보</span><strong>{report.events.length}건 · 남은 {remaining}</strong>{report.events.map(event => <button type="button" className={event.id === selected.id ? 'is-current' : ''} key={event.id} onClick={() => selectEvent(event)}><i>{decisions[event.id] ? '✓' : ''}</i><b>{formatTime(event.startMs)}</b><span>{reportEventKind(event)}</span></button>)}<small>클릭하면 해당 후보로 이동</small></div></aside>
   </main>
 }
 
 function CompletionPage() {
   const { videoId } = useParams()
-  const id = Number(videoId)
-  const location = useLocation()
+  const id = videoId ?? ''
   const { report, error } = useAnalysisReport(id)
-  const [filename, setFilename] = useState('업로드한 영상')
-  useEffect(() => {
-    let active = true
-    void apiClient.videos().then(items => {
-      const item = items.find(value => value.videoId === id)
-      if (active && item) setFilename(item.filename)
-    }).catch(() => undefined)
-    return () => { active = false }
-  }, [id])
-  if (!Number.isFinite(id)) return <Navigate to="/" replace />
+  if (!id) return <Navigate to="/" replace />
   if (!report && !error) return <main className="center-page"><Loading label="검수 완료 화면을 준비하는 중" /></main>
   if (error) return <main className="center-page"><ErrorNotice message={error.message} code={error.code} /><Link className="button button-dark" to={`/videos/${id}/report`}>리포트로 돌아가기</Link></main>
   if (!report) return null
-  const state = location.state as { decisions?: Record<string, ReviewDecision> } | null
-  const decisions = state?.decisions ?? {}
-  const edited = report.events.filter(event => decisions[String(event.id)] === 'edited')
-  const held = report.events.filter(event => decisions[String(event.id)] === 'hold')
-  const confirmed = report.events.filter(event => decisions[String(event.id)] !== 'edited' && decisions[String(event.id)] !== 'hold')
-  const actionEvents = edited.length > 0 ? edited : report.events
+  const edited = report.events.filter(event => event.reviewAction === 'EDITED')
+  const held = report.events.filter(event => event.reviewAction === 'HOLD')
+  const confirmed = report.events.filter(event => event.reviewAction === 'CONFIRMED')
+  const actionEvents = edited
   async function copyTimecodes() {
     const text = actionEvents.map(event => formatTime(event.startMs)).join('\n')
     try { await navigator.clipboard?.writeText(text) } catch { /* clipboard may be unavailable in preview */ }
   }
-  return <main className="completion-page"><div className="completion-heading"><span className="completion-mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m4 12.5 5 5L20 6.5" /></svg></span><h1>검수를 마쳤습니다</h1></div><p className="completion-subtitle">{filename} · 검토 후보 {report.events.length}건을 모두 확인했습니다.</p><section className="completion-summary" aria-label="검수 요약"><div><span>수정함</span><strong>{edited.length}건</strong></div><div><span>확인함</span><strong>{confirmed.length}건</strong></div><div><span>보류</span><strong>{held.length}건</strong></div></section><section className="completion-actions-section"><div className="completion-section-head"><h2>수정하기로 한 구간</h2><button type="button" onClick={() => void copyTimecodes()}>타임코드 목록 복사</button></div><div className="completion-list">{actionEvents.map(event => { const decision = decisions[String(event.id)] === 'edited' ? '수정함' : decisions[String(event.id)] === 'hold' ? '보류' : '확인함'; return <div className="completion-row" key={event.id}><span className="completion-time">{formatTime(event.startMs)}</span><span className="completion-kind">{reportEventKind(event)}</span><p>{reportEventTitle(event)}</p><strong>{decision}</strong></div> })}</div></section><div className="completion-bottom"><div><Link className="completion-primary" to="/upload">새 영상 올리기</Link><Link className="completion-secondary" to={`/videos/${id}/report`}>리포트 다시 보기</Link></div><p>보류 {held.length}건은 리포트에 남아 있습니다.</p></div></main>
+  return <main className="completion-page"><div className="completion-heading"><span className="completion-mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="m4 12.5 5 5L20 6.5" /></svg></span><h1>검수를 마쳤습니다</h1></div><p className="completion-subtitle">{report.filename} · 검토 후보 {report.events.length}건을 모두 확인했습니다.</p><section className="completion-summary" aria-label="검수 요약"><div><span>수정함</span><strong>{edited.length}건</strong></div><div><span>확인함</span><strong>{confirmed.length}건</strong></div><div><span>보류</span><strong>{held.length}건</strong></div></section><section className="completion-actions-section"><div className="completion-section-head"><h2>수정하기로 한 구간</h2><button type="button" onClick={() => void copyTimecodes()} disabled={actionEvents.length === 0}>타임코드 목록 복사</button></div><div className="completion-list">{actionEvents.length > 0 ? actionEvents.map(event => <div className="completion-row" key={event.id}><span className="completion-time">{formatTime(event.startMs)}</span><span className="completion-kind">{reportEventKind(event)}</span><p>{reportEventTitle(event)}</p><strong>수정함</strong></div>) : <div className="history-empty"><p>수정하기로 한 구간이 없습니다.</p></div>}</div></section><div className="completion-bottom"><div><Link className="completion-primary" to="/upload">새 영상 올리기</Link><Link className="completion-secondary" to={`/videos/${id}/report`}>리포트 다시 보기</Link></div><p>보류 {held.length}건은 리포트에 남아 있습니다.</p></div></main>
 }
 
 function EmptyReportPage() {
@@ -183,12 +198,12 @@ function HistoryPage() {
   const [items, setItems] = useState<VideoHistoryItem[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<'ALL' | 'COMPLETED' | 'FAILED'>('ALL')
-  useEffect(() => { let active = true; void apiClient.videos().then(value => { if (active) setItems(value) }).catch(() => { if (!active) return; if (hasConfiguredApi()) setError('검수 이력을 불러오지 못했습니다.'); else setItems([]) }); return () => { active = false } }, [])
+  useEffect(() => { let active = true; void apiClient.history().then(value => { if (active) setItems(value.items) }).catch(() => { if (!active) return; if (hasConfiguredApi()) setError('검수 이력을 불러오지 못했습니다.'); else setItems([]) }); return () => { active = false } }, [])
   if (error) return <EmptyUploadPage eyebrow="검수 이력" title="아직 검수 이력이 없습니다." description="첫 영상을 업로드하면 진행 중인 작업과 완료된 리포트가 이곳에 쌓입니다." notice="검수 이력 서버가 연결되지 않았습니다." />
   if (items === null) return <main className="center-page"><Loading label="검수 이력을 불러오는 중" /></main>
-  const completedCount = items.filter(item => item.status === 'COMPLETED').length
-  const failedCount = items.filter(item => item.status === 'FAILED').length
-  const visibleItems = items.filter(item => filter === 'ALL' || item.status === filter)
+  const completedCount = items.filter(item => item.analysisStatus === 'COMPLETED').length
+  const failedCount = items.filter(item => item.analysisStatus === 'FAILED').length
+  const visibleItems = items.filter(item => filter === 'ALL' || item.analysisStatus === filter)
   return <main className="history-page"><h1>검수 이력</h1><p className="history-intro">직접 업로드하고 검수를 시작한 영상만 이곳에 표시됩니다.</p><div className="history-filters"><button type="button" className={filter === 'ALL' ? 'is-selected' : ''} onClick={() => setFilter('ALL')}>전체 {items.length}</button><button type="button" className={filter === 'COMPLETED' ? 'is-selected' : ''} onClick={() => setFilter('COMPLETED')}>완료 {completedCount}</button><button type="button" className={filter === 'FAILED' ? 'is-selected' : ''} onClick={() => setFilter('FAILED')}>실패 {failedCount}</button></div><div className="history-card">{visibleItems.length > 0 ? visibleItems.map(item => <HistoryRow item={item} key={item.videoId} />) : <div className="history-empty"><p>이 상태의 검수 이력이 없습니다.</p></div>}</div></main>
 }
 
@@ -202,10 +217,10 @@ function LandingKicker({ label }: { label: string }) {
 
 function HistoryRow({ item }: { item: VideoHistoryItem }) {
   const navigate = useNavigate()
-  const completed = item.status === 'COMPLETED'
+  const completed = item.analysisStatus === 'COMPLETED'
   const target = completed ? `/videos/${item.videoId}/report` : `/videos/${item.videoId}/analysis`
-  const statusLabel = completed ? '완료' : item.status === 'FAILED' ? '다시 시도' : `${item.progress}%`
-  return <button className={`history-row history-row-${item.status.toLowerCase()}`} onClick={() => navigate(target)}><span className="history-file"><strong>{item.filename}</strong></span><span className="history-uploaded-at">{formatHistoryDate(item.uploadedAt)}</span><span className="history-event-count">{completed ? `${item.eventCount}건` : '—'}</span><span className="history-edited">{completed ? '0건 수정' : '—'}</span><span className={`history-status history-status-${item.status.toLowerCase()}`}>{statusLabel}</span></button>
+  const statusLabel = item.analysisStatus === 'FAILED' ? '다시 시도' : item.analysisStatus === 'CANCELLED' ? '취소됨' : !completed ? '분석 중' : item.reviewStatus === 'COMPLETED' ? '완료' : item.reviewStatus === 'IN_REVIEW' ? '검수 중' : '검수 필요'
+  return <button className={`history-row history-row-${item.analysisStatus.toLowerCase()}`} onClick={() => navigate(target)}><span className="history-file"><strong>{item.filename}</strong></span><span className="history-uploaded-at">{formatHistoryDate(item.uploadedAt)}</span><span className="history-event-count">{completed ? `${item.eventCount}건` : '—'}</span><span className="history-edited">{completed ? `${item.editedCount}건 수정` : '—'}</span><span className={`history-status history-status-${item.analysisStatus.toLowerCase()}`}>{statusLabel}</span></button>
 }
 
 function formatHistoryDate(value: string) {

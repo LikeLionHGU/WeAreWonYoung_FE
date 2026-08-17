@@ -3,7 +3,7 @@ import { Client, type IMessage, type StompSubscription } from '@stomp/stompjs'
 import { apiClient, websocketUrl } from '../api/client'
 import type { VideoStatusResponse } from '../api/types'
 
-export function useAnalysisProgress(videoId: number) {
+export function useAnalysisProgress(videoId: string) {
   const [status, setStatus] = useState<VideoStatusResponse | null>(null)
   const [isFallback, setIsFallback] = useState(false)
   const jobId = useRef<string | null>(null)
@@ -20,12 +20,12 @@ export function useAnalysisProgress(videoId: number) {
 
     // Polling and WebSocket messages can arrive out of order. Keep the visual
     // progress monotonic so a delayed response never makes the bar jump back.
-    if (progressState.current.terminal && next.status !== 'COMPLETED') return
+    if (progressState.current.terminal && !['COMPLETED', 'FAILED', 'CANCELLED'].includes(next.status)) return
     const progress = next.status === 'COMPLETED'
       ? 100
       : Math.min(100, Math.max(progressState.current.value, Math.round(next.progress)))
     progressState.current.value = progress
-    progressState.current.terminal = next.status === 'COMPLETED' || next.status === 'FAILED'
+    progressState.current.terminal = next.status === 'COMPLETED' || next.status === 'FAILED' || next.status === 'CANCELLED'
     setStatus(progress === next.progress ? next : { ...next, progress })
   }, [])
 
@@ -50,6 +50,10 @@ export function useAnalysisProgress(videoId: number) {
     const client = new Client({ brokerURL: websocketUrl(), reconnectDelay: 5000, heartbeatIncoming: 10000, heartbeatOutgoing: 10000, onConnect: () => {
       if (!mounted) return
       setIsFallback(false)
+      if (pollTimer) {
+        window.clearInterval(pollTimer)
+        pollTimer = undefined
+      }
       subscription = client.subscribe(`/topic/videos/${videoId}/progress`, (message: IMessage) => {
         try {
           const next = JSON.parse(message.body) as VideoStatusResponse

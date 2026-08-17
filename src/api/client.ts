@@ -1,7 +1,33 @@
-import type { ApiResponse, AnalysisReportResponse, AnalysisRetryResponse, UploadGenre, VideoHistoryItem, VideoStatusResponse, VideoUploadResponse } from './types'
+import type {
+  AnalysisCancelResponse,
+  AnalysisReportResponse,
+  AnalysisRetryResponse,
+  ApiResponse,
+  ReviewAction,
+  ReviewActionResponse,
+  ReviewCompletionResponse,
+  UploadGenre,
+  VideoHistoryResponse,
+  VideoStatusResponse,
+  VideoUploadResponse,
+} from './types'
 import { ApiRequestError } from './types'
 
 const baseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
+
+const errorMessages: Record<string, string> = {
+  INVALID_REQUEST: '요청 내용을 다시 확인해 주세요.',
+  VIDEO_NOT_FOUND: '영상을 찾을 수 없습니다.',
+  ANALYSIS_IN_PROGRESS: '이미 분석 중인 영상입니다.',
+  ANALYSIS_NOT_COMPLETED: '분석이 끝난 뒤 리포트를 확인할 수 있습니다.',
+  INVALID_ANALYSIS_STATE: '현재 상태에서는 이 작업을 진행할 수 없습니다.',
+  REVIEW_INCOMPLETE: '아직 결정하지 않은 검토 후보가 남아 있습니다.',
+  MAX_UPLOAD_SIZE_EXCEEDED: '500MB 이하의 영상을 올려 주세요.',
+  UNSUPPORTED_VIDEO_FORMAT: 'mp4, mov 또는 avi 형식의 영상을 올려 주세요.',
+  MAX_VIDEO_DURATION_EXCEEDED: '90분 이하의 영상을 올려 주세요.',
+  RANGE_NOT_SATISFIABLE: '영상의 해당 구간을 재생할 수 없습니다.',
+  INTERNAL_SERVER_ERROR: '잠시 후 다시 시도해 주세요.',
+}
 
 export function hasConfiguredApi() {
   return Boolean(baseUrl)
@@ -10,23 +36,56 @@ export function hasConfiguredApi() {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, init)
   let body: ApiResponse<T>
-  try { body = await response.json() as ApiResponse<T> } catch { throw new ApiRequestError('INTERNAL_SERVER_ERROR', '서버 응답을 읽지 못했습니다.', response.status) }
-  if (!response.ok || !body.success) {
-    if (!body.success) throw new ApiRequestError(body.error.code, body.message, response.status, body.error.traceId)
-    throw new ApiRequestError('INTERNAL_SERVER_ERROR', '요청에 실패했습니다.', response.status)
+  try {
+    body = await response.json() as ApiResponse<T>
+  } catch {
+    throw new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, response.status)
   }
+
+  if (!response.ok || !body.success) {
+    if (!body.success) {
+      const message = errorMessages[body.error.code] ?? body.error.message ?? errorMessages.INTERNAL_SERVER_ERROR
+      throw new ApiRequestError(body.error.code, message, response.status, body.error.details)
+    }
+    throw new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, response.status)
+  }
+
   return body.data
 }
 
 export const apiClient = {
   upload(file: File, genre?: UploadGenre) {
-    const form = new FormData(); form.append('file', file); if (genre) form.append('genre', genre)
+    const form = new FormData()
+    form.append('file', file)
+    if (genre) form.append('genre', genre)
     return request<VideoUploadResponse>('/api/v1/videos', { method: 'POST', body: form })
   },
-  videos() { return request<VideoHistoryItem[]>('/api/v1/videos') },
-  status(videoId: number) { return request<VideoStatusResponse>(`/api/v1/videos/${videoId}/status`) },
-  report(videoId: number) { return request<AnalysisReportResponse>(`/api/v1/videos/${videoId}/report`) },
-  retry(videoId: number) { return request<AnalysisRetryResponse>(`/api/v1/videos/${videoId}/analysis/retry`, { method: 'POST' }) },
+  history(status: 'ALL' | 'COMPLETED' | 'FAILED' = 'ALL', page = 0, size = 20) {
+    const query = new URLSearchParams({ status, page: String(page), size: String(size) })
+    return request<VideoHistoryResponse>(`/api/v1/videos/history?${query}`)
+  },
+  status(videoId: string) {
+    return request<VideoStatusResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/status`)
+  },
+  report(videoId: string) {
+    return request<AnalysisReportResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/report`)
+  },
+  retry(videoId: string) {
+    return request<AnalysisRetryResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/analysis/retry`, { method: 'POST' })
+  },
+  cancel(videoId: string) {
+    return request<AnalysisCancelResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/analysis/cancel`, { method: 'POST' })
+  },
+  saveReviewAction(videoId: string, eventId: string, action: ReviewAction, note: string | null = null) {
+    return request<ReviewActionResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/review-actions/${encodeURIComponent(eventId)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, note }),
+    })
+  },
+  completeReview(videoId: string) {
+    return request<ReviewCompletionResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/review-completion`, { method: 'POST' })
+  },
 }
 
 export function assetUrl(path: string) {

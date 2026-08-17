@@ -53,7 +53,7 @@ if (viteRunning) console.log(`[dev] Vite is already running on http://localhost:
 else start('Vite', 'node_modules/vite/bin/vite.js', [])
 
 if (mockRunning) console.log(`[dev] Mock server is already running on http://localhost:${MOCK_PORT}; reusing it.`)
-else start('Mock server', 'node_modules/tsx/dist/cli.mjs', ['server/index.ts'])
+else start('Mock server', 'node_modules/tsx/dist/cli.mjs', ['watch', 'server/index.ts'])
 
 if (viteRunning && mockRunning) {
   console.log('[dev] Both development services are already running; no duplicate processes were started.')
