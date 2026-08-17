@@ -10,9 +10,24 @@ export function formatHistoryDate(value: string) {
 }
 
 export function reportEventTitle(event: TimelineEvent) { return event.title }
-export function reportEventSpeech(event: TimelineEvent) { return event.type === 'SPEECH' ? event.text : event.speechText }
-export function reportEventKind(event: TimelineEvent) { return event.type === 'SPEECH' ? '발언' : '사실 확인' }
 
-export const candidateLabels: Record<CandidateType, string> = { SPEECH_REVIEW: '발언 검토', SCREEN_TEXT_REVIEW: '화면 자막 검토', FACT_ENTITY: '사실·대상 확인', CONTEXT_REFERENCE: '맥락 참고' }
+export function reportEventContent(event: TimelineEvent): { label: string; text: string } {
+  if (event.type === 'SPEECH') return { label: '실제 발언', text: event.text }
+  return { label: '화면 정보', text: event.captionText }
+}
+
+export function reportEventSpeech(event: TimelineEvent): string {
+  if (event.type === 'SPEECH') return event.text
+  return event.captionText
+}
+
+export function reportEventKind(event: TimelineEvent) {
+  return candidateLabels[event.candidateType]
+}
+
+export const candidateLabels: Record<CandidateType, string> = {
+  SPEECH_REVIEW: '발언',
+  FACT_CHECK: '사실 확인',
+}
 
 export function reportEventEvidence(event: TimelineEvent) { return candidateLabels[event.candidateType] }

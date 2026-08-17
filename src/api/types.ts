@@ -2,7 +2,7 @@ export type AnalysisStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' |
 export type AnalysisStage = 'UPLOAD' | 'STT' | 'TEXT_RISK' | 'SCENE_DETECTION' | 'OCR' | 'MULTIMODAL' | 'FINALIZING' | 'COMPLETED'
 export type Severity = 'LOW' | 'MEDIUM' | 'HIGH'
 export type UploadGenre = 'TALK_PODCAST' | 'GENERAL'
-export type CandidateType = 'SPEECH_REVIEW' | 'SCREEN_TEXT_REVIEW' | 'FACT_ENTITY' | 'CONTEXT_REFERENCE'
+export type CandidateType = 'SPEECH_REVIEW' | 'FACT_CHECK'
 export type ReviewStatus = 'NOT_STARTED' | 'IN_REVIEW' | 'COMPLETED'
 export type ReviewAction = 'CONFIRMED' | 'EDITED' | 'HOLD' | 'NOT_USEFUL'
 
@@ -99,7 +99,7 @@ interface TimelineEventBase {
   id: string
   startMs: number
   endMs: number
-  severity: Severity
+  severity?: Severity
   candidateType: CandidateType
   title: string
   reason: string
@@ -111,24 +111,23 @@ interface TimelineEventBase {
 export interface SpeechTimelineEvent extends TimelineEventBase {
   type: 'SPEECH'
   text: string
-  riskTypes: string[]
+  contextBefore?: string | null
+  contextAfter?: string | null
+  riskTypes?: string[]
 }
 
 export interface CaptionTimelineEvent extends TimelineEventBase {
   type: 'CAPTION'
-  speechText: string
   captionText: string
+  speechText?: string
 }
 
 export type TimelineEvent = SpeechTimelineEvent | CaptionTimelineEvent
 
 export interface RiskSummary {
   total: number
-  speech: number
-  caption: number
-  high: number
-  medium: number
-  low: number
+  speechReview: number
+  factCheck: number
 }
 
 export interface ReviewSummary {

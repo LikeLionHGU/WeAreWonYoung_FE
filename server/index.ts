@@ -14,7 +14,7 @@ type Stage = 'UPLOAD' | 'STT' | 'TEXT_RISK' | 'SCENE_DETECTION' | 'OCR' | 'MULTI
 type Severity = 'LOW' | 'MEDIUM' | 'HIGH'
 type ReviewStatus = 'NOT_STARTED' | 'IN_REVIEW' | 'COMPLETED'
 type ReviewAction = 'CONFIRMED' | 'EDITED' | 'HOLD' | 'NOT_USEFUL'
-type CandidateType = 'SPEECH_REVIEW' | 'SCREEN_TEXT_REVIEW' | 'FACT_ENTITY' | 'CONTEXT_REFERENCE'
+type CandidateType = 'SPEECH_REVIEW' | 'FACT_CHECK'
 
 interface Reference {
   title: string
@@ -50,7 +50,7 @@ interface Report {
   durationMs: number
   streamUrl: string
   reviewStatus: ReviewStatus
-  summary: { total: number; speech: number; caption: number; high: number; medium: number; low: number }
+  summary: { total: number; speechReview: number; factCheck: number }
   reviewSummary: { decided: number; remaining: number; confirmed: number; edited: number; hold: number; notUseful: number }
   coverage: { speechAnalyzed: boolean; screenTextAnalyzed: boolean; sceneAnalyzed: boolean }
   warnings: { stage: string; code: string; message: string }[]
@@ -176,19 +176,22 @@ function reportFor(record: VideoRecord): Report {
   const events: TimelineEvent[] = [
     {
       id: 'event-1', startMs: 3200, endMs: 6100, type: 'SPEECH', severity: 'HIGH', candidateType: 'SPEECH_REVIEW',
-      title: '특정 집단을 하나의 특성으로 단정하는 표현', text: '이 표현은 특정 집단을 하나의 특성으로 단정할 수 있습니다.',
-      riskTypes: ['GENERALIZATION'], reason: '특정 집단에 대한 일반화 표현이 포함되어 있습니다.', frameUrl: frame('event-1'),
-      references: [{ title: 'OO회사 공식 소개', provider: '공식 홈페이지', url: 'https://example.com/company', relevantContext: '발언의 사실 관계 확인에 사용' }], reviewAction: null,
+      title: '특정 세대를 단정하는 표현', text: '요즘 젊은 사람들은 다 책임감이 없는 것 같아요.',
+      contextBefore: '제가 최근에 몇 명을 만나봤는데요.', contextAfter: '물론 제가 만난 사례만 보고 느낀 생각입니다.',
+      riskTypes: ['GENERALIZATION'], reason: '특정 세대 전체를 하나의 특성으로 묶어 표현하고 있습니다.', frameUrl: frame('event-1'),
+      references: [], reviewAction: null,
     },
     {
-      id: 'event-2', startMs: 7310, endMs: 9220, type: 'CAPTION', severity: 'MEDIUM', candidateType: 'SCREEN_TEXT_REVIEW',
-      title: '화면 자막 표현 확인', speechText: '실제 발언은 비교적 중립적입니다.', captionText: '논란의 발언, 지금 확인하세요',
-      reason: '화면에 노출된 문구를 검토할 필요가 있습니다.', frameUrl: frame('event-2'), references: [], reviewAction: null,
+      id: 'event-2', startMs: 7310, endMs: 9220, type: 'SPEECH', severity: 'MEDIUM', candidateType: 'FACT_CHECK',
+      title: '설립 연도 사실 확인', text: 'OO회사는 2019년에 설립됐습니다.',
+      riskTypes: ['FACT_CHECK'], reason: '영상에서는 설립 연도를 2019년이라고 언급했지만 확인된 자료에서는 2020년으로 안내하고 있습니다.', frameUrl: frame('event-2'),
+      references: [{ title: 'OO회사 공식 소개', provider: 'OO회사', url: 'https://example.com/company', relevantContext: '발언의 설립 연도 확인에 사용' }], reviewAction: null,
     },
     {
-      id: 'event-3', startMs: 12600, endMs: 15000, type: 'SPEECH', severity: 'LOW', candidateType: 'CONTEXT_REFERENCE',
-      title: '개인 경험을 설명하는 구간', text: '개인 경험을 설명하는 구간입니다.', riskTypes: ['CONTEXT'],
-      reason: '맥락을 함께 확인하면 오해를 줄일 수 있는 구간입니다.', frameUrl: frame('event-3'), references: [], reviewAction: null,
+      id: 'event-3', startMs: 12600, endMs: 15000, type: 'CAPTION', severity: 'MEDIUM', candidateType: 'FACT_CHECK',
+      title: '화면 수치 출처 확인', speechText: '', captionText: '2024년 국내 이용자 80%',
+      reason: '화면에 구체적인 이용률 수치가 표시되어 있어 출처 확인이 필요합니다.', frameUrl: frame('event-3'),
+      references: [{ title: '2024 이용자 조사', provider: 'OO기관', url: 'https://example.com/report', publishedAt: '2026-07-01', snippet: '국내 이용률 78.5%' }], reviewAction: null,
     },
   ]
   return {
@@ -199,7 +202,7 @@ function reportFor(record: VideoRecord): Report {
     durationMs: record.durationMs,
     streamUrl: `/api/v1/videos/${record.videoId}/stream`,
     reviewStatus: 'NOT_STARTED',
-    summary: { total: 3, speech: 2, caption: 1, high: 1, medium: 1, low: 1 },
+    summary: { total: 3, speechReview: 1, factCheck: 2 },
     reviewSummary: reviewSummary(events),
     coverage: { speechAnalyzed: true, screenTextAnalyzed: true, sceneAnalyzed: true },
     warnings: [],
