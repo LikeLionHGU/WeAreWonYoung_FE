@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import logoUrl from '../assets/logo/oops-logo.svg'
 import landingLogoUrl from '../assets/logo/oops-landing-logo.svg'
 import { LandingKicker } from '../components/LandingKicker'
-
 export { LandingKicker }
 
 const landingSteps = [

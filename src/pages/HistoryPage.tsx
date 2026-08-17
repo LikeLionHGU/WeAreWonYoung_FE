@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { apiClient, hasConfiguredApi } from '../api/client'
 import type { VideoHistoryItem } from '../api/types'
@@ -11,11 +11,10 @@ function EmptyUploadPage({ eyebrow, title, description, notice }: { eyebrow: str
 }
 
 function HistoryRow({ item }: { item: VideoHistoryItem }) {
-  const navigate = useNavigate()
   const completed = item.analysisStatus === 'COMPLETED'
   const target = completed ? `/videos/${item.videoId}/report` : `/videos/${item.videoId}/analysis`
   const statusLabel = item.analysisStatus === 'FAILED' ? '다시 시도' : item.analysisStatus === 'CANCELLED' ? '취소됨' : !completed ? '분석 중' : item.reviewStatus === 'COMPLETED' ? '완료' : item.reviewStatus === 'IN_REVIEW' ? '검수 중' : '검수 필요'
-  return <button className={`history-row history-row-${item.analysisStatus.toLowerCase()}`} onClick={() => navigate(target)}><span className="history-file"><strong>{item.filename}</strong></span><span className="history-uploaded-at">{formatHistoryDate(item.uploadedAt)}</span><span className="history-event-count">{completed ? `${item.eventCount}건` : '—'}</span><span className="history-edited">{completed ? `${item.editedCount}건 수정` : '—'}</span><span className={`history-status history-status-${item.analysisStatus.toLowerCase()}`}>{statusLabel}</span></button>
+  return <Link className={`history-row history-row-${item.analysisStatus.toLowerCase()}`} to={target}><span className="history-file"><strong>{item.filename}</strong></span><span className="history-uploaded-at">{formatHistoryDate(item.uploadedAt)}</span><span className="history-event-count">{completed ? `${item.eventCount}건` : '—'}</span><span className="history-edited">{completed ? `${item.editedCount}건 수정` : '—'}</span><span className={`history-status history-status-${item.analysisStatus.toLowerCase()}`}>{statusLabel}</span></Link>
 }
 
 export default function HistoryPage() {

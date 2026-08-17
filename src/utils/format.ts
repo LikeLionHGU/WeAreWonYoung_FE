@@ -29,5 +29,3 @@ export const candidateLabels: Record<CandidateType, string> = {
   SPEECH_REVIEW: '발언',
   FACT_CHECK: '사실 확인',
 }
-
-export function reportEventEvidence(event: TimelineEvent) { return candidateLabels[event.candidateType] }
