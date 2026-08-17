@@ -16,12 +16,12 @@
 .shell-history .history-empty { min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #9aa0a6; font: 400 13px/1.7 'Noto Sans KR', sans-serif; }
 .shell-history .history-empty p { margin: 0; }
 .shell-history .history-empty a { color: #2e7df7; font: 500 13px/1.5 'Noto Sans KR', sans-serif; }
-.shell-history .history-row { width: 100%; height: 59px; padding: 18px 24px; display: grid; grid-template-columns: minmax(0, 1fr) 44px 70px 60px; gap: 28px; align-items: center; border: 0; border-bottom: 1px solid #f2f3f5; background: #fff; color: #16181d; text-align: left; }
+.shell-history .history-row { width: 100%; height: 59px; padding: 18px 24px; display: grid; grid-template-columns: 300px 100px minmax(0, 1fr) 110px 60px; column-gap: 16px; align-items: center; border: 0; border-bottom: 1px solid #f2f3f5; background: #fff; color: #16181d; text-align: left; }
 .shell-history .history-row:last-child { border-bottom: 0; }
 .shell-history .history-row:hover { background: #fafbfc; }
-.shell-history .history-file { min-width: 0; display: flex; align-items: center; gap: 16px; }
-.shell-history .history-file strong { width: 300px; min-width: 0; overflow: hidden; color: #16181d; font: 500 15px/1.5 'Noto Sans KR', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
-.shell-history .history-file small { color: #b6bac0; font: 400 12px/1.5 Inter, sans-serif; white-space: nowrap; }
+.shell-history .history-file { min-width: 0; display: block; }
+.shell-history .history-file strong { display: block; width: 100%; min-width: 0; overflow: hidden; color: #16181d; font: 500 15px/1.5 'Noto Sans KR', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
+.shell-history .history-uploaded-at { color: #b6bac0; font: 400 12px/1.5 Inter, sans-serif; white-space: nowrap; }
 .shell-history .history-event-count { color: #6b7280; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
 .shell-history .history-edited { color: #9aa0a6; font: 400 13px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
 .shell-history .history-status { color: #b6bac0; font: 400 13px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
@@ -30,7 +30,8 @@
 .shell-history .landing-empty-page { min-height: calc(100svh - 68px); }
 @media (min-width: 901px) and (max-width: 1120px) {
   .shell-history .history-page { width: auto; max-width: none; margin-inline: 64px; }
-  .shell-history .history-file strong { width: min(300px, 28vw); }
+  .shell-history .history-row { grid-template-columns: minmax(0, 1fr) 100px 70px 110px 60px; }
+  .shell-history .history-file strong { width: 100%; }
 }
 @media (max-width: 900px) {
   .shell-history .topbar { height: 68px; padding: 0 20px; }
@@ -38,22 +39,23 @@
   .shell-history .history-page h1 { font-size: 32px; }
   .shell-history .history-intro { font-size: 14px; }
   .shell-history .history-card { border-radius: 12px; }
-  .shell-history .history-row { height: auto; min-height: 78px; padding: 16px; grid-template-columns: minmax(0, 1fr) auto; gap: 7px 12px; }
-  .shell-history .history-file { grid-column: 1 / -1; align-items: flex-start; flex-direction: column; gap: 2px; }
+  .shell-history .history-row { height: auto; min-height: 94px; padding: 16px; grid-template-columns: minmax(0, 1fr) auto; gap: 7px 12px; }
+  .shell-history .history-file { grid-column: 1 / -1; grid-row: 1; }
   .shell-history .history-file strong { width: 100%; font-size: 14px; }
-  .shell-history .history-file small { font-size: 11px; }
-  .shell-history .history-event-count { grid-column: 1; grid-row: 2; }
-  .shell-history .history-edited { grid-column: 1; grid-row: 3; }
-  .shell-history .history-status { grid-column: 2; grid-row: 2 / span 2; align-self: center; }
+  .shell-history .history-uploaded-at { grid-column: 1; grid-row: 2; font-size: 11px; }
+  .shell-history .history-event-count { grid-column: 1; grid-row: 3; }
+  .shell-history .history-edited { grid-column: 1; grid-row: 4; }
+  .shell-history .history-status { grid-column: 2; grid-row: 3 / span 2; align-self: center; }
 }
 
 @media (min-width: 901px) {
-  .shell-history .history-row { grid-template-columns: minmax(0, 1fr) 90px 110px 90px; }
+  .shell-history .history-row { grid-template-columns: 300px 100px minmax(0, 1fr) 110px 60px; }
   .shell-history .history-file,
+  .shell-history .history-uploaded-at,
   .shell-history .history-event-count,
   .shell-history .history-edited,
   .shell-history .history-status { align-self: center; }
   .shell-history .history-event-count,
   .shell-history .history-edited,
-  .shell-history .history-status { justify-self: center; }
+  .shell-history .history-status { justify-self: end; }
 }
