@@ -190,8 +190,8 @@
   .shell-landing .landing-footer-brand { grid-column: 1 / -1; align-items: flex-start !important; text-align: left; }
 }
 
-/* The upload CTA is a single action now; the arrow is an inline affordance,
-   not a second button or a fake input field. */
+/* The landing CTA follows the latest Figma email form while retaining the
+   existing MVP route to the upload screen on submit. */
 .shell-landing .landing-email,
 .shell-landing .landing-email-compact {
   width: 320px;
@@ -244,4 +244,106 @@
   .shell-landing .landing-email-compact { width: 100%; max-width: 320px; }
   .shell-landing .landing-email > span { flex: 0 1 auto; }
   .shell-landing .landing-email > strong { width: auto; }
+}
+
+/* Latest Figma landing update: email CTA and evidence-led copy. The submit
+   action keeps the existing MVP flow by continuing to the upload screen. */
+.shell-landing .landing-email,
+.shell-landing .landing-email-compact {
+  box-sizing: border-box;
+  width: 465px;
+  height: 53px;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+}
+.shell-landing .landing-email input {
+  box-sizing: border-box;
+  width: 320px;
+  height: 53px;
+  min-width: 0;
+  flex: 0 0 320px;
+  padding: 15px 20px;
+  border: 1px solid #dfe1e4;
+  border-radius: 10px;
+  outline: 0;
+  background: #fff;
+  color: #16181d;
+  font: 400 15px/1.5 'Noto Sans KR', sans-serif;
+}
+.shell-landing .landing-email input::placeholder { color: #b6bac0; opacity: 1; }
+.shell-landing .landing-email input:focus-visible { border-color: #2e7df7; box-shadow: 0 0 0 3px rgba(46,125,247,.14); }
+.shell-landing .landing-email button {
+  box-sizing: border-box;
+  width: 135px;
+  height: 51px;
+  flex: 0 0 135px;
+  align-self: flex-start;
+  margin: 0;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  background: #2e7df7;
+  color: #fff;
+  cursor: pointer;
+  font: 500 15px/1.5 'Noto Sans KR', sans-serif;
+  transition: background-color .18s ease, transform .18s ease;
+}
+.shell-landing .landing-email button:hover,
+.shell-landing .landing-email button:focus-visible { background: #1f65d2; }
+.shell-landing .landing-email button:active { transform: translateY(1px); }
+
+.shell-landing .landing-steps { opacity: 1; }
+.shell-landing .landing-step:not(.is-done):not(.is-active),
+.shell-landing .landing-step:not(.is-done):not(.is-active) small { color: #b6bac0; }
+
+.shell-landing .landing-belief h2,
+.shell-landing .landing-belief p { width: min(900px, 100%); }
+.shell-landing .landing-belief p { max-width: 900px; }
+
+.shell-landing .landing-compare { height: 681px; }
+.shell-landing .landing-compare-copy h2 { margin-top: 9px; }
+.shell-landing .landing-compare-card { height: 213px; min-height: 213px; }
+.shell-landing .landing-compare-card { margin-top: 40px; }
+.shell-landing .landing-compare-card .compare-left { justify-content: center; }
+.shell-landing .landing-compare-card .compare-right { justify-content: flex-start; }
+.shell-landing .landing-compare-card .compare-right button {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  margin-top: 0;
+  padding: 0 14px;
+  border: 1px solid #2e7df7;
+  border-radius: 7px;
+  background: #fff;
+  color: #2e7df7;
+  cursor: pointer;
+  font: 500 14px/1.5 'Noto Sans KR', sans-serif;
+}
+.shell-landing .landing-compare-card .compare-right button b { font: 500 16px/1 Arial, sans-serif; }
+.shell-landing .landing-compare-card .compare-right button:hover,
+.shell-landing .landing-compare-card .compare-right button:focus-visible { background: #f2f7ff; }
+.shell-landing .landing-compare-card .compare-right p {
+  grid-column: auto;
+  margin: 0;
+  color: #9aa0a6;
+  font: 400 12px/1.5 'Noto Sans KR', sans-serif;
+}
+
+.shell-landing .landing-evidence > h2 { text-align: center; }
+
+@media (max-width: 900px) {
+  .shell-landing .landing-email,
+  .shell-landing .landing-email-compact { width: 100%; max-width: none; height: 53px; }
+  .shell-landing .landing-email input { width: auto; min-width: 0; flex: 1 1 auto; }
+  .shell-landing .landing-email button { width: 135px; flex-basis: 135px; }
+  .shell-landing .landing-compare { height: auto; }
+  .shell-landing .landing-compare-card { height: auto; min-height: 0; }
 }

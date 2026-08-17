@@ -21,14 +21,18 @@ function UploadPage() {
 
 const landingSteps = [
   ['음성을 텍스트로 변환', '완료'],
-  ['발언 리스크 후보 탐지', '완료'],
-  ['화면 변화 감지 및 대표 프레임 추출', '진행 중'],
-  ['화면 자막 OCR', '대기'],
-  ['발언과 자막 대조', '대기'],
+  ['발언 검토 후보 분석', '완료'],
+  ['사실 정보 확인', '진행 중'],
+  ['관련 맥락 확인', '대기'],
+  ['검토 후보와 근거 정리', '대기'],
 ] as const
 
 function LandingEmailForm({ compact = false }: { compact?: boolean }) {
-  return <Link className={`landing-email ${compact ? 'landing-email-compact' : ''}`} to="/upload"><span>영상 업로드하러가기</span><strong aria-hidden="true">→</strong></Link>
+  const navigate = useNavigate()
+  return <form className={`landing-email ${compact ? 'landing-email-compact' : ''}`} onSubmit={event => { event.preventDefault(); navigate('/upload') }}>
+    <input type="email" aria-label="이메일 주소" placeholder="이메일 주소" />
+    <button type="submit">이메일 보내기</button>
+  </form>
 }
 
 function LandingSteps() {
@@ -40,12 +44,12 @@ function LandingSteps() {
 function LandingPage() {
   const navigate = useNavigate()
   return <main className="landing-page">
-    <section className="landing-hero"><div className="landing-hero-main"><LandingKicker label="업로드 전 검수" /><h1>편집이 끝난 영상 한 편에서,<br />업로드 전에 다시 확인할 구간만 찾습니다.</h1><p className="landing-lead">발언과 화면 자막, 화면 속 삽입 이미지를 분석해 검토가 필요한 지점을 타임라인으로 제시합니다.<br />판정하지 않고, 고치지도 않습니다. 최종 판단은 제작자가 합니다.</p><div className="landing-hero-bottom"><LandingEmailForm /></div><p className="landing-privacy">원본 영상은 분석 완료 후 24시간 내 삭제 · 모델 학습에 사용하지 않음</p><LandingSteps /></div></section>
-    <section className="landing-section landing-belief"><h2>혼자 만든 영상은 혼자 볼 수 없습니다</h2><p>말한 사람, 자른 사람, 자막을 단 사람이 같은 사람입니다. 제작자의 눈에는 의도가 계속 보이지만 시청자는 결과물만 봅니다.<br />주의력의 문제가 아니라 구조적인 사각지대입니다.</p></section>
-    <section className="landing-section landing-three"><h2 className="landing-brand-heading"><img src={landingLogoUrl} alt="" aria-hidden="true" />는 세 가지를 봅니다</h2><div className="landing-three-grid"><LandingInfo title="발언">타임스탬프가 붙은 대본을 만들고, 앞뒤 맥락과 함께 검토 후보를 찾습니다. 문장 단위로 잘라 판단하지 않습니다.</LandingInfo><LandingInfo title="화면 자막">화면 변화가 감지된 시점에서 제작자가 넣은 자막을 추출합니다. 같은 자막이 이어지면 하나로 묶습니다.</LandingInfo><LandingInfo title="화면 속 상징">등록된 참조 이미지와 형태가 유사한 프레임을 표시합니다. 의미는 서비스가 만들어내지 않습니다.</LandingInfo></div></section>
-    <section className="landing-section landing-compare"><div className="landing-compare-copy"><span className="landing-orange-label">핵심은 이것입니다</span><h2>발언과 자막을 나란히 놓고 봅니다</h2><p>1인 편집 환경에서는 자막이 발언보다 세지는 일이 자주 일어납니다. 판정 근거가 화면에 전부 보이기 때문에, 검출이 틀렸더라도 제작자가 바로 판단할 수 있습니다.</p></div><div className="landing-compare-card"><div className="compare-left"><span>02:14 실제 발언</span><strong>“조금 아쉬웠습니다.”</strong></div><div className="compare-right"><span>02:14 화면 자막</span><strong>“역대 최악의 선택”</strong></div><p>실제 발언보다 화면 자막의 비판 강도가 높아, 출연자의 입장이 더 공격적으로 전달될 수 있습니다.</p></div></section>
+    <section className="landing-hero"><div className="landing-hero-main"><LandingKicker label="업로드 전 검수" /><h1>공개 전 영상에서, 다시 확인할 구간과 근거를 먼저 보여드립니다</h1><p className="landing-lead">발언, 사실 정보, 관련 맥락을 분석해 사람이 다시 확인할 지점을 타임라인으로 제시합니다.<br />판정하거나 고치지 않습니다. 최종 판단은 제작자가 합니다.</p><div className="landing-hero-bottom"><LandingEmailForm /></div><p className="landing-privacy">원본 영상은 분석 완료 후 24시간 내 삭제 · 모델 학습에 사용하지 않음</p><LandingSteps /></div></section>
+    <section className="landing-section landing-belief"><h2>긴 영상과 분업된 제작 과정에는 다시 확인할 지점이 남습니다</h2><p>Creator와 Editor는 이미 영상을 반복해서 검수합니다. 그러나 긴 영상에는 발언, 사실 정보, 외부 맥락 등 여러 요소가 함께 존재해 모든 부분을 동시에 확인하기 어렵습니다. oops는 사람이 다시 볼 가치가 있는 지점을 먼저 좁혀줍니다.</p></section>
+    <section className="landing-section landing-three"><h2 className="landing-brand-heading"><img src={landingLogoUrl} alt="" aria-hidden="true" />는 세 가지를 봅니다</h2><div className="landing-three-grid"><LandingInfo title="발언">영상 속 발언에서 다시 확인할 가치가 있는 표현과 주장을 찾습니다. 특정 대상에 대한 단정적인 표현이나 일반화, 확인이 필요한 발언 등을 검토 후보로 보여드립니다.</LandingInfo><LandingInfo title="사실 확인">화면 자막과 발언에서 인물명, 기업명, 날짜, 숫자, 통계처럼 확인 가능한 정보를 찾고, 필요한 경우 관련 근거를 함께 제공합니다.</LandingInfo><LandingInfo title="맥락 참고">제작 과정에서 놓쳤을 수 있는 사회적·문화적·역사적 배경이나 특정 표현과 관련된 맥락을 찾아 참고 자료와 함께 보여드립니다.</LandingInfo></div></section>
+    <section className="landing-section landing-compare"><div className="landing-compare-copy"><span className="landing-orange-label">핵심은 이것입니다</span><h2>근거를 함께 보여드립니다.</h2><p>해당 구간이 왜 검토 후보로 선정되었는지, 실제 발언이나 화면 문구는 무엇인지, 필요한 경우 관련 외부 자료까지 함께 보여줍니다. 사용자는 AI의 판단을 그대로 따르는 대신, 제공된 근거를 직접 확인하고 수정할지 유지할지 스스로 결정할 수 있습니다.</p></div><div className="landing-compare-card"><div className="compare-left"><span>02:14 실제 발언</span><strong>“00회사는 2019년도에 설립되었습니다.”</strong></div><div className="compare-right"><span>02:14 사실확인</span><strong>“00회사 공식 자료”</strong><button type="button">원문 확인 <b aria-hidden="true">→</b></button><p>검출마다 이렇게 근거 자료로 바로 이동할 수 있습니다</p></div></div></section>
     <section className="landing-section landing-limitations"><div><h2 className="landing-brand-heading"><img src={landingLogoUrl} alt="" aria-hidden="true" />가 하지 않는 것</h2><p>판정할 수 없는 것은 판정하지 않습니다.<br />확실하지 않은 검출을 늘리는 대신 줄이는 쪽을 택했습니다.</p></div><div className="landing-limit-list"><LandingInfo title="손·포즈·제스처 분석">랜드마크 유사도만으로는 의미를 판정할 수 없습니다.</LandingInfo><LandingInfo title="댓글 기반 외부 맥락">다른 영상의 댓글은 이 영상의 예측이 아닙니다.</LandingInfo><LandingInfo title="법률 판정">위법 여부와 정치 성향을 판단하지 않습니다.</LandingInfo><LandingInfo title="자동 편집·수정">영상을 대신 고치지 않습니다.</LandingInfo></div></section>
-    <section className="landing-section landing-evidence"><h2>모든 검출에 근거 수준을 붙입니다</h2><div className="landing-evidence-grid"><LandingInfo title="직접 근거">화면과 음성에서 직접 확인할 수 있습니다.</LandingInfo><LandingInfo title="유사 사례">참조 자료와의 유사성에 기반합니다.</LandingInfo><LandingInfo title="맥락 추정">해석에 기반하며 확실성이 가장 낮습니다.</LandingInfo></div></section>
+    <section className="landing-section landing-evidence"><h2>모든 검토 후보에 근거를 함께 제공합니다</h2><div className="landing-evidence-grid"><LandingInfo title="직접 근거">실제 발언이나 화면 정보를 직접 확인할 수 있습니다.</LandingInfo><LandingInfo title="외부 자료">공식 자료나 관련 Source를 함께 확인할 수 있습니다.</LandingInfo><LandingInfo title="관련 맥락">판단에 참고할 사회·문화·역사적 배경을 제공합니다.</LandingInfo></div></section>
     <section className="landing-section landing-cta"><div><h2>한 편으로 확인해 보세요</h2><p>10분 영상 기준 5분 이내에 리포트가 나옵니다.</p></div><LandingEmailForm compact /></section>
     <footer className="landing-footer"><div><strong>제품</strong><a onClick={() => navigate('/upload')}>업로드</a><a onClick={() => navigate('/report')}>검수 리포트</a><a onClick={() => navigate('/history')}>검수 이력</a></div><div><strong>정책</strong><a>데이터 보관</a><a>AI 출력 원칙</a><a>참조 데이터베이스 기준</a></div><div className="landing-footer-brand"><img className="landing-footer-logo" src={logoUrl} alt="OoPs!?" /><p>AI는 의도와 정치 성향, 위법 여부를 판정하지 않습니다.</p><small>© 2026 OoPs?!</small></div></footer>
   </main>
