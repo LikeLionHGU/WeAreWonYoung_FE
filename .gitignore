@@ -29,3 +29,5 @@ mock-data/uploads/*
 *.omd/*
 docs/*
 mock-data/*
+
+.env
