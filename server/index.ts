@@ -1,9 +1,11 @@
 import cors from 'cors'
 import express, { type Request, type Response } from 'express'
+import { execFile } from 'node:child_process'
 import { createReadStream } from 'node:fs'
 import { mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import path from 'node:path'
+import { promisify } from 'node:util'
 import multer from 'multer'
 import { WebSocketServer, type WebSocket } from 'ws'
 
@@ -88,6 +90,18 @@ let state: State = { nextVideoId: 1, videos: {} }
 let failedOnce = false
 let saveChain: Promise<void> = Promise.resolve()
 const subscriptions = new Map<WebSocket, Map<string, string>>()
+const execFileAsync = promisify(execFile)
+
+async function probeDurationMs(storagePath: string) {
+  if (!storagePath) return 0
+  try {
+    const { stdout } = await execFileAsync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', storagePath])
+    const seconds = Number(stdout.trim())
+    return Number.isFinite(seconds) && seconds > 0 ? Math.round(seconds * 1000) : 0
+  } catch {
+    return 0
+  }
+}
 
 async function init() {
   await mkdir(uploadsDir, { recursive: true })
@@ -101,7 +115,7 @@ async function init() {
         videoId: String(legacy.videoId ?? key),
         filename: legacy.filename ?? 'uploaded-video.mp4',
         uploadedAt: legacy.uploadedAt ?? now,
-        durationMs: legacy.durationMs ?? 581000,
+        durationMs: legacy.durationMs ?? 0,
         storagePath: legacy.storagePath ?? '',
         mimeType: legacy.mimeType ?? 'video/mp4',
         jobId: legacy.jobId ?? `job_${key}`,
@@ -117,6 +131,12 @@ async function init() {
       }
       if (record.status === 'COMPLETED') record.report = normalizeReport(record, legacy.report)
       return [record.videoId, record]
+    }))
+    await Promise.all(Object.values(state.videos).map(async record => {
+      const measuredDuration = await probeDurationMs(record.storagePath)
+      if (!measuredDuration) return
+      record.durationMs = measuredDuration
+      if (record.report) record.report.durationMs = measuredDuration
     }))
     await saveState()
   } catch {
@@ -280,7 +300,10 @@ app.post('/api/v1/videos', (req, res) => {
     if (!req.file) return failure(res, 400, 'INVALID_REQUEST', '영상 파일을 첨부해 주세요.')
     const id = String(state.nextVideoId++)
     const now = new Date().toISOString()
-    const record: VideoRecord = { videoId: id, filename: req.file.originalname, uploadedAt: now, durationMs: 581000, storagePath: req.file.path, mimeType: mimeFor(req.file.originalname), jobId: `job_${Math.random().toString(16).slice(2, 8)}`, status: 'PENDING', progress: 0, stage: 'UPLOAD', message: '분석 요청을 준비 중', startedAt: null, updatedAt: now, completedAt: null, reviewedAt: null, failure: null }
+    // Real videos use their measured duration. The 1 ms fallback keeps the
+    // mock contract valid for synthetic test payloads that are not playable.
+    const durationMs = await probeDurationMs(req.file.path) || 1
+    const record: VideoRecord = { videoId: id, filename: req.file.originalname, uploadedAt: now, durationMs, storagePath: req.file.path, mimeType: mimeFor(req.file.originalname), jobId: `job_${Math.random().toString(16).slice(2, 8)}`, status: 'PENDING', progress: 0, stage: 'UPLOAD', message: '분석 요청을 준비 중', startedAt: null, updatedAt: now, completedAt: null, reviewedAt: null, failure: null }
     state.videos[id] = record
     await saveState()
     success(res, 201, { videoId: id, jobId: record.jobId, filename: record.filename, durationMs: record.durationMs, status: record.status, streamUrl: `/api/v1/videos/${id}/stream` })
