@@ -116,7 +116,6 @@ export default function EventDetailCard({
         scrubberMax={scrubberMax}
         scrubberValue={scrubberValue}
         durationLabel={durationLabel}
-        selectedStartMs={selected.startMs}
         onLoadedMetadata={onLoadedMetadata}
         onTimeUpdate={onTimeUpdate}
         onPlay={onPlay}

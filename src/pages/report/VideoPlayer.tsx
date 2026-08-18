@@ -12,7 +12,6 @@ interface VideoPlayerProps {
   scrubberMax: number
   scrubberValue: number
   durationLabel: string | undefined
-  selectedStartMs: number
   onLoadedMetadata: (duration: number) => void
   onTimeUpdate: (time: number) => void
   onPlay: () => void
@@ -33,7 +32,6 @@ export default function VideoPlayer({
   scrubberMax,
   scrubberValue,
   durationLabel,
-  selectedStartMs,
   onLoadedMetadata,
   onTimeUpdate,
   onPlay,
@@ -93,7 +91,7 @@ export default function VideoPlayer({
           onChange={e => onSeek(Number(e.target.value))}
         />
         <div>
-          <span>{formatSeconds(currentTime || selectedStartMs / 1000)}</span>
+          <span>{formatSeconds(currentTime)}</span>
           <div className="report-scrubber-controls">
             <button type="button" aria-label="10초 뒤로" onClick={() => onSkipBy(-10)}>
               ◁ 10초
