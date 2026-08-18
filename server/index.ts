@@ -363,7 +363,7 @@ app.post('/api/v1/videos/:id/review-completion', async (req, res) => {
   record.report.reviewSummary = summary
   record.reviewedAt = new Date().toISOString()
   await saveState()
-  success(res, 200, { videoId: record.videoId, reviewStatus: record.report.reviewStatus, reviewedAt: record.reviewedAt, summary: { total: record.report.events.length, confirmed: summary.confirmed, edited: summary.edited, hold: summary.hold, notUseful: summary.notUseful } })
+  success(res, 200, { videoId: record.videoId, reviewStatus: record.report.reviewStatus, reviewedAt: record.reviewedAt, summary: { total: record.report.events.length, decided: summary.decided, remaining: summary.remaining, confirmed: summary.confirmed, edited: summary.edited, hold: summary.hold, notUseful: summary.notUseful } })
 })
 
 app.post('/api/v1/videos/:id/analysis/retry', async (req, res) => {

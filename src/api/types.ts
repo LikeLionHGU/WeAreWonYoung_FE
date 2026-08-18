@@ -180,6 +180,8 @@ export interface ReviewCompletionResponse {
   reviewedAt: string
   summary: {
     total: number
+    decided: number
+    remaining: number
     confirmed: number
     edited: number
     hold: number

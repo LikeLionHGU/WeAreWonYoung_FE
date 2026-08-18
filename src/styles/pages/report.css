@@ -99,6 +99,7 @@
 .shell-report .report-actions button.is-active { border-color: #2e7df7; background: #2e7df7; color: #fff; font-weight: 500; }
 .shell-report .report-actions > span { flex: 1; }
 .shell-report .report-actions .report-muted-action { padding: 12px 14px; border-color: transparent; color: #9aa0a6; }
+.shell-report .report-action-error { margin: 0 0 8px; padding: 10px 14px; border-radius: 8px; background: #fef2f2; color: #c53030; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
 .shell-report .report-next { margin: 14px 0 0; color: #c9ccd1; font: 400 12px/1.5 'Noto Sans KR', sans-serif; text-align: right; }
 .shell-report .report-candidates { margin-top: 64px; }
 .shell-report .report-candidates-card { width: 100%; overflow: hidden; border: 1px solid #edeef0; border-radius: 16px; background: #fff; }
