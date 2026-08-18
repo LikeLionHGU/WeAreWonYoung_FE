@@ -213,3 +213,66 @@
   .shell-upload .policy-panel { width: 100%; margin-top: 56px; }
   .shell-upload .policy-panel dl > div { width: 100%; }
 }
+
+/* Upload mode tabs + URL input */
+.upload-mode-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.upload-mode-tabs button {
+  padding: 12px 24px;
+  border: 0;
+  background: none;
+  color: #757575;
+  font: 500 14px/1.5 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.upload-mode-tabs button.is-active {
+  color: #16181d;
+  border-bottom-color: #16181d;
+}
+.upload-mode-tabs button:hover:not(.is-active) {
+  color: #16181d;
+}
+.url-input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 32px 0;
+}
+.url-label {
+  font: 500 14px/1.5 'Noto Sans KR', sans-serif;
+  color: #16181d;
+}
+.url-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  outline: 0;
+  font: 400 15px/1.5 'Noto Sans KR', sans-serif;
+  color: #16181d;
+  transition: border-color 0.15s;
+}
+.url-input:focus {
+  border-color: #2e7df7;
+}
+.url-input.is-error {
+  border-color: #e53e3e;
+}
+.url-input::placeholder {
+  color: #9aa0a6;
+}
+.url-error {
+  margin: 0;
+  color: #e53e3e;
+  font: 400 12px/1.5 'Noto Sans KR', sans-serif;
+}
+.url-hint {
+  color: #9aa0a6;
+  font: 400 12px/1.5 'Noto Sans KR', sans-serif;
+}

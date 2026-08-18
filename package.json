@@ -10,7 +10,9 @@
     "dev:server": "tsx watch server/index.ts",
     "typecheck": "tsc --noEmit",
     "typecheck:server": "tsc -p tsconfig.server.json",
-    "test:contract": "tsx scripts/contract-smoke.ts"
+    "test:contract": "tsx scripts/contract-smoke.ts",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"server/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"server/**/*.ts\""
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

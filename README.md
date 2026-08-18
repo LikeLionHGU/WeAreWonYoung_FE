@@ -77,7 +77,7 @@ flowchart LR
 | 화면 | 경로 | 설명 |
 | --- | --- | --- |
 | 랜딩 | `/` | 서비스 소개 · 업로드 CTA |
-| 영상 업로드 | `/upload` | mp4, mov, avi · 500MB · 90분 |
+| 영상 업로드 | `/upload` | mp4, mov, avi · 500MB · 90분 / YouTube 링크 |
 | 분석 진행 | `/videos/:videoId/analysis` | 5단계 진행률, STOMP 실시간 + 3초 polling fallback |
 | 검수 리포트 | `/videos/:videoId/report` | 후보 카드, 영상 seek, 결정 저장 |
 | 검수 완료 | `/videos/:videoId/completed` | 검수 요약, 타임코드 복사 |
@@ -113,6 +113,7 @@ npm run dev
 | 메서드 | 경로 | 설명 |
 | --- | --- | --- |
 | `POST` | `/api/v1/videos` | 영상 업로드 (multipart/form-data, file, optional genre) |
+| `POST` | `/api/v1/videos` | YouTube 링크 등록 (application/json, url, optional genre) |
 | `GET` | `/api/v1/videos/:videoId/status` | 분석 상태 조회 |
 | `GET` | `/api/v1/videos/history` | 검수 이력 (status, page, size) |
 | `GET` | `/api/v1/videos/:videoId/report` | 검수 리포트 |

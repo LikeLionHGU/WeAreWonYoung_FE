@@ -26,6 +26,7 @@ const errorMessages: Record<string, string> = {
   UNSUPPORTED_VIDEO_FORMAT: 'mp4, mov 또는 avi 형식의 영상을 올려 주세요.',
   MAX_VIDEO_DURATION_EXCEEDED: '90분 이하의 영상을 올려 주세요.',
   RANGE_NOT_SATISFIABLE: '영상의 해당 구간을 재생할 수 없습니다.',
+  INVALID_VIDEO_URL: '유효한 영상 링크가 아닙니다.',
   INTERNAL_SERVER_ERROR: '잠시 후 다시 시도해 주세요.',
 }
 
@@ -68,6 +69,13 @@ export const apiClient = {
     form.append('file', file)
     if (genre) form.append('genre', genre)
     return request<VideoUploadResponse>('/api/v1/videos', { method: 'POST', body: form })
+  },
+  registerUrl(url: string, genre?: UploadGenre) {
+    return request<VideoUploadResponse>('/api/v1/videos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, genre: genre ?? undefined }),
+    })
   },
   history(status: 'ALL' | 'COMPLETED' | 'FAILED' = 'ALL', page = 0, size = 20) {
     const query = new URLSearchParams({ status, page: String(page), size: String(size) })
