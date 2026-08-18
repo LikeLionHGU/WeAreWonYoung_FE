@@ -37,17 +37,26 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, init)
   let body: ApiResponse<T>
   try {
-    body = await response.json() as ApiResponse<T>
+    body = (await response.json()) as ApiResponse<T>
   } catch {
-    throw new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, response.status)
+    throw new ApiRequestError(
+      'INTERNAL_SERVER_ERROR',
+      errorMessages.INTERNAL_SERVER_ERROR,
+      response.status,
+    )
   }
 
   if (!response.ok || !body.success) {
     if (!body.success) {
-      const message = errorMessages[body.error.code] ?? body.error.message ?? errorMessages.INTERNAL_SERVER_ERROR
+      const message =
+        errorMessages[body.error.code] ?? body.error.message ?? errorMessages.INTERNAL_SERVER_ERROR
       throw new ApiRequestError(body.error.code, message, response.status, body.error.details)
     }
-    throw new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, response.status)
+    throw new ApiRequestError(
+      'INTERNAL_SERVER_ERROR',
+      errorMessages.INTERNAL_SERVER_ERROR,
+      response.status,
+    )
   }
 
   return body.data
@@ -71,20 +80,37 @@ export const apiClient = {
     return request<AnalysisReportResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/report`)
   },
   retry(videoId: string) {
-    return request<AnalysisRetryResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/analysis/retry`, { method: 'POST' })
+    return request<AnalysisRetryResponse>(
+      `/api/v1/videos/${encodeURIComponent(videoId)}/analysis/retry`,
+      { method: 'POST' },
+    )
   },
   cancel(videoId: string) {
-    return request<AnalysisCancelResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/analysis/cancel`, { method: 'POST' })
+    return request<AnalysisCancelResponse>(
+      `/api/v1/videos/${encodeURIComponent(videoId)}/analysis/cancel`,
+      { method: 'POST' },
+    )
   },
-  saveReviewAction(videoId: string, eventId: string, action: ReviewAction, note: string | null = null) {
-    return request<ReviewActionResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/review-actions/${encodeURIComponent(eventId)}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, note }),
-    })
+  saveReviewAction(
+    videoId: string,
+    eventId: string,
+    action: ReviewAction,
+    note: string | null = null,
+  ) {
+    return request<ReviewActionResponse>(
+      `/api/v1/videos/${encodeURIComponent(videoId)}/review-actions/${encodeURIComponent(eventId)}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, note }),
+      },
+    )
   },
   completeReview(videoId: string) {
-    return request<ReviewCompletionResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/review-completion`, { method: 'POST' })
+    return request<ReviewCompletionResponse>(
+      `/api/v1/videos/${encodeURIComponent(videoId)}/review-completion`,
+      { method: 'POST' },
+    )
   },
 }
 

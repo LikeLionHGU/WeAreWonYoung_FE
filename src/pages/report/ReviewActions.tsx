@@ -16,7 +16,9 @@ export default function ReviewActions({
   return (
     <>
       {decisionError && (
-        <p role="alert" className="report-action-error">{decisionError}</p>
+        <p role="alert" className="report-action-error">
+          {decisionError}
+        </p>
       )}
       <div className="report-actions">
         <button

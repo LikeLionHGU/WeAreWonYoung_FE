@@ -31,3 +31,4 @@ docs/*
 mock-data/*
 
 .env
+.prettierrc

@@ -37,7 +37,9 @@ export default function ReviewSidebar({
       <div className="report-decision-progress">
         <div>
           <span>결정 진행</span>
-          <strong>{decided} / {events.length}</strong>
+          <strong>
+            {decided} / {events.length}
+          </strong>
         </div>
         <div className="report-sidebar-track">
           <i style={{ width: `${events.length ? (decided / events.length) * 100 : 0}%` }} />
@@ -52,11 +54,17 @@ export default function ReviewSidebar({
       >
         {isCompleting ? '완료 처리 중…' : '검수 마치기'}
       </button>
-      {finishError && <p role="alert" className="report-action-error">{finishError}</p>}
+      {finishError && (
+        <p role="alert" className="report-action-error">
+          {finishError}
+        </p>
+      )}
 
       <div className="report-outline">
         <span>검토 후보</span>
-        <strong>{events.length}건 · 남은 {remaining}</strong>
+        <strong>
+          {events.length}건 · 남은 {remaining}
+        </strong>
         <div className="report-outline-list">
           {events.map(event => (
             <button

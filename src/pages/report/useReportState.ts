@@ -29,34 +29,35 @@ export function useReportState() {
     if (!reportResponse) return
     setSelectedId(current => current ?? reportResponse.events[0]?.id ?? null)
     setDecisions(
-      Object.fromEntries(reportResponse.events.map(event => [event.id, event.reviewAction]))
+      Object.fromEntries(reportResponse.events.map(event => [event.id, event.reviewAction])),
     )
   }, [reportResponse])
 
-  const reportEvents = useMemo(
-    () => reportResponse?.events ?? [],
-    [reportResponse]
-  )
+  const reportEvents = useMemo(() => reportResponse?.events ?? [], [reportResponse])
 
   const orderedEvents = useMemo(
-    () => reportEvents
-      .filter(event => filter === 'ALL' || event.candidateType === filter)
-      .sort((left, right) => left.startMs - right.startMs),
-    [reportEvents, filter]
+    () =>
+      reportEvents
+        .filter(event => filter === 'ALL' || event.candidateType === filter)
+        .sort((left, right) => left.startMs - right.startMs),
+    [reportEvents, filter],
   )
 
   const speechCount = useMemo(
     () => reportEvents.filter(e => e.candidateType === 'SPEECH_REVIEW').length,
-    [reportEvents]
+    [reportEvents],
   )
   const factCheckCount = useMemo(
     () => reportEvents.filter(e => e.candidateType === 'FACT_CHECK').length,
-    [reportEvents]
+    [reportEvents],
   )
 
   const selected = orderedEvents.find(event => event.id === selectedId) ?? orderedEvents[0] ?? null
   const selectedIndex = selected
-    ? Math.max(0, reportEvents.findIndex(event => event.id === selected.id))
+    ? Math.max(
+        0,
+        reportEvents.findIndex(event => event.id === selected.id),
+      )
     : 0
   const remaining = reportEvents.filter(event => !decisions[event.id]).length
 
@@ -81,9 +82,7 @@ export function useReportState() {
       if (nextEvent) setSelectedId(nextEvent.id)
     } catch (err) {
       setDecisions(current => ({ ...current, [eventId]: previous }))
-      setDecisionError(
-        err instanceof Error ? err.message : '검수 결정을 저장하지 못했습니다.'
-      )
+      setDecisionError(err instanceof Error ? err.message : '검수 결정을 저장하지 못했습니다.')
     } finally {
       setSavingEventId(null)
     }
@@ -99,7 +98,7 @@ export function useReportState() {
       setIsPlaying(false)
     }
     window.requestAnimationFrame(() =>
-      selectedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      selectedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
     )
   }
 
@@ -143,14 +142,17 @@ export function useReportState() {
     }
   }
 
-  const decisionLabel = useCallback((event: TimelineEvent) => {
-    const decision = decisions[event.id]
-    if (decision === 'EDITED') return '수정함'
-    if (decision === 'CONFIRMED') return '유지함'
-    if (decision === 'HOLD') return '보류'
-    if (decision === 'NOT_USEFUL') return '검출 끔'
-    return ''
-  }, [decisions])
+  const decisionLabel = useCallback(
+    (event: TimelineEvent) => {
+      const decision = decisions[event.id]
+      if (decision === 'EDITED') return '수정함'
+      if (decision === 'CONFIRMED') return '유지함'
+      if (decision === 'HOLD') return '보류'
+      if (decision === 'NOT_USEFUL') return '검출 끔'
+      return ''
+    },
+    [decisions],
+  )
 
   async function finishReview() {
     if (remaining > 0) {
@@ -163,9 +165,7 @@ export function useReportState() {
       await apiClient.completeReview(id)
       navigate(`/videos/${id}/completed`)
     } catch (err) {
-      setDecisionError(
-        err instanceof Error ? err.message : '검수를 완료하지 못했습니다.'
-      )
+      setDecisionError(err instanceof Error ? err.message : '검수를 완료하지 못했습니다.')
     } finally {
       setIsCompleting(false)
     }
@@ -173,9 +173,7 @@ export function useReportState() {
 
   const reportDuration = (reportResponse?.durationMs ?? 0) / 1000
   const mediaDuration = Number.isFinite(duration) && duration > 0 ? duration : reportDuration
-  const scrubberMax = selected
-    ? (mediaDuration || Math.max(selected.endMs / 1000, 1))
-    : 1
+  const scrubberMax = selected ? mediaDuration || Math.max(selected.endMs / 1000, 1) : 1
   const scrubberValue = Math.min(currentTime, scrubberMax)
   const durationLabel = mediaDuration ? undefined : '--:--'
 

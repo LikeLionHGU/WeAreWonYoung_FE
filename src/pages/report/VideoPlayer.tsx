@@ -95,18 +95,10 @@ export default function VideoPlayer({
         <div>
           <span>{formatSeconds(currentTime || selectedStartMs / 1000)}</span>
           <div className="report-scrubber-controls">
-            <button
-              type="button"
-              aria-label="10초 뒤로"
-              onClick={() => onSkipBy(-10)}
-            >
+            <button type="button" aria-label="10초 뒤로" onClick={() => onSkipBy(-10)}>
               ◁ 10초
             </button>
-            <button
-              type="button"
-              aria-label="10초 앞으로"
-              onClick={() => onSkipBy(10)}
-            >
+            <button type="button" aria-label="10초 앞으로" onClick={() => onSkipBy(10)}>
               10초 ▷
             </button>
           </div>

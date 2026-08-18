@@ -12,7 +12,10 @@ export function useVideoUpload() {
     try {
       return await apiClient.upload(file)
     } catch (e) {
-      const error = e instanceof ApiRequestError ? e : new ApiRequestError('INTERNAL_SERVER_ERROR', '업로드에 실패했습니다.', 500)
+      const error =
+        e instanceof ApiRequestError
+          ? e
+          : new ApiRequestError('INTERNAL_SERVER_ERROR', '업로드에 실패했습니다.', 500)
       setError(error)
       return null
     } finally {
