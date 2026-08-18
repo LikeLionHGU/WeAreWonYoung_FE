@@ -15,6 +15,7 @@ export default function EventList({ events, selectedId, onSelect, decisionLabel 
         {events.map(event => (
           <button
             type="button"
+            aria-current={event.id === selectedId ? 'true' : undefined}
             className={`report-candidate-row ${event.id === selectedId ? 'is-current' : ''}`}
             key={event.id}
             onClick={() => onSelect(event)}

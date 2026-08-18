@@ -83,10 +83,10 @@ export default function ReportPage() {
           isSaving={state.savingEventId === selected.id}
           decisionError={state.decisionError}
           cardRef={state.selectedCardRef}
-          onLoadedMetadata={d => state.setDuration(d)}
-          onTimeUpdate={t => state.setCurrentTime(t)}
-          onPlay={() => state.setIsPlaying(true)}
-          onPause={() => state.setIsPlaying(false)}
+          onLoadedMetadata={state.handleSetDuration}
+          onTimeUpdate={state.handleSetCurrentTime}
+          onPlay={state.handleSetIsPlayingTrue}
+          onPause={state.handleSetIsPlayingFalse}
           onTogglePlay={state.togglePlay}
           onSeek={state.seek}
           onVideoKeyDown={state.handleVideoKeyDown}
@@ -112,6 +112,7 @@ export default function ReportPage() {
         selectedId={selected.id}
         decisions={state.decisions}
         isCompleting={state.isCompleting}
+        finishError={state.decisionError}
         onFinishReview={() => void state.finishReview()}
         onSelect={state.selectEvent}
       />

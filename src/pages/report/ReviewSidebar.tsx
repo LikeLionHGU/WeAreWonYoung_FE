@@ -1,4 +1,4 @@
-import type { TimelineEvent } from '../../api/types'
+import type { ReviewAction, TimelineEvent } from '../../api/types'
 import { formatTime, reportEventKind } from '../../utils/format'
 
 interface ReviewSidebarProps {
@@ -6,8 +6,9 @@ interface ReviewSidebarProps {
   events: TimelineEvent[]
   remaining: number
   selectedId: string
-  decisions: Record<string, unknown>
+  decisions: Record<string, ReviewAction | null>
   isCompleting: boolean
+  finishError: string | null
   onFinishReview: () => void
   onSelect: (event: TimelineEvent) => void
 }
@@ -19,6 +20,7 @@ export default function ReviewSidebar({
   selectedId,
   decisions,
   isCompleting,
+  finishError,
   onFinishReview,
   onSelect,
 }: ReviewSidebarProps) {
@@ -50,6 +52,7 @@ export default function ReviewSidebar({
       >
         {isCompleting ? '완료 처리 중…' : '검수 마치기'}
       </button>
+      {finishError && <p role="alert" className="report-action-error">{finishError}</p>}
 
       <div className="report-outline">
         <span>검토 후보</span>
@@ -58,6 +61,7 @@ export default function ReviewSidebar({
           {events.map(event => (
             <button
               type="button"
+              aria-current={event.id === selectedId ? 'true' : undefined}
               className={event.id === selectedId ? 'is-current' : ''}
               key={event.id}
               onClick={() => onSelect(event)}
