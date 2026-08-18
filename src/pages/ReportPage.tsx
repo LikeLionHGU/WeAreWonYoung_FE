@@ -93,13 +93,15 @@ export default function ReportPage() {
           onDecision={state.setDecision}
         />
 
-        {/* All candidates list */}
-        <EventList
-          events={orderedEvents}
-          selectedId={selected.id}
-          onSelect={state.selectEvent}
-          decisionLabel={state.decisionLabel}
-        />
+        {/* All candidates list (hidden when filter active — filtered section above takes over) */}
+        {filter === 'ALL' && (
+          <EventList
+            events={orderedEvents}
+            selectedId={selected.id}
+            onSelect={state.selectEvent}
+            decisionLabel={state.decisionLabel}
+          />
+        )}
 
         <p className="report-footnote">최종 판단은 제작자가 합니다. 원본 영상은 분석 완료 후 24시간 안에 삭제됩니다.</p>
       </div>

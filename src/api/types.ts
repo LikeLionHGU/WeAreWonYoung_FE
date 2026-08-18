@@ -10,7 +10,6 @@ export interface ApiSuccess<T> {
   success: true
   data: T
   error: null
-  message?: string
 }
 
 export interface ApiErrorBody {
@@ -99,7 +98,7 @@ interface TimelineEventBase {
   id: string
   startMs: number
   endMs: number
-  severity?: Severity
+  severity: Severity
   candidateType: CandidateType
   title: string
   reason: string

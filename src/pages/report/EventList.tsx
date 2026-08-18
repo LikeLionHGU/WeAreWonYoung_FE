@@ -12,21 +12,25 @@ export default function EventList({ events, selectedId, onSelect, decisionLabel 
   return (
     <section className="report-candidates">
       <div className="report-candidates-card">
-        {events.map(event => (
-          <button
-            type="button"
-            aria-current={event.id === selectedId ? 'true' : undefined}
-            className={`report-candidate-row ${event.id === selectedId ? 'is-current' : ''}`}
-            key={event.id}
-            onClick={() => onSelect(event)}
-          >
-            <span className="report-time-pill">{formatTime(event.startMs)}</span>
-            <span>{reportEventKind(event)}</span>
-            <strong>{reportEventTitle(event)}</strong>
-            <small>{reportEventKind(event)}</small>
-            {decisionLabel(event) && <em>{decisionLabel(event)}</em>}
-          </button>
-        ))}
+        {events.map(event => {
+          const kind = reportEventKind(event)
+          const label = decisionLabel(event)
+          return (
+            <button
+              type="button"
+              aria-current={event.id === selectedId ? 'true' : undefined}
+              className={`report-candidate-row ${event.id === selectedId ? 'is-current' : ''}`}
+              key={event.id}
+              onClick={() => onSelect(event)}
+            >
+              <span className="report-time-pill">{formatTime(event.startMs)}</span>
+              <span>{kind}</span>
+              <strong>{reportEventTitle(event)}</strong>
+              <small>{kind}</small>
+              {label && <em>{label}</em>}
+            </button>
+          )
+        })}
       </div>
     </section>
   )

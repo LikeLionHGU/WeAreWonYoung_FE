@@ -39,7 +39,7 @@ interface EventBase {
 }
 
 type TimelineEvent =
-  | (EventBase & { type: 'SPEECH'; text: string; riskTypes: string[] })
+  | (EventBase & { type: 'SPEECH'; text: string; riskTypes: string[]; contextBefore?: string | null; contextAfter?: string | null })
   | (EventBase & { type: 'CAPTION'; speechText: string; captionText: string })
 
 interface Report {

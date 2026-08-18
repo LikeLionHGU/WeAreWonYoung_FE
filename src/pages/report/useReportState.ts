@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { ReviewAction, TimelineEvent } from '../../api/types'
 import { apiClient } from '../../api/client'
@@ -29,7 +29,7 @@ export function useReportState() {
     setDecisions(Object.fromEntries(reportResponse.events.map(event => [event.id, event.reviewAction])))
   }, [reportResponse])
 
-  const reportEvents = reportResponse?.events ?? []
+  const reportEvents = useMemo(() => reportResponse?.events ?? [], [reportResponse])
 
   const orderedEvents = useMemo(
     () => reportEvents
@@ -66,21 +66,25 @@ export function useReportState() {
     setSelectedId(event.id)
     const nextTime = event.startMs / 1000
     setCurrentTime(nextTime)
-    if (videoRef.current) { videoRef.current.currentTime = nextTime; void videoRef.current.play().catch(() => undefined) }
+    if (videoRef.current) { videoRef.current.currentTime = nextTime; void videoRef.current.play().catch(() => setIsPlaying(false)) }
     window.requestAnimationFrame(() => selectedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
   }
 
-  function togglePlay() { if (!videoRef.current) return; if (videoRef.current.paused) void videoRef.current.play().catch(() => undefined); else videoRef.current.pause() }
+  function togglePlay() { if (!videoRef.current) return; if (videoRef.current.paused) void videoRef.current.play().catch(() => setIsPlaying(false)); else videoRef.current.pause() }
+  const handleSetDuration = useCallback((d: number) => setDuration(d), [])
+  const handleSetCurrentTime = useCallback((t: number) => setCurrentTime(t), [])
+  const handleSetIsPlayingTrue = useCallback(() => setIsPlaying(true), [])
+  const handleSetIsPlayingFalse = useCallback(() => setIsPlaying(false), [])
   function seek(value: number) { setCurrentTime(value); if (videoRef.current) videoRef.current.currentTime = value }
 
   function handleVideoKeyDown(e: React.KeyboardEvent) {
     if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); togglePlay() }
   }
 
-  function decisionLabel(event: TimelineEvent) {
+  const decisionLabel = useCallback((event: TimelineEvent) => {
     const decision = decisions[event.id]
     return decision === 'EDITED' ? '수정함' : decision === 'CONFIRMED' ? '유지함' : decision === 'HOLD' ? '보류' : decision === 'NOT_USEFUL' ? '검출 끔' : ''
-  }
+  }, [decisions])
 
   async function finishReview() {
     if (remaining > 0) { setDecisionError('아직 결정하지 않은 검토 후보가 남아 있습니다.'); return }
@@ -121,11 +125,8 @@ export function useReportState() {
     videoRef,
     selectedCardRef,
     isPlaying,
-    setIsPlaying,
     duration,
-    setDuration,
     currentTime,
-    setCurrentTime,
     mediaDuration,
     scrubberMax,
     scrubberValue,
@@ -133,5 +134,9 @@ export function useReportState() {
     togglePlay,
     seek,
     handleVideoKeyDown,
+    handleSetDuration,
+    handleSetCurrentTime,
+    handleSetIsPlayingTrue,
+    handleSetIsPlayingFalse,
   }
 }

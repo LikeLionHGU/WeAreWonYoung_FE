@@ -77,7 +77,11 @@ export default function VideoPlayer({
       />
       <div>
         <span>{formatSeconds(currentTime || selectedStartMs / 1000)}</span>
-        <div><span>이 구간만 반복 재생</span><b>·</b><span>앞뒤 10초 더 보기</span></div>
+        <div>
+          <button type="button" disabled aria-label="이 구간만 반복 재생 (준비 중)">이 구간만 반복 재생</button>
+          <b aria-hidden="true">·</b>
+          <button type="button" disabled aria-label="앞뒤 10초 더 보기 (준비 중)">앞뒤 10초 더 보기</button>
+        </div>
         <span>{formattedDuration}</span>
       </div>
     </div>
