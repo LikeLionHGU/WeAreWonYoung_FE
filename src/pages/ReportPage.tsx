@@ -47,7 +47,7 @@ export default function ReportPage() {
   if (state.error) {
     return (
       <main className="center-page">
-        <ErrorNotice message={state.error.message} code={state.error.code} />
+        <ErrorNotice message={state.error.message} />
         <Link className="button button-dark" to={`/videos/${state.id}/analysis`}>
           분석 상태로 돌아가기
         </Link>

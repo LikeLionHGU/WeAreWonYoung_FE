@@ -17,7 +17,7 @@ export default function CompletionPage() {
   if (error)
     return (
       <main className="center-page">
-        <ErrorNotice message={error.message} code={error.code} />
+        <ErrorNotice message={error.message} />
         <Link className="button button-dark" to={`/videos/${id}/report`}>
           리포트로 돌아가기
         </Link>

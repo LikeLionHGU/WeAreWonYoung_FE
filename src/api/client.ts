@@ -50,7 +50,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (!response.ok || !body.success) {
     if (!body.success) {
       const message =
-        errorMessages[body.error.code] ?? body.error.message ?? errorMessages.INTERNAL_SERVER_ERROR
+        body.error.message ?? errorMessages[body.error.code] ?? errorMessages.INTERNAL_SERVER_ERROR
       throw new ApiRequestError(body.error.code, message, response.status, body.error.details)
     }
     throw new ApiRequestError(

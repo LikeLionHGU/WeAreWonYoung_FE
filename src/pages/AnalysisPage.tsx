@@ -151,9 +151,8 @@ export default function AnalysisPage() {
               message={
                 failed ? (status.failure?.message ?? status.message) : '분석이 취소되었습니다.'
               }
-              code={status.failure?.code}
             />
-            {retryError && <ErrorNotice message={retryError.message} code={retryError.code} />}
+            {retryError && <ErrorNotice message={retryError.message} />}
             <button
               className="button button-dark"
               onClick={() => void handleRetry()}

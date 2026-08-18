@@ -66,13 +66,12 @@ export function StatusPill({ status }: { status: string }) {
   )
 }
 
-export function ErrorNotice({ message, code }: { message: string; code?: string }) {
+export function ErrorNotice({ message }: { message: string }) {
   return (
     <div className="notice notice-error" role="alert">
       <span className="notice-icon">!</span>
       <div>
         <strong>{message}</strong>
-        {code && <small>{code}</small>}
       </div>
     </div>
   )

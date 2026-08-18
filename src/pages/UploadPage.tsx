@@ -167,7 +167,7 @@ export default function UploadPage() {
           </div>
         )}
 
-        {error && <ErrorNotice message={error.message} code={error.code} />}
+        {error && <ErrorNotice message={error.message} />}
 
         <div className="upload-submit">
           <p>
