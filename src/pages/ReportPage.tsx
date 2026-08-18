@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { formatTime, reportEventTitle, reportEventKind } from '../utils/format'
@@ -11,6 +11,9 @@ import { useReportState } from './report/useReportState'
 export default function ReportPage() {
   const state = useReportState()
 
+  const stateRef = useRef(state)
+  stateRef.current = state
+
   useEffect(() => {
     function handleGlobalKeyDown(e: KeyboardEvent) {
       const tag = (e.target as HTMLElement)?.tagName
@@ -18,18 +21,18 @@ export default function ReportPage() {
 
       if (e.key === ' ') {
         e.preventDefault()
-        state.togglePlay()
+        stateRef.current.togglePlay()
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault()
-        state.skipBy(-10)
+        stateRef.current.skipBy(-10)
       } else if (e.key === 'ArrowRight') {
         e.preventDefault()
-        state.skipBy(10)
+        stateRef.current.skipBy(10)
       }
     }
     window.addEventListener('keydown', handleGlobalKeyDown)
     return () => window.removeEventListener('keydown', handleGlobalKeyDown)
-  })
+  }, [])
 
   if (!state.id) return <Navigate to="/" replace />
 
