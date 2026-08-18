@@ -68,11 +68,20 @@
 .shell-report .report-reason p { margin: 0; color: #6b7280; font: 400 15px/1.7 'Noto Sans KR', sans-serif; }
 .shell-report .report-player { position: relative; width: 100%; aspect-ratio: 708 / 398; margin-top: 22px; overflow: hidden; border-radius: 10px; background: #1f2328; }
 .shell-report .report-player video { width: 100%; height: 100%; display: block; object-fit: contain; cursor: pointer; }
-.shell-report .report-play { position: absolute; top: 50%; left: 50%; width: 60px; height: 60px; transform: translate(-50%, -50%); border: 0; border-radius: 50%; background: #2e7df7; color: #1f2328; font: 20px/1 Inter, sans-serif; }
+.shell-report .report-play { position: absolute; top: 50%; left: 50%; width: 52px; height: 52px; transform: translate(-50%, -50%); border: 0; border-radius: 50%; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(6px); color: #fff; font-size: 0; cursor: pointer; transition: background 0.2s, opacity 0.2s, transform 0.2s; display: flex; align-items: center; justify-content: center; }
+.shell-report .report-play:hover { background: rgba(0, 0, 0, 0.7); transform: translate(-50%, -50%) scale(1.08); }
+.shell-report .report-play svg { width: 22px; height: 22px; fill: #fff; }
+.shell-report .report-player:hover .report-play { opacity: 1; }
+.shell-report .report-player video:not([paused]) ~ .report-play { opacity: 0; }
+.shell-report .report-player:hover video ~ .report-play { opacity: 1; }
 .shell-report .report-scrubber { padding: 14px 0 22px; display: flex; flex-direction: column; gap: 9px; }
 .shell-report .report-scrubber input { width: 100%; height: 4px; accent-color: #2e7df7; }
 .shell-report .report-scrubber > div { display: flex; align-items: center; justify-content: space-between; color: #b6bac0; font: 400 11px/1.5 Inter, sans-serif; }
 .shell-report .report-scrubber > div > div { display: flex; gap: 14px; align-items: center; color: #9aa0a6; font: 400 11px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-scrubber-controls { display: flex; gap: 8px; align-items: center; }
+.shell-report .report-scrubber-controls button { padding: 4px 10px; border: 1px solid #e3e5e8; border-radius: 12px; background: #fff; color: #4b5058; font: 400 11px/1.5 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.15s; }
+.shell-report .report-scrubber-controls button:hover { background: #f5f6f7; }
+.shell-report .report-scrubber-controls button:active { background: #edeef0; }
 .shell-report .report-scrubber b { color: #dfe1e4; font-weight: 400; }
 .shell-report .report-caption { grid-column: 2; display: flex; align-items: center; gap: 10px; padding: 9px 0 9px 14px; border-left: 2px solid #16181d; white-space: nowrap; }
 .shell-report .report-caption span { color: #9aa0a6; font: 500 11px/1.5 'Noto Sans KR', sans-serif; }
@@ -202,7 +211,7 @@
 .shell-report .report-references a span, .shell-report .report-references a small { color: #9aa0a6; font: 400 11px/1.5 'Noto Sans KR', sans-serif; }
 .shell-report .report-references a small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .shell-report .report-player { margin-top: 24px; border-radius: 8px; background: #16181d; }
-.shell-report .report-play { background: #4bb1fd; color: #fff; box-shadow: 0 8px 20px rgba(46, 125, 247, .3); }
+.shell-report .report-play { background: rgba(0, 0, 0, 0.6); box-shadow: 0 4px 12px rgba(0, 0, 0, .25); }
 .shell-report .report-scrubber input { accent-color: #2e7df7; }
 .shell-report .report-caption { border-left-color: #2e7df7; }
 .shell-report .report-actions button.is-active { border-color: #2e7df7; background: #2e7df7; }

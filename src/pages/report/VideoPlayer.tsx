@@ -19,6 +19,7 @@ interface VideoPlayerProps {
   onPause: () => void
   onTogglePlay: () => void
   onSeek: (value: number) => void
+  onSkipBy: (seconds: number) => void
   onKeyDown: (e: React.KeyboardEvent) => void
 }
 
@@ -39,51 +40,79 @@ export default function VideoPlayer({
   onPause,
   onTogglePlay,
   onSeek,
+  onSkipBy,
   onKeyDown,
 }: VideoPlayerProps) {
   const formattedDuration = durationLabel ?? formatSeconds(mediaDuration)
   const formattedValue = formatSeconds(scrubberValue)
 
-  return <>
-    <div className="report-player">
-      <video
-        ref={videoRef}
-        tabIndex={0}
-        aria-label="검수 대상 영상 플레이어"
-        preload="metadata"
-        poster={assetUrl(posterUrl)}
-        src={assetUrl(streamUrl)}
-        onLoadedMetadata={e => onLoadedMetadata(e.currentTarget.duration)}
-        onTimeUpdate={e => onTimeUpdate(e.currentTarget.currentTime)}
-        onPlay={onPlay}
-        onPause={onPause}
-        onClick={onTogglePlay}
-        onKeyDown={onKeyDown}
-      />
-      <button type="button" className="report-play" aria-label={isPlaying ? '일시정지' : '재생'} onClick={onTogglePlay}>
-        {isPlaying ? 'Ⅱ' : '▶'}
-      </button>
-    </div>
-    <div className="report-scrubber">
-      <input
-        type="range"
-        aria-label="영상 재생 위치"
-        aria-valuetext={`${formattedValue} / ${formattedDuration}`}
-        min="0"
-        max={scrubberMax}
-        step="0.1"
-        value={scrubberValue}
-        onChange={e => onSeek(Number(e.target.value))}
-      />
-      <div>
-        <span>{formatSeconds(currentTime || selectedStartMs / 1000)}</span>
-        <div>
-          <button type="button" disabled aria-label="이 구간만 반복 재생 (준비 중)">이 구간만 반복 재생</button>
-          <b aria-hidden="true">·</b>
-          <button type="button" disabled aria-label="앞뒤 10초 더 보기 (준비 중)">앞뒤 10초 더 보기</button>
-        </div>
-        <span>{formattedDuration}</span>
+  return (
+    <>
+      <div className="report-player">
+        <video
+          ref={videoRef}
+          tabIndex={0}
+          aria-label="검수 대상 영상 플레이어 — Space: 재생/정지, ←→: 10초 이동"
+          preload="metadata"
+          poster={assetUrl(posterUrl)}
+          src={assetUrl(streamUrl)}
+          onLoadedMetadata={e => onLoadedMetadata(e.currentTarget.duration)}
+          onTimeUpdate={e => onTimeUpdate(e.currentTarget.currentTime)}
+          onPlay={onPlay}
+          onPause={onPause}
+          onClick={onTogglePlay}
+          onKeyDown={onKeyDown}
+        />
+        <button
+          type="button"
+          className="report-play"
+          aria-label={isPlaying ? '일시정지' : '재생'}
+          onClick={onTogglePlay}
+        >
+          {isPlaying ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="6" y="4" width="4" height="16" rx="1" />
+              <rect x="14" y="4" width="4" height="16" rx="1" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11.04-6.86a1 1 0 0 0 0-1.72L9.5 4.28A1 1 0 0 0 8 5.14z" />
+            </svg>
+          )}
+        </button>
       </div>
-    </div>
-  </>
+      <div className="report-scrubber">
+        <input
+          type="range"
+          aria-label="영상 재생 위치"
+          aria-valuetext={`${formattedValue} / ${formattedDuration}`}
+          min="0"
+          max={scrubberMax}
+          step="0.1"
+          value={scrubberValue}
+          onChange={e => onSeek(Number(e.target.value))}
+        />
+        <div>
+          <span>{formatSeconds(currentTime || selectedStartMs / 1000)}</span>
+          <div className="report-scrubber-controls">
+            <button
+              type="button"
+              aria-label="10초 뒤로"
+              onClick={() => onSkipBy(-10)}
+            >
+              ◁ 10초
+            </button>
+            <button
+              type="button"
+              aria-label="10초 앞으로"
+              onClick={() => onSkipBy(10)}
+            >
+              10초 ▷
+            </button>
+          </div>
+          <span>{formattedDuration}</span>
+        </div>
+      </div>
+    </>
+  )
 }

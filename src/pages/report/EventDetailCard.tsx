@@ -35,6 +35,7 @@ interface EventDetailCardProps {
   onPause: () => void
   onTogglePlay: () => void
   onSeek: (value: number) => void
+  onSkipBy: (seconds: number) => void
   onVideoKeyDown: (e: React.KeyboardEvent) => void
   onDecision: (action: ReviewAction) => void
 }
@@ -61,6 +62,7 @@ export default function EventDetailCard({
   onPause,
   onTogglePlay,
   onSeek,
+  onSkipBy,
   onVideoKeyDown,
   onDecision,
 }: EventDetailCardProps) {
@@ -104,6 +106,7 @@ export default function EventDetailCard({
         onPause={onPause}
         onTogglePlay={onTogglePlay}
         onSeek={onSeek}
+        onSkipBy={onSkipBy}
         onKeyDown={onVideoKeyDown}
       />
 

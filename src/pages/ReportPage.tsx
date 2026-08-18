@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { formatTime, reportEventTitle, reportEventKind } from '../utils/format'
@@ -9,6 +10,26 @@ import { useReportState } from './report/useReportState'
 
 export default function ReportPage() {
   const state = useReportState()
+
+  useEffect(() => {
+    function handleGlobalKeyDown(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement)?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+
+      if (e.key === ' ') {
+        e.preventDefault()
+        state.togglePlay()
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        state.skipBy(-10)
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        state.skipBy(10)
+      }
+    }
+    window.addEventListener('keydown', handleGlobalKeyDown)
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+  })
 
   if (!state.id) return <Navigate to="/" replace />
 
@@ -144,6 +165,7 @@ export default function ReportPage() {
           onPause={state.handleSetIsPlayingFalse}
           onTogglePlay={state.togglePlay}
           onSeek={state.seek}
+          onSkipBy={state.skipBy}
           onVideoKeyDown={state.handleVideoKeyDown}
           onDecision={state.setDecision}
         />

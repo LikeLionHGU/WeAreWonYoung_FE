@@ -95,7 +95,8 @@ export function useReportState() {
     setCurrentTime(nextTime)
     if (videoRef.current) {
       videoRef.current.currentTime = nextTime
-      void videoRef.current.play().catch(() => setIsPlaying(false))
+      videoRef.current.pause()
+      setIsPlaying(false)
     }
     window.requestAnimationFrame(() =>
       selectedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -121,10 +122,24 @@ export function useReportState() {
     if (videoRef.current) videoRef.current.currentTime = value
   }
 
+  function skipBy(seconds: number) {
+    if (!videoRef.current) return
+    const maxTime = videoRef.current.duration || scrubberMax
+    const next = Math.max(0, Math.min(maxTime, currentTime + seconds))
+    videoRef.current.currentTime = next
+    setCurrentTime(next)
+  }
+
   function handleVideoKeyDown(e: React.KeyboardEvent) {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault()
       togglePlay()
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      skipBy(-10)
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      skipBy(10)
     }
   }
 
@@ -198,6 +213,7 @@ export function useReportState() {
     durationLabel,
     togglePlay,
     seek,
+    skipBy,
     handleVideoKeyDown,
     handleSetDuration,
     handleSetCurrentTime,
