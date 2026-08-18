@@ -67,18 +67,20 @@ export function useReportState() {
 
   async function setDecision(decision: ReviewAction) {
     if (!selected) return
-    const previous = decisions[selected.id] ?? null
+    if (savingEventId) return
+    const eventId = selected.id
+    const previous = decisions[eventId] ?? null
     setDecisionError(null)
-    setSavingEventId(selected.id)
-    setDecisions(current => ({ ...current, [selected.id]: decision }))
+    setSavingEventId(eventId)
+    setDecisions(current => ({ ...current, [eventId]: decision }))
 
     try {
-      await apiClient.saveReviewAction(id, selected.id, decision)
-      const currentIdx = orderedEvents.findIndex(event => event.id === selected.id)
+      await apiClient.saveReviewAction(id, eventId, decision)
+      const currentIdx = orderedEvents.findIndex(event => event.id === eventId)
       const nextEvent = orderedEvents[currentIdx + 1]
       if (nextEvent) setSelectedId(nextEvent.id)
     } catch (err) {
-      setDecisions(current => ({ ...current, [selected.id]: previous }))
+      setDecisions(current => ({ ...current, [eventId]: previous }))
       setDecisionError(
         err instanceof Error ? err.message : '검수 결정을 저장하지 못했습니다.'
       )

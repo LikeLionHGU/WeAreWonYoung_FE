@@ -4,6 +4,15 @@ import { formatTime, formatSeconds, reportEventTitle, reportEventSpeech, reportE
 import VideoPlayer from './VideoPlayer'
 import ReviewActions from './ReviewActions'
 
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url, 'https://placeholder.invalid')
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 interface EventDetailCardProps {
   selected: TimelineEvent
   selectedIndex: number
@@ -124,7 +133,7 @@ export default function EventDetailCard({
                   {reference.provider && <span>{reference.provider}{reference.publishedAt ? ` · ${reference.publishedAt}` : ''}</span>}
                   {reference.snippet && <small>{reference.snippet}</small>}
                 </div>
-                <a href={reference.url} target="_blank" rel="noreferrer">원문 확인 <b aria-hidden="true">→</b></a>
+                <a href={isSafeUrl(reference.url) ? reference.url : '#'} target="_blank" rel="noreferrer">원문 확인 <b aria-hidden="true">→</b></a>
               </article>
             ))}
           </div>

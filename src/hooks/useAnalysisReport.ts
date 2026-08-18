@@ -7,7 +7,7 @@ export function useAnalysisReport(videoId: string, enabled = true) {
   const [report, setReport] = useState<AnalysisReportResponse | null>(null)
   const [error, setError] = useState<ApiRequestError | null>(null)
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !videoId) return;
     let active = true;
     void apiClient.report(videoId)
       .then(value => { if (active) setReport(value) })
