@@ -11,8 +11,26 @@ export default function ReportPage() {
   const state = useReportState()
 
   if (!state.id) return <Navigate to="/" replace />
-  if (!state.reportResponse && !state.error) return <main className="center-page"><Loading label="검수 결과를 정리하는 중" /></main>
-  if (state.error) return <main className="center-page"><ErrorNotice message={state.error.message} code={state.error.code} /><Link className="button button-dark" to={`/videos/${state.id}/analysis`}>분석 상태로 돌아가기</Link></main>
+
+  if (!state.reportResponse && !state.error) {
+    return (
+      <main className="center-page">
+        <Loading label="검수 결과를 정리하는 중" />
+      </main>
+    )
+  }
+
+  if (state.error) {
+    return (
+      <main className="center-page">
+        <ErrorNotice message={state.error.message} code={state.error.code} />
+        <Link className="button button-dark" to={`/videos/${state.id}/analysis`}>
+          분석 상태로 돌아가기
+        </Link>
+      </main>
+    )
+  }
+
   if (!state.report) return null
 
   const { report, selected, orderedEvents, remaining, filter } = state
@@ -20,12 +38,13 @@ export default function ReportPage() {
 
   const filterLabel = filter === 'FACT_CHECK' ? '사실 확인' : '발언'
   const generatedDate = new Date(report.generatedAt)
-  const generatedLabel = Number.isNaN(generatedDate.valueOf()) ? '날짜 확인 불가' : generatedDate.toLocaleDateString('ko-KR')
+  const generatedLabel = Number.isNaN(generatedDate.valueOf())
+    ? '날짜 확인 불가'
+    : generatedDate.toLocaleDateString('ko-KR')
 
   return (
     <main className="report-page">
       <div className="report-content">
-        {/* Heading */}
         <div className="report-heading">
           <p className="report-meta">검수 리포트 · {generatedLabel}</p>
           <h1>다시 확인할 구간 {remaining}건 남음</h1>
@@ -33,40 +52,76 @@ export default function ReportPage() {
           {report.warnings.length > 0 && (
             <div className="report-warnings" role="status">
               <strong>일부 분석 안내</strong>
-              {report.warnings.map(warning => <p key={`${warning.stage}-${warning.code}`}>{warning.message}</p>)}
+              {report.warnings.map(warning => (
+                <p key={`${warning.stage}-${warning.code}`}>{warning.message}</p>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Filter toolbar */}
         <div className="report-toolbar">
-          <div className="report-filter-count"><strong>남은 검토</strong><span>{remaining}</span></div>
+          <div className="report-filter-count">
+            <strong>남은 검토</strong>
+            <span>{remaining}</span>
+          </div>
           <div className="report-filters" role="group" aria-label="검토 후보 유형">
-            <button type="button" aria-pressed={filter === 'ALL'} className={filter === 'ALL' ? 'is-selected' : ''} onClick={() => state.chooseFilter('ALL')}>전체 {report.events.length}</button>
-            <button type="button" aria-pressed={filter === 'SPEECH_REVIEW'} className={filter === 'SPEECH_REVIEW' ? 'is-selected' : ''} onClick={() => state.chooseFilter('SPEECH_REVIEW')}>발언 {state.speechCount}</button>
-            <button type="button" aria-pressed={filter === 'FACT_CHECK'} className={filter === 'FACT_CHECK' ? 'is-selected' : ''} onClick={() => state.chooseFilter('FACT_CHECK')}>사실 확인 {state.factCheckCount}</button>
+            <button
+              type="button"
+              aria-pressed={filter === 'ALL'}
+              className={filter === 'ALL' ? 'is-selected' : ''}
+              onClick={() => state.chooseFilter('ALL')}
+            >
+              전체 {report.events.length}
+            </button>
+            <button
+              type="button"
+              aria-pressed={filter === 'SPEECH_REVIEW'}
+              className={filter === 'SPEECH_REVIEW' ? 'is-selected' : ''}
+              onClick={() => state.chooseFilter('SPEECH_REVIEW')}
+            >
+              발언 {state.speechCount}
+            </button>
+            <button
+              type="button"
+              aria-pressed={filter === 'FACT_CHECK'}
+              className={filter === 'FACT_CHECK' ? 'is-selected' : ''}
+              onClick={() => state.chooseFilter('FACT_CHECK')}
+            >
+              사실 확인 {state.factCheckCount}
+            </button>
           </div>
         </div>
 
-        {/* Filtered results list (only when filter active) */}
         {filter !== 'ALL' && (
           <section className="report-filter-results" aria-label={`${filterLabel} 검토 후보`}>
-            <div className="report-filter-results-head"><strong>{filterLabel} 검토 후보</strong><span>{orderedEvents.length}건</span></div>
+            <div className="report-filter-results-head">
+              <strong>{filterLabel} 검토 후보</strong>
+              <span>{orderedEvents.length}건</span>
+            </div>
             <div className="report-filter-results-list">
-              {orderedEvents.map(event => (
-                <button type="button" className={`report-filter-result ${event.id === selected.id ? 'is-current' : ''}`} key={event.id} onClick={() => state.selectEvent(event)}>
-                  <span className="report-time-pill">{formatTime(event.startMs)}</span>
-                  <span>{reportEventKind(event)}</span>
-                  <strong>{reportEventTitle(event)}</strong>
-                  <small>{reportEventKind(event)}</small>
-                  {state.decisionLabel(event) && <em>{state.decisionLabel(event)}</em>}
-                </button>
-              ))}
+              {orderedEvents.map(event => {
+                const kind = reportEventKind(event)
+                const label = state.decisionLabel(event)
+                return (
+                  <button
+                    type="button"
+                    aria-current={event.id === selected.id ? 'true' : undefined}
+                    className={`report-filter-result ${event.id === selected.id ? 'is-current' : ''}`}
+                    key={event.id}
+                    onClick={() => state.selectEvent(event)}
+                  >
+                    <span className="report-time-pill">{formatTime(event.startMs)}</span>
+                    <span>{kind}</span>
+                    <strong>{reportEventTitle(event)}</strong>
+                    <small>{kind}</small>
+                    {label && <em>{label}</em>}
+                  </button>
+                )
+              })}
             </div>
           </section>
         )}
 
-        {/* Selected event detail card */}
         <EventDetailCard
           selected={selected}
           selectedIndex={state.selectedIndex}
@@ -93,7 +148,6 @@ export default function ReportPage() {
           onDecision={state.setDecision}
         />
 
-        {/* All candidates list (hidden when filter active — filtered section above takes over) */}
         {filter === 'ALL' && (
           <EventList
             events={orderedEvents}
@@ -103,10 +157,11 @@ export default function ReportPage() {
           />
         )}
 
-        <p className="report-footnote">최종 판단은 제작자가 합니다. 원본 영상은 분석 완료 후 24시간 안에 삭제됩니다.</p>
+        <p className="report-footnote">
+          최종 판단은 제작자가 합니다. 원본 영상은 분석 완료 후 24시간 안에 삭제됩니다.
+        </p>
       </div>
 
-      {/* Sidebar */}
       <ReviewSidebar
         filename={report.filename}
         events={report.events}

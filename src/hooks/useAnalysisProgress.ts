@@ -63,7 +63,13 @@ export function useAnalysisProgress(videoId: string) {
     }, onWebSocketError: startPolling, onStompError: startPolling, onWebSocketClose: startPolling })
     clientRef.current = client
     client.activate()
-    return () => { mounted = false; if (pollTimer) window.clearInterval(pollTimer); subscription?.unsubscribe(); void client.deactivate(); clientRef.current = null }
+    return () => {
+      mounted = false
+      if (pollTimer) window.clearInterval(pollTimer)
+      subscription?.unsubscribe()
+      void client.deactivate()
+      clientRef.current = null
+    }
   }, [applyStatus, refresh, videoId])
 
   return { status, isFallback, refresh }
