@@ -139,6 +139,13 @@ Vercel 정적 배포에는 `server/index.ts`가 포함되지 않습니다. 배�
 │   ├── components/           # AppShell, LandingKicker 등 공유 컴포넌트
 │   ├── hooks/                # 업로드·진행률·리포트·재시도 상태 훅
 │   ├── pages/                # 페이지별 컴포넌트 (8개)
+│   │   └── report/          # 검수 리포트 서브 컴포넌트
+│   │       ├── useReportState.ts    # 상태·핸들러 커스텀 훅
+│   │       ├── EventDetailCard.tsx  # 선택 이벤트 상세
+│   │       ├── VideoPlayer.tsx      # 영상 + 스크러버
+│   │       ├── ReviewActions.tsx    # 결정 버튼 그룹
+│   │       ├── EventList.tsx        # 후보 목록
+│   │       └── ReviewSidebar.tsx    # 사이드바 진행률
 │   ├── utils/                # formatTime, reportEventKind 등 유틸리티
 │   ├── styles/               # base + 페이지별 CSS
 │   ├── App.tsx               # 라우터
@@ -151,6 +158,15 @@ Vercel 정적 배포에는 `server/index.ts`가 포함되지 않습니다. 배�
 └── mock-data/                # 로컬 업로드·상태 저장 (Git 제외)
 ```
 
+## 키보드 단축키 (검수 리포트)
+
+| 키 | 동작 |
+| --- | --- |
+| `Space` | 영상 재생 / 정지 (페이지 어디서든) |
+| `←` | 10초 뒤로 |
+| `→` | 10초 앞으로 |
+| `Enter` | 영상 재생 / 정지 (영상 포커스 시) |
+
 ## 검증
 
 ```bash
@@ -162,7 +178,7 @@ npm run build              # 프로덕션 빌드
 
 ## 현재 범위
 
-**포함:** 업로드 검토 UI, 진행률 복구, polling fallback, 실패·재시도·취소, 검수 리포트(발언/사실확인 2유형), 영상 seek, 참고 자료 링크, 앞뒤 맥락, 검수 완료, 이력, 빈 상태, 반응형 레이아웃.
+**포함:** 업로드 검토 UI, 진행률 복구, polling fallback, 실패·재시도·취소, 검수 리포트(발언/사실확인 2유형), 영상 seek, 키보드 단축키(Space/←/→), 참고 자료 링크, 앞뒤 맥락, 검수 완료, 이력, 빈 상태, 반응형 레이아웃, URL XSS 방어.
 
 **제외:** 인증, 사용자별 권한, 결제 연동, 실제 AI 분석, 외부 검색, Spring ↔ Python 내부 API, 결과 편집·다운로드, 영상 제목·채널 URL 메타데이터, severity/riskTypes 화면 표시.
 
