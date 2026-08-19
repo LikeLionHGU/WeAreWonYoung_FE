@@ -74,8 +74,8 @@ export default function VideoPlayer({
           />
         ) : videoError ? (
           <div className="video-error-fallback">
-            <p>영상을 불러올 수 없습니다.</p>
-            <small>네트워크 연결을 확인하거나 새로고침해 주세요.</small>
+            <p>영상을 재생할 수 없습니다.</p>
+            <small>YouTube 영상은 원본 링크에서 직접 확인해 주세요.</small>
           </div>
         ) : (
         <video
