@@ -61,6 +61,7 @@ interface VideoPlayerProps {
 function YouTubePlayer({
   videoId,
   currentTime,
+  isPlaying,
   onDuration,
   onTimeUpdate,
   onPlay,
@@ -68,6 +69,7 @@ function YouTubePlayer({
 }: {
   videoId: string
   currentTime: number
+  isPlaying: boolean
   onDuration: (d: number) => void
   onTimeUpdate: (t: number) => void
   onPlay: () => void
@@ -76,7 +78,6 @@ function YouTubePlayer({
   const containerRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<YT.Player | null>(null)
   const timerRef = useRef<number>(0)
-  const seekedRef = useRef(false)
 
   useEffect(() => {
     let mounted = true
@@ -120,12 +121,34 @@ function YouTubePlayer({
   const prevTime = useRef(currentTime)
   useEffect(() => {
     const diff = Math.abs(currentTime - prevTime.current)
-    if (diff > 1 && playerRef.current && !seekedRef.current) {
-      playerRef.current.seekTo(currentTime, true)
+    // Only seek if jump is > 2 seconds (skip/scrubber, not ticker)
+    if (diff > 2 && playerRef.current) {
+      try {
+        playerRef.current.seekTo(currentTime, true)
+      } catch {
+        /* player not ready */
+      }
     }
     prevTime.current = currentTime
-    seekedRef.current = false
   }, [currentTime])
+
+  // Play/pause when isPlaying prop changes (Space key, toggle button)
+  const prevPlaying = useRef(isPlaying)
+  useEffect(() => {
+    if (prevPlaying.current === isPlaying) return
+    prevPlaying.current = isPlaying
+    if (!playerRef.current) return
+    try {
+      const state = playerRef.current.getPlayerState()
+      if (isPlaying && state !== YT.PlayerState.PLAYING) {
+        playerRef.current.playVideo()
+      } else if (!isPlaying && state === YT.PlayerState.PLAYING) {
+        playerRef.current.pauseVideo()
+      }
+    } catch {
+      /* player not ready */
+    }
+  }, [isPlaying])
 
   return <div ref={containerRef} className="youtube-embed" />
 }
@@ -167,6 +190,7 @@ export default function VideoPlayer({
           <YouTubePlayer
             videoId={youtubeVideoId}
             currentTime={currentTime}
+            isPlaying={isPlaying}
             onDuration={handleYtDuration}
             onTimeUpdate={handleYtTimeUpdate}
             onPlay={onPlay}
