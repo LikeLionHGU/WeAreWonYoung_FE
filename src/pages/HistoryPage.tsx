@@ -45,7 +45,9 @@ function HistoryRow({ item }: { item: VideoHistoryItem }) {
             ? '완료'
             : item.reviewStatus === 'IN_REVIEW'
               ? '검수 중'
-              : '검수 필요'
+              : item.eventCount === 0
+                ? '검출 없음'
+                : '검수 필요'
   return (
     <Link className={`history-row history-row-${item.analysisStatus.toLowerCase()}`} to={target}>
       <span className="history-file">

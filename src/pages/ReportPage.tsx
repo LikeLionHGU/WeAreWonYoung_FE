@@ -58,6 +58,21 @@ export default function ReportPage() {
   if (!state.report) return null
 
   const { report, selected, orderedEvents, remaining, filter } = state
+
+  if (!selected && report.events.length === 0) {
+    return (
+      <main className="center-page">
+        <div className="empty-report-page">
+          <h1>검출된 검토 후보가 없습니다</h1>
+          <p>이 영상에서는 다시 확인할 구간을 찾지 못했습니다.</p>
+          <Link className="button button-dark" to="/history">
+            검수 이력으로 돌아가기
+          </Link>
+        </div>
+      </main>
+    )
+  }
+
   if (!selected) return <EmptyReportPage />
 
   const filterLabel = filter === 'FACT_CHECK' ? '사실 확인' : '발언'
