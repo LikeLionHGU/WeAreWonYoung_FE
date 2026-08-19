@@ -27,7 +27,9 @@ export default function CompletionPage() {
       </main>
     )
   if (!report) return null
-  const edited = report.events.filter(event => event.reviewAction === 'EDITED')
+  const edited = report.events
+    .filter(event => event.reviewAction === 'EDITED')
+    .sort((a, b) => a.startMs - b.startMs)
   const held = report.events.filter(event => event.reviewAction === 'HOLD')
   const kept = report.events.filter(event => event.reviewAction === 'CONFIRMED')
   const actionEvents = edited
