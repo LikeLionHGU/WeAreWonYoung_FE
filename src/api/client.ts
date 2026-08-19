@@ -64,11 +64,35 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const apiClient = {
-  upload(file: File, genre?: UploadGenre) {
+  upload(file: File, genre?: UploadGenre, onProgress?: (percent: number) => void) {
     const form = new FormData()
     form.append('file', file)
     if (genre) form.append('genre', genre)
-    return request<VideoUploadResponse>('/api/v1/videos', { method: 'POST', body: form })
+    if (!onProgress) {
+      return request<VideoUploadResponse>('/api/v1/videos', { method: 'POST', body: form })
+    }
+    return new Promise<VideoUploadResponse>((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      xhr.open('POST', `${baseUrl}/api/v1/videos`)
+      xhr.upload.onprogress = e => {
+        if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100))
+      }
+      xhr.onload = () => {
+        try {
+          const body = JSON.parse(xhr.responseText) as ApiResponse<VideoUploadResponse>
+          if (!body.success) {
+            const msg = errorMessages[body.error.code] ?? body.error.message ?? errorMessages.INTERNAL_SERVER_ERROR
+            reject(new ApiRequestError(body.error.code, msg, xhr.status, body.error.details))
+          } else {
+            resolve(body.data)
+          }
+        } catch {
+          reject(new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, xhr.status))
+        }
+      }
+      xhr.onerror = () => reject(new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, 0))
+      xhr.send(form)
+    })
   },
   registerUrl(url: string, genre?: UploadGenre) {
     return request<VideoUploadResponse>('/api/v1/videos', {

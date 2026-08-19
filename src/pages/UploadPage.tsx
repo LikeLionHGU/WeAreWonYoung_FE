@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ErrorNotice } from '../components/AppShell'
 import { useVideoUpload } from '../hooks/useVideoUpload'
@@ -22,12 +22,19 @@ function isYouTubeUrl(url: string): boolean {
 export default function UploadPage() {
   const navigate = useNavigate()
   const inputRef = useRef<HTMLInputElement>(null)
-  const { upload, registerUrl, isUploading, error } = useVideoUpload()
+  const { upload, registerUrl, isUploading, progress, error } = useVideoUpload()
   const [mode, setMode] = useState<UploadMode>('file')
   const [fileName, setFileName] = useState('')
   const [videoUrl, setVideoUrl] = useState('')
   const [isDragging, setIsDragging] = useState(false)
   const [urlError, setUrlError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!isUploading) return
+    const handler = (e: BeforeUnloadEvent) => { e.preventDefault() }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [isUploading])
 
   const canSubmit = mode === 'file' ? Boolean(fileName) : Boolean(videoUrl.trim()) && !urlError
 
@@ -168,6 +175,15 @@ export default function UploadPage() {
         )}
 
         {error && <ErrorNotice message={error.message} />}
+
+        {isUploading && mode === 'file' && progress > 0 && (
+          <div className="upload-progress">
+            <div className="upload-progress-track">
+              <span style={{ width: `${progress}%` }} />
+            </div>
+            <span className="upload-progress-label">{progress}%</span>
+          </div>
+        )}
 
         <div className="upload-submit">
           <p>

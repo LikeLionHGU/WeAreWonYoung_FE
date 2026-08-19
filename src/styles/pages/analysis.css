@@ -172,3 +172,6 @@
   .shell-analysis .analysis-step .step-dot { width: clamp(6px, .56vw, 8px); height: clamp(6px, .56vw, 8px); }
   .shell-analysis .analysis-note { gap: clamp(10px, 1.11vw, 16px); padding-top: clamp(26px, 2.5vw, 36px); font-size: clamp(11px, .9vw, 13px); }
 }
+
+.analysis-history-link { display: inline-block; margin-top: 12px; color: #6b7280; font: 400 14px/1.5 'Noto Sans KR', sans-serif; text-decoration: underline; text-underline-offset: 3px; }
+.analysis-history-link:hover { color: #111; }

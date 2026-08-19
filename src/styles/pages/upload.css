@@ -278,3 +278,8 @@
   color: #9aa0a6;
   font: 400 12px/1.5 'Noto Sans KR', sans-serif;
 }
+
+.upload-progress { margin-top: 16px; display: flex; align-items: center; gap: 12px; }
+.upload-progress-track { flex: 1; height: 6px; border-radius: 3px; background: #e5e7eb; overflow: hidden; }
+.upload-progress-track > span { display: block; height: 100%; border-radius: 3px; background: #2e7df7; transition: width 300ms ease; }
+.upload-progress-label { min-width: 36px; text-align: right; font: 500 13px/1 'Noto Sans KR', sans-serif; color: #374151; }

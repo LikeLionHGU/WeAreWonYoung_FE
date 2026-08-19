@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { apiClient } from '../api/client'
 import { useAnalysisProgress } from '../hooks/useAnalysisProgress'
@@ -34,6 +34,7 @@ export default function AnalysisPage() {
     }
   }
   async function handleCancel() {
+    if (!window.confirm('분석을 취소하시겠습니까? 취소 후에도 다시 분석을 시작할 수 있습니다.')) return
     setIsCancelling(true)
     setCancelError(null)
     try {
@@ -160,6 +161,9 @@ export default function AnalysisPage() {
             >
               {isRetrying ? '다시 준비하는 중…' : '다시 분석하기 →'}
             </button>
+            <Link className="analysis-history-link" to="/history">
+              검수 이력으로 돌아가기
+            </Link>
           </div>
         )}
       </section>

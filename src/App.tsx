@@ -7,7 +7,7 @@ import ReportPage from './pages/ReportPage'
 import CompletionPage from './pages/CompletionPage'
 import HistoryPage from './pages/HistoryPage'
 import SettingsPage from './pages/SettingsPage'
-import EmptyReportPage from './pages/EmptyReportPage'
+import ReportRedirectPage from './pages/ReportRedirectPage'
 
 export default function App() {
   return (
@@ -15,7 +15,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/upload" element={<UploadPage />} />
-        <Route path="/report" element={<EmptyReportPage />} />
+        <Route path="/report" element={<ReportRedirectPage />} />
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/videos/:videoId/analysis" element={<AnalysisPage />} />
