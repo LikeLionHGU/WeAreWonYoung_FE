@@ -104,11 +104,15 @@ export function useReportState() {
   }
 
   function togglePlay() {
-    if (!videoRef.current) return
-    if (videoRef.current.paused) {
-      void videoRef.current.play().catch(() => setIsPlaying(false))
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        void videoRef.current.play().catch(() => setIsPlaying(false))
+      } else {
+        videoRef.current.pause()
+      }
     } else {
-      videoRef.current.pause()
+      // YouTube mode: toggle state, VideoPlayer's isPlaying effect handles the rest
+      setIsPlaying(prev => !prev)
     }
   }
 
@@ -123,10 +127,9 @@ export function useReportState() {
   }
 
   function skipBy(seconds: number) {
-    if (!videoRef.current) return
-    const maxTime = videoRef.current.duration || scrubberMax
+    const maxTime = (videoRef.current?.duration || scrubberMax) || 9999
     const next = Math.max(0, Math.min(maxTime, currentTime + seconds))
-    videoRef.current.currentTime = next
+    if (videoRef.current) videoRef.current.currentTime = next
     setCurrentTime(next)
   }
 
