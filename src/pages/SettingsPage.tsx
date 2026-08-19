@@ -1,15 +1,24 @@
+import { useState } from 'react'
+import { apiClient } from '../api/client'
+
 function SettingsRow({
   title,
   description,
   action,
   tone = 'default',
   compact = false,
+  onClick,
+  disabled = true,
+  loading = false,
 }: {
   title: string
   description?: string
   action?: string
   tone?: 'default' | 'danger'
   compact?: boolean
+  onClick?: () => void
+  disabled?: boolean
+  loading?: boolean
 }) {
   return (
     <div className={`settings-row ${compact ? 'settings-row-compact' : ''}`}>
@@ -18,8 +27,13 @@ function SettingsRow({
         {description && <p>{description}</p>}
       </div>
       {action && (
-        <button type="button" disabled className={`settings-action settings-action-${tone}`}>
-          {action}
+        <button
+          type="button"
+          disabled={disabled}
+          className={`settings-action settings-action-${tone}`}
+          onClick={onClick}
+        >
+          {loading ? '삭제 중…' : action}
         </button>
       )}
     </div>
@@ -27,6 +41,35 @@ function SettingsRow({
 }
 
 export default function SettingsPage() {
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteResult, setDeleteResult] = useState<string | null>(null)
+
+  async function deleteAllVideos() {
+    if (!window.confirm('모든 리포트를 삭제합니다. 이 작업은 되돌릴 수 없습니다.')) return
+    setIsDeleting(true)
+    setDeleteResult(null)
+    try {
+      const { items } = await apiClient.history('ALL', 0, 100)
+      let deleted = 0
+      for (const item of items) {
+        try {
+          await fetch(
+            `${(import.meta.env.VITE_API_BASE_URL as string) || ''}/api/v1/videos/${item.videoId}`,
+            { method: 'DELETE' },
+          )
+          deleted++
+        } catch {
+          /* skip failed ones */
+        }
+      }
+      setDeleteResult(`${deleted}건 삭제 완료`)
+    } catch {
+      setDeleteResult('삭제에 실패했습니다.')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <main className="settings-page">
       <h1>설정</h1>
@@ -47,9 +90,12 @@ export default function SettingsPage() {
           />
           <SettingsRow
             title="모든 리포트 삭제"
-            description="되돌릴 수 없습니다"
+            description={deleteResult ?? '되돌릴 수 없습니다'}
             action="전체 삭제"
             tone="danger"
+            disabled={isDeleting}
+            loading={isDeleting}
+            onClick={() => void deleteAllVideos()}
           />
         </div>
       </section>
