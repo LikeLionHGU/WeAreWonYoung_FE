@@ -247,6 +247,7 @@
 .video-error-fallback { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; padding: 32px; border-radius: 8px; background: #f3f4f6; color: #374151; text-align: center; }
 .video-error-fallback p { margin: 0; font: 500 15px/1.5 'Noto Sans KR', sans-serif; }
 .video-error-fallback small { margin-top: 8px; color: #6b7280; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
+.youtube-embed { width: 100%; height: 100%; border: 0; border-radius: 10px; }
 .empty-report-secondary { display: inline-block; margin-top: 16px; color: #6b7280; font: 400 14px/1.5 'Noto Sans KR', sans-serif; text-decoration: underline; text-underline-offset: 3px; }
 .empty-report-secondary:hover { color: #111; }
 

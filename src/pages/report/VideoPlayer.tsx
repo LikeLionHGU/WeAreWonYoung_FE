@@ -2,10 +2,22 @@ import { useState, type RefObject } from 'react'
 import { assetUrl } from '../../api/client'
 import { formatSeconds } from '../../utils/format'
 
+function extractYouTubeId(url: string): string | null {
+  try {
+    const parsed = new URL(url)
+    if (parsed.hostname === 'youtu.be') return parsed.pathname.slice(1)
+    if (parsed.hostname.includes('youtube.com')) return parsed.searchParams.get('v')
+    return null
+  } catch {
+    return null
+  }
+}
+
 interface VideoPlayerProps {
   videoRef: RefObject<HTMLVideoElement | null>
   streamUrl: string
   posterUrl: string
+  youtubeUrl?: string
   isPlaying: boolean
   currentTime: number
   mediaDuration: number
@@ -26,6 +38,7 @@ export default function VideoPlayer({
   videoRef,
   streamUrl,
   posterUrl,
+  youtubeUrl,
   isPlaying,
   currentTime,
   mediaDuration,
@@ -45,10 +58,21 @@ export default function VideoPlayer({
   const formattedDuration = durationLabel ?? formatSeconds(mediaDuration)
   const formattedValue = formatSeconds(scrubberValue)
 
+  const youtubeVideoId = youtubeUrl ? extractYouTubeId(youtubeUrl) : null
+  const useYouTubeEmbed = youtubeVideoId && (videoError || !streamUrl)
+
   return (
     <>
       <div className="report-player">
-        {videoError ? (
+        {useYouTubeEmbed ? (
+          <iframe
+            className="youtube-embed"
+            src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+            title="YouTube 영상"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        ) : videoError ? (
           <div className="video-error-fallback">
             <p>영상을 불러올 수 없습니다.</p>
             <small>네트워크 연결을 확인하거나 새로고침해 주세요.</small>

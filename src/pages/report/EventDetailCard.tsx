@@ -28,6 +28,7 @@ interface EventDetailCardProps {
   scrubberValue: number
   durationLabel: string | undefined
   streamUrl: string
+  youtubeUrl?: string
   videoRef: RefObject<HTMLVideoElement | null>
   isPlaying: boolean
   currentTime: number
@@ -55,6 +56,7 @@ export default function EventDetailCard({
   scrubberValue,
   durationLabel,
   streamUrl,
+  youtubeUrl,
   videoRef,
   isPlaying,
   currentTime,
@@ -109,6 +111,7 @@ export default function EventDetailCard({
       <VideoPlayer
         videoRef={videoRef}
         streamUrl={streamUrl}
+        youtubeUrl={youtubeUrl}
         posterUrl={selected.frameUrl}
         isPlaying={isPlaying}
         currentTime={currentTime}
