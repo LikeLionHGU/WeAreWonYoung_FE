@@ -37,9 +37,9 @@ npm install
 npm run dev
 ```
 
-| 주소 | 역할 |
-| --- | --- |
-| `http://localhost:5173` | Vite 프런트엔드 |
+| 주소                    | 역할                               |
+| ----------------------- | ---------------------------------- |
+| `http://localhost:5173` | Vite 프런트엔드                    |
 | `http://localhost:3001` | 디스크 저장형 Mock REST·STOMP 서버 |
 
 `npm run dev`는 두 서버를 함께 실행하고, Vite 개발 서버는 `/api`와 `/ws` 요청을 Mock 서버로 프록시합니다.
@@ -74,27 +74,28 @@ flowchart LR
 
 ### 주요 경로
 
-| 화면 | 경로 | 설명 |
-| --- | --- | --- |
-| 랜딩 | `/` | 서비스 소개 · 업로드 CTA |
-| 영상 업로드 | `/upload` | mp4, mov, avi · 500MB · 90분 / YouTube 링크 |
-| 분석 진행 | `/videos/:videoId/analysis` | 5단계 진행률, STOMP 실시간 + 3초 polling fallback |
-| 검수 리포트 | `/videos/:videoId/report` | 후보 카드, 영상 seek, 결정 저장 |
-| 검수 완료 | `/videos/:videoId/completed` | 검수 요약, 타임코드 복사 |
-| 검수 리포트 빈 상태 | `/report` | 업로드 유도 |
-| 검수 이력 | `/history` | 전체/완료/실패 필터 |
-| 설정 | `/settings` | 보관·결제·계정 안내 |
+| 화면                | 경로                         | 설명                                              |
+| ------------------- | ---------------------------- | ------------------------------------------------- |
+| 랜딩                | `/`                          | 서비스 소개 · 업로드 CTA                          |
+| 영상 업로드         | `/upload`                    | mp4, mov, avi · 500MB · 90분 / YouTube 링크       |
+| 분석 진행           | `/videos/:videoId/analysis`  | 5단계 진행률, STOMP 실시간 + 3초 polling fallback |
+| 검수 리포트         | `/videos/:videoId/report`    | 후보 카드, 영상 seek, 결정 저장                   |
+| 검수 완료           | `/videos/:videoId/completed` | 검수 요약, 타임코드 복사                          |
+| 검수 리포트 빈 상태 | `/report`                    | 업로드 유도                                       |
+| 검수 이력           | `/history`                   | 전체/완료/실패 필터                               |
+| 설정                | `/settings`                  | 보관·결제·계정 안내                               |
 
 ## 검토 후보 유형
 
 검토 후보는 두 가지 유형으로 제공됩니다.
 
-| 유형 | CandidateType | 표시 내용 |
-| --- | --- | --- |
-| **발언** | `SPEECH_REVIEW` | 실제 발언 + 앞뒤 맥락 (contextBefore/After) |
-| **사실 확인** | `FACT_CHECK` | 발언 또는 화면 텍스트 + 참고 자료 링크 |
+| 유형          | CandidateType   | 표시 내용                                   |
+| ------------- | --------------- | ------------------------------------------- |
+| **발언**      | `SPEECH_REVIEW` | 실제 발언 + 앞뒤 맥락 (contextBefore/After) |
+| **사실 확인** | `FACT_CHECK`    | 발언 또는 화면 텍스트 + 참고 자료 링크      |
 
 사실 확인은 `type` 필드로 소스를 구분합니다:
+
 - `type: "SPEECH"` → STT 발언에서 발견
 - `type: "CAPTION"` → OCR 화면 텍스트에서 발견
 
@@ -110,26 +111,42 @@ npm run dev
 
 ### 외부 API 계약
 
-| 메서드 | 경로 | 설명 |
-| --- | --- | --- |
-| `POST` | `/api/v1/videos` | 영상 업로드 (multipart/form-data, file, optional genre) |
-| `POST` | `/api/v1/videos` | YouTube 링크 등록 (application/json, url, optional genre) |
-| `GET` | `/api/v1/videos/:videoId/status` | 분석 상태 조회 |
-| `GET` | `/api/v1/videos/history` | 검수 이력 (status, page, size) |
-| `GET` | `/api/v1/videos/:videoId/report` | 검수 리포트 |
-| `PUT` | `/api/v1/videos/:videoId/review-actions/:eventId` | 검수 결정 저장 |
-| `POST` | `/api/v1/videos/:videoId/review-completion` | 검수 완료 |
-| `POST` | `/api/v1/videos/:videoId/analysis/retry` | 실패 작업 재시도 |
-| `POST` | `/api/v1/videos/:videoId/analysis/cancel` | 분석 취소 |
-| `GET` | `/api/v1/videos/:videoId/stream` | 영상 Range 스트리밍 |
-| `GET` | `/api/v1/videos/:videoId/frames/:frameId` | 대표 프레임 |
-| STOMP | `/ws` → `/topic/videos/:videoId/progress` | 실시간 진행률 |
+| 메서드 | 경로                                              | 설명                                                      |
+| ------ | ------------------------------------------------- | --------------------------------------------------------- |
+| `POST` | `/api/v1/videos`                                  | 영상 업로드 (multipart/form-data, file, optional genre)   |
+| `POST` | `/api/v1/videos`                                  | YouTube 링크 등록 (application/json, url, optional genre) |
+| `GET`  | `/api/v1/videos/:videoId/status`                  | 분석 상태 조회                                            |
+| `GET`  | `/api/v1/videos/history`                          | 검수 이력 (status, page, size)                            |
+| `GET`  | `/api/v1/videos/:videoId/report`                  | 검수 리포트                                               |
+| `PUT`  | `/api/v1/videos/:videoId/review-actions/:eventId` | 검수 결정 저장                                            |
+| `POST` | `/api/v1/videos/:videoId/review-completion`       | 검수 완료                                                 |
+| `POST` | `/api/v1/videos/:videoId/analysis/retry`          | 실패 작업 재시도                                          |
+| `POST` | `/api/v1/videos/:videoId/analysis/cancel`         | 분석 취소                                                 |
+| `GET`  | `/api/v1/videos/:videoId/stream`                  | 영상 Range 스트리밍                                       |
+| `GET`  | `/api/v1/videos/:videoId/frames/:frameId`         | 대표 프레임                                               |
+| STOMP  | `/ws` → `/topic/videos/:videoId/progress`         | 실시간 진행률                                             |
 
 성공 응답은 `{ success, data, error: null }`, 오류 응답은 `{ success: false, data: null, error: { code, message, details } }` 구조입니다.
 
 ### Vercel 배포 참고
 
-Vercel 정적 배포에는 `server/index.ts`가 포함되지 않습니다. 배포 환경에서는 실제 API 서버 주소를 `VITE_API_BASE_URL`, `VITE_WS_URL`에 지정하고, API 서버에서 프런트 도메인의 CORS와 WebSocket origin을 허용해야 합니다.
+프론트엔드는 Vercel에 배포됩니다. 백엔드 API 서버 주소는 Vercel 환경변수로 설정합니다.
+
+| 환경변수            | 설명                                                |
+| ------------------- | --------------------------------------------------- |
+| `VITE_API_BASE_URL` | 백엔드 API 주소 (예: `https://api.your-domain.com`) |
+| `VITE_WS_URL`       | WebSocket 주소 (예: `wss://api.your-domain.com/ws`) |
+
+SPA 라우팅은 `vercel.json`의 rewrite로 처리합니다. 백엔드에서 프론트 도메인의 CORS를 허용해야 합니다.
+
+### 영상 재생
+
+| 소스         | 재생 방식                                             |
+| ------------ | ----------------------------------------------------- |
+| 파일 업로드  | `streamUrl` → `<video>` 태그 Range 스트리밍           |
+| YouTube 링크 | `sourceUrl` → YouTube IFrame Player API (`YT.Player`) |
+
+YouTube 영상은 seek, 재생/정지 제어가 IFrame API를 통해 동작합니다. `streamUrl`이 제공되면(백엔드가 파일을 저장한 경우) 자동으로 `<video>` 방식으로 전환됩니다.
 
 ## 프로젝트 구조
 
@@ -161,12 +178,12 @@ Vercel 정적 배포에는 `server/index.ts`가 포함되지 않습니다. 배�
 
 ## 키보드 단축키 (검수 리포트)
 
-| 키 | 동작 |
-| --- | --- |
+| 키      | 동작                               |
+| ------- | ---------------------------------- |
 | `Space` | 영상 재생 / 정지 (페이지 어디서든) |
-| `←` | 10초 뒤로 |
-| `→` | 10초 앞으로 |
-| `Enter` | 영상 재생 / 정지 (영상 포커스 시) |
+| `←`     | 10초 뒤로                          |
+| `→`     | 10초 앞으로                        |
+| `Enter` | 영상 재생 / 정지 (영상 포커스 시)  |
 
 ## 검증
 
@@ -179,7 +196,7 @@ npm run build              # 프로덕션 빌드
 
 ## 현재 범위
 
-**포함:** 업로드 검토 UI, 진행률 복구, polling fallback, 실패·재시도·취소, 검수 리포트(발언/사실확인 2유형), 영상 seek, 키보드 단축키(Space/←/→), 참고 자료 링크, 앞뒤 맥락, 검수 완료, 이력, 빈 상태, 반응형 레이아웃, URL XSS 방어.
+**포함:** 업로드 검토 UI, YouTube 링크 업로드, 진행률 복구, polling fallback, 실패·재시도·취소, 검수 리포트(발언/사실확인 2유형), 영상 seek, 키보드 단축키(Space/←/→), 참고 자료 링크, 앞뒤 맥락, 검수 완료, 이력, 빈 상태, 검출 없음 안내, 반응형 레이아웃, URL XSS 방어, YouTube IFrame Player API.
 
 **제외:** 인증, 사용자별 권한, 결제 연동, 실제 AI 분석, 외부 검색, Spring ↔ Python 내부 API, 결과 편집·다운로드, 영상 제목·채널 URL 메타데이터, severity/riskTypes 화면 표시.
 
