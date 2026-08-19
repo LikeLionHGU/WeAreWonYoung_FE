@@ -157,9 +157,11 @@
 }
 .shell-upload .upload-submit .button {
   box-sizing: border-box;
-  width: 115px;
+  min-width: 115px;
+  width: auto;
   height: 51px;
   border-radius: 10px;
+  white-space: nowrap;
   background: #2e7df7;
   font: 500 15px/23px 'Noto Sans KR', sans-serif;
 }

@@ -47,18 +47,18 @@ export default function AnalysisPage() {
   }
   const stages = [
     ['STT', '음성을 텍스트로 변환'],
-    ['TEXT_RISK', '발언 검토 후보 분석'],
-    ['SCENE_DETECTION', '사실 정보 확인'],
-    ['OCR', '관련 맥락 확인'],
-    ['MULTIMODAL', '검토 후보와 근거 정리'],
+    ['OCR', '화면 글자 인식'],
+    ['TEXT_RISK', '발언 검토 및 사실 확인'],
+    ['MULTIMODAL', '관련 맥락 확인'],
+    ['FINALIZING', '검토 후보와 근거 정리'],
   ] as const
   const stageStep: Record<string, number> = {
     UPLOAD: 1,
     STT: 1,
-    TEXT_RISK: 2,
+    OCR: 2,
+    TEXT_RISK: 3,
     SCENE_DETECTION: 3,
-    OCR: 4,
-    MULTIMODAL: 5,
+    MULTIMODAL: 4,
     FINALIZING: 5,
     COMPLETED: 5,
   }
