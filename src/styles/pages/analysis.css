@@ -63,7 +63,7 @@
   border-radius: 3px;
   background: #edeef0;
 }
-.shell-analysis .analysis-progress span { background: #2e7df7; border-radius: 3px; transition: width 420ms cubic-bezier(.22, 1, .36, 1), background-color 220ms ease, box-shadow 220ms ease; }
+.shell-analysis .analysis-progress span { background: #2e7df7; border-radius: 3px; transition: width 1.2s cubic-bezier(.22, 1, .36, 1), background-color 220ms ease, box-shadow 220ms ease; }
 .shell-analysis .analysis-page.is-completing .analysis-progress span { background: #2e7df7; box-shadow: 0 0 0 4px rgba(46, 125, 247, .08); }
 .shell-analysis .analysis-progress-meta {
   display: flex;
