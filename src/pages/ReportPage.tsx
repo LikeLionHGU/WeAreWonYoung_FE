@@ -234,7 +234,7 @@ export default function ReportPage() {
 
       <ReviewSidebar
         filename={report.filename}
-        events={report.events}
+        events={[...report.events].sort((a, b) => a.startMs - b.startMs)}
         remaining={remaining}
         selectedId={selected.id}
         decisions={state.decisions}
