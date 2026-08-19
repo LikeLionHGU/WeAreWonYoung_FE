@@ -42,6 +42,9 @@ export default function EmptyReportPage() {
             />
           </svg>
         </Link>
+        <Link className="empty-report-secondary" to="/history">
+          검수 이력 보기
+        </Link>
       </div>
     </main>
   )

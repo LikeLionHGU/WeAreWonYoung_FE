@@ -50,9 +50,9 @@ export default function ReviewSidebar({
         type="button"
         className="report-finish-button"
         onClick={onFinishReview}
-        disabled={isCompleting}
+        disabled={isCompleting || remaining > 0}
       >
-        {isCompleting ? '완료 처리 중…' : '검수 마치기'}
+        {isCompleting ? '완료 처리 중…' : remaining > 0 ? `남은 ${remaining}건 결정 후 완료` : '검수 마치기'}
       </button>
       {finishError && (
         <p role="alert" className="report-action-error">

@@ -1,4 +1,4 @@
-import type { RefObject } from 'react'
+import { useState, type RefObject } from 'react'
 import { assetUrl } from '../../api/client'
 import { formatSeconds } from '../../utils/format'
 
@@ -41,12 +41,19 @@ export default function VideoPlayer({
   onSkipBy,
   onKeyDown,
 }: VideoPlayerProps) {
+  const [videoError, setVideoError] = useState(false)
   const formattedDuration = durationLabel ?? formatSeconds(mediaDuration)
   const formattedValue = formatSeconds(scrubberValue)
 
   return (
     <>
       <div className="report-player">
+        {videoError ? (
+          <div className="video-error-fallback">
+            <p>영상을 불러올 수 없습니다.</p>
+            <small>네트워크 연결을 확인하거나 새로고침해 주세요.</small>
+          </div>
+        ) : (
         <video
           ref={videoRef}
           tabIndex={0}
@@ -60,7 +67,10 @@ export default function VideoPlayer({
           onPause={onPause}
           onClick={onTogglePlay}
           onKeyDown={onKeyDown}
+          onError={() => setVideoError(true)}
         />
+        )}
+        {!videoError && (
         <button
           type="button"
           className="report-play"
@@ -78,6 +88,7 @@ export default function VideoPlayer({
             </svg>
           )}
         </button>
+        )}
       </div>
       <div className="report-scrubber">
         <input

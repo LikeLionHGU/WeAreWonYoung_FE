@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { useAnalysisReport } from '../hooks/useAnalysisReport'
@@ -28,10 +29,13 @@ export default function CompletionPage() {
   const held = report.events.filter(event => event.reviewAction === 'HOLD')
   const kept = report.events.filter(event => event.reviewAction === 'CONFIRMED')
   const actionEvents = edited
+  const [copied, setCopied] = useState(false)
   async function copyTimecodes() {
     const text = actionEvents.map(event => formatTime(event.startMs)).join('\n')
     try {
       await navigator.clipboard?.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
     } catch {
       /* clipboard may be unavailable in preview */
     }
@@ -71,7 +75,7 @@ export default function CompletionPage() {
             onClick={() => void copyTimecodes()}
             disabled={actionEvents.length === 0}
           >
-            타임코드 목록 복사
+            {copied ? '복사됨 ✓' : '타임코드 목록 복사'}
           </button>
         </div>
         <div className="completion-list">

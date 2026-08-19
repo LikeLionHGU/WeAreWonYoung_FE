@@ -88,9 +88,9 @@ export default function HistoryPage() {
     return (
       <EmptyUploadPage
         eyebrow="검수 이력"
-        title="아직 검수 이력이 없습니다."
-        description="첫 영상을 업로드하면 진행 중인 작업과 완료된 리포트가 이곳에 쌓입니다."
-        notice="검수 이력 서버가 연결되지 않았습니다."
+        title="이력을 불러오지 못했습니다"
+        description="서버 연결을 확인하고 새로고침해 주세요."
+        notice={error}
       />
     )
   if (items === null)
