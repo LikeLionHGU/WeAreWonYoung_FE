@@ -8,6 +8,8 @@ export default function CompletionPage() {
   const { videoId } = useParams()
   const id = videoId ?? ''
   const { report, error } = useAnalysisReport(id)
+  const [copied, setCopied] = useState(false)
+
   if (!id) return <Navigate to="/" replace />
   if (!report && !error)
     return (
@@ -29,7 +31,6 @@ export default function CompletionPage() {
   const held = report.events.filter(event => event.reviewAction === 'HOLD')
   const kept = report.events.filter(event => event.reviewAction === 'CONFIRMED')
   const actionEvents = edited
-  const [copied, setCopied] = useState(false)
   async function copyTimecodes() {
     const text = actionEvents.map(event => formatTime(event.startMs)).join('\n')
     try {
@@ -51,7 +52,7 @@ export default function CompletionPage() {
         <h1>검수를 마쳤습니다</h1>
       </div>
       <p className="completion-subtitle">
-        {report.filename} · 검토 후보 {report.events.length}건을 모두 확인했습니다.
+        {report.filename ?? '영상'} · 검토 후보 {report.events.length}건을 모두 확인했습니다.
       </p>
       <section className="completion-summary" aria-label="검수 요약">
         <div>
