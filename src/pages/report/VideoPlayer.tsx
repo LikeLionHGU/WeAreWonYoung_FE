@@ -114,6 +114,7 @@ export default function VideoPlayer({
           <span>{formattedDuration}</span>
         </div>
       </div>
+      <p className="video-shortcut-hint">Space 재생/정지 · ← → 10초 이동</p>
     </>
   )
 }

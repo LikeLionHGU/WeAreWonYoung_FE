@@ -67,12 +67,20 @@ export default function HistoryPage() {
   const [items, setItems] = useState<VideoHistoryItem[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<'ALL' | 'COMPLETED' | 'FAILED'>('ALL')
+  const [hasMore, setHasMore] = useState(false)
+  const [page, setPage] = useState(0)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const pageSize = 20
+
   useEffect(() => {
     let active = true
     void apiClient
-      .history()
+      .history('ALL', 0, pageSize)
       .then(value => {
-        if (active) setItems(value.items)
+        if (active) {
+          setItems(value.items)
+          setHasMore(value.totalPages > 1)
+        }
       })
       .catch(e => {
         if (!active) return
@@ -84,6 +92,21 @@ export default function HistoryPage() {
       active = false
     }
   }, [])
+
+  async function loadMore() {
+    const nextPage = page + 1
+    setIsLoadingMore(true)
+    try {
+      const res = await apiClient.history('ALL', nextPage, pageSize)
+      setItems(prev => [...(prev ?? []), ...res.items])
+      setPage(nextPage)
+      setHasMore(nextPage + 1 < res.totalPages)
+    } catch {
+      /* silent — existing items stay */
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }
   if (error)
     return (
       <EmptyUploadPage
@@ -141,6 +164,16 @@ export default function HistoryPage() {
           </div>
         )}
       </div>
+      {hasMore && filter === 'ALL' && (
+        <button
+          type="button"
+          className="history-load-more"
+          onClick={() => void loadMore()}
+          disabled={isLoadingMore}
+        >
+          {isLoadingMore ? '불러오는 중…' : '이전 이력 더 보기'}
+        </button>
+      )}
     </main>
   )
 }

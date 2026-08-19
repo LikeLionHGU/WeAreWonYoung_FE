@@ -59,3 +59,7 @@
   .shell-history .history-edited,
   .shell-history .history-status { justify-self: end; }
 }
+
+.history-load-more { display: block; width: 100%; margin-top: 16px; padding: 14px; border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; color: #374151; font: 500 14px/1.5 'Noto Sans KR', sans-serif; cursor: pointer; transition: background .15s; }
+.history-load-more:hover { background: #f9fafb; }
+.history-load-more:disabled { color: #9ca3af; cursor: wait; }

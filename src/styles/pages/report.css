@@ -249,3 +249,5 @@
 .video-error-fallback small { margin-top: 8px; color: #6b7280; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
 .empty-report-secondary { display: inline-block; margin-top: 16px; color: #6b7280; font: 400 14px/1.5 'Noto Sans KR', sans-serif; text-decoration: underline; text-underline-offset: 3px; }
 .empty-report-secondary:hover { color: #111; }
+
+.video-shortcut-hint { margin: 8px 0 0; text-align: center; color: #9ca3af; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }

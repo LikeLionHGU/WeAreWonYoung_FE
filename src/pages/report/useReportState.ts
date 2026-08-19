@@ -75,10 +75,11 @@ export function useReportState() {
     setSavingEventId(eventId)
     setDecisions(current => ({ ...current, [eventId]: decision }))
 
+    const currentIdx = orderedEvents.findIndex(event => event.id === eventId)
+    const nextEvent = orderedEvents[currentIdx + 1]
+
     try {
       await apiClient.saveReviewAction(id, eventId, decision)
-      const currentIdx = orderedEvents.findIndex(event => event.id === eventId)
-      const nextEvent = orderedEvents[currentIdx + 1]
       if (nextEvent) setSelectedId(nextEvent.id)
     } catch (err) {
       setDecisions(current => ({ ...current, [eventId]: previous }))
