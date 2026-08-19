@@ -152,7 +152,8 @@ export interface AnalysisReportResponse {
   filename: string
   generatedAt: string
   durationMs: number
-  streamUrl: string
+  streamUrl: string | null
+  sourceUrl: string | null
   reviewStatus: ReviewStatus
   summary: RiskSummary
   reviewSummary: ReviewSummary

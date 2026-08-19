@@ -198,12 +198,8 @@ export default function ReportPage() {
           scrubberMax={state.scrubberMax}
           scrubberValue={state.scrubberValue}
           durationLabel={state.durationLabel}
-          streamUrl={report.streamUrl}
-          youtubeUrl={
-            (report.filename?.includes('youtube.com') || report.filename?.includes('youtu.be'))
-              ? report.filename
-              : undefined
-          }
+          streamUrl={report.streamUrl ?? ''}
+          youtubeUrl={report.sourceUrl ?? undefined}
           videoRef={state.videoRef}
           isPlaying={state.isPlaying}
           currentTime={state.currentTime}
