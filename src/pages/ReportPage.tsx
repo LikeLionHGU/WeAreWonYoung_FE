@@ -60,15 +60,44 @@ export default function ReportPage() {
   const { report, selected, orderedEvents, remaining, filter } = state
 
   if (!selected && report.events.length === 0) {
+    const generatedDate = new Date(report.generatedAt)
+    const generatedLabel = Number.isNaN(generatedDate.valueOf())
+      ? '날짜 확인 불가'
+      : generatedDate.toLocaleDateString('ko-KR')
+
     return (
-      <main className="center-page">
-        <div className="empty-report-page">
-          <h1>검출된 검토 후보가 없습니다</h1>
-          <p>이 영상에서는 다시 확인할 구간을 찾지 못했습니다.</p>
-          <Link className="button button-dark" to="/history">
-            검수 이력으로 돌아가기
-          </Link>
+      <main className="report-page">
+        <div className="report-content">
+          <div className="report-heading">
+            <p className="report-meta">검수 리포트 · {generatedLabel}</p>
+            <h1>검출된 검토 후보가 없습니다</h1>
+            <p>이 영상에서는 다시 확인할 구간을 찾지 못했습니다.</p>
+            {report.warnings.length > 0 && (
+              <div className="report-warnings" role="status">
+                <strong>분석 안내</strong>
+                {report.warnings.map(warning => (
+                  <p key={`${warning.stage}-${warning.code}`}>{warning.message}</p>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="upload-submit" style={{ marginTop: '48px' }}>
+            <Link className="button button-dark" to="/history">
+              검수 이력으로 돌아가기
+            </Link>
+          </div>
         </div>
+        <ReviewSidebar
+          filename={report.filename}
+          events={[]}
+          remaining={0}
+          selectedId=""
+          decisions={{}}
+          isCompleting={false}
+          finishError={null}
+          onFinishReview={() => undefined}
+          onSelect={() => undefined}
+        />
       </main>
     )
   }
