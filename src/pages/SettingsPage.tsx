@@ -75,7 +75,6 @@ export default function SettingsPage() {
         <h2>계정</h2>
         <div className="settings-row-list">
           <SettingsRow title="이메일" description="로그인 계정이 연결되면 표시됩니다" />
-          <SettingsRow title="연결된 채널" description="연결된 채널이 없습니다" action="연결하기" />
           <SettingsRow title="로그아웃" action="로그아웃" compact />
         </div>
       </section>
