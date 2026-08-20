@@ -80,7 +80,14 @@ export function useReportState() {
 
     try {
       await apiClient.saveReviewAction(id, eventId, decision)
-      if (nextEvent) setSelectedId(nextEvent.id)
+      if (nextEvent) {
+        setSelectedId(nextEvent.id)
+        const nextTime = nextEvent.startMs / 1000
+        setCurrentTime(nextTime)
+        if (videoRef.current) {
+          videoRef.current.currentTime = nextTime
+        }
+      }
     } catch (err) {
       setDecisions(current => ({ ...current, [eventId]: previous }))
       setDecisionError(err instanceof Error ? err.message : '검수 결정을 저장하지 못했습니다.')
