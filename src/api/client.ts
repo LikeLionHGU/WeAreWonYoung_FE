@@ -169,6 +169,7 @@ export const apiClient = {
 export function assetUrl(path: string) {
   if (!path) return ''
   if (/^https?:\/\//.test(path)) return path
+  if (/^[a-z]+:/i.test(path)) return ''
   return `${baseUrl}${path}`
 }
 

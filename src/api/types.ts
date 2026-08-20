@@ -204,6 +204,7 @@ export class ApiRequestError extends Error {
 
   constructor(code: string, message: string, status: number, details: unknown | null = null) {
     super(message)
+    this.name = 'ApiRequestError'
     this.code = code
     this.status = status
     this.details = details

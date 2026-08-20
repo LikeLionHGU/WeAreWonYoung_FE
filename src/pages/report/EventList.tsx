@@ -26,7 +26,7 @@ export default function EventList({ events, selectedId, onSelect, decisionLabel 
               <span className="report-time-pill">{formatTime(event.startMs)}</span>
               <span>{kind}</span>
               <strong>{reportEventTitle(event)}</strong>
-              <small>{kind}</small>
+              <small aria-hidden="true">{kind}</small>
               {label && <em>{label}</em>}
             </button>
           )
