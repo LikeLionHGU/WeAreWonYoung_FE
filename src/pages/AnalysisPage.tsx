@@ -4,6 +4,7 @@ import { ErrorNotice, Loading } from '../components/AppShell'
 import { apiClient } from '../api/client'
 import { useAnalysisProgress } from '../hooks/useAnalysisProgress'
 import { useAnalysisRetry } from '../hooks/useAnalysisRetry'
+import { useTrickleProgress } from '../hooks/useTrickleProgress'
 
 export default function AnalysisPage() {
   const { videoId } = useParams()
@@ -73,6 +74,9 @@ export default function AnalysisPage() {
     COMPLETED: 5,
   }
   const completed = status.status === 'COMPLETED'
+  const isTerminal = completed || failed || cancelled
+  const trickleProgress = useTrickleProgress(status.progress, isTerminal)
+  const displayProgress = completed ? 100 : trickleProgress
   const fallbackStep = Math.min(5, Math.max(1, Math.ceil(status.progress / 20)))
   const currentStep = completed ? 5 : (stageStep[status.stage] ?? fallbackStep)
   const title = failed
@@ -103,11 +107,11 @@ export default function AnalysisPage() {
         <p className="analysis-subtitle">{subtitle}</p>
         <div className="analysis-progress-wrap">
           <div className="progress-track analysis-progress">
-            <span style={{ width: `${completed ? 100 : status.progress}%` }} />
+            <span style={{ width: `${displayProgress}%` }} />
           </div>
           <div className="analysis-progress-meta">
             <span>5단계 중 {currentStep}번째</span>
-            <strong>{completed ? 100 : status.progress}%</strong>
+            <strong>{displayProgress}%</strong>
           </div>
         </div>
         <section className="analysis-steps">
