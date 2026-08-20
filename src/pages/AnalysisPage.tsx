@@ -9,7 +9,7 @@ export default function AnalysisPage() {
   const { videoId } = useParams()
   const id = videoId ?? ''
   const navigate = useNavigate()
-  const { status, isFallback, refresh } = useAnalysisProgress(id)
+  const { status, isFallback, connectionError, refresh } = useAnalysisProgress(id)
   const { retry, isRetrying, error: retryError } = useAnalysisRetry()
   const [isCancelling, setIsCancelling] = useState(false)
   const [cancelError, setCancelError] = useState<string | null>(null)
@@ -19,6 +19,15 @@ export default function AnalysisPage() {
     return () => window.clearTimeout(timer)
   }, [id, navigate, status?.status])
   if (!id) return <Navigate to="/" replace />
+  if (!status && connectionError)
+    return (
+      <main className="center-page">
+        <ErrorNotice message="서버에 연결할 수 없습니다." />
+        <button className="button button-dark" onClick={() => void refresh()}>
+          다시 시도
+        </button>
+      </main>
+    )
   if (!status)
     return (
       <main className="center-page">

@@ -6,6 +6,7 @@ import type { VideoStatusResponse } from '../api/types'
 export function useAnalysisProgress(videoId: string) {
   const [status, setStatus] = useState<VideoStatusResponse | null>(null)
   const [isFallback, setIsFallback] = useState(false)
+  const [connectionError, setConnectionError] = useState(false)
   const jobId = useRef<string | null>(null)
   const progressState = useRef({ jobId: null as string | null, value: 0, terminal: false })
   const clientRef = useRef<Client | null>(null)
@@ -39,8 +40,10 @@ export function useAnalysisProgress(videoId: string) {
     try {
       const next = await apiClient.status(videoId)
       applyStatus(next)
+      setConnectionError(false)
       return next
     } catch {
+      setConnectionError(true)
       return null
     }
   }, [applyStatus, videoId])
@@ -96,5 +99,5 @@ export function useAnalysisProgress(videoId: string) {
     }
   }, [applyStatus, refresh, videoId])
 
-  return { status, isFallback, refresh }
+  return { status, isFallback, connectionError, refresh }
 }

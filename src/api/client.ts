@@ -90,7 +90,21 @@ export const apiClient = {
           reject(new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, xhr.status))
         }
       }
-      xhr.onerror = () => reject(new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, 0))
+      xhr.onerror = () =>
+        reject(
+          new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, 0),
+        )
+      xhr.ontimeout = () =>
+        reject(
+          new ApiRequestError(
+            'INTERNAL_SERVER_ERROR',
+            '업로드 시간이 초과되었습니다. 다시 시도해 주세요.',
+            0,
+          ),
+        )
+      xhr.onabort = () =>
+        reject(new ApiRequestError('INTERNAL_SERVER_ERROR', '업로드가 취소되었습니다.', 0))
+      xhr.timeout = 300000
       xhr.send(form)
     })
   },
@@ -142,6 +156,12 @@ export const apiClient = {
     return request<ReviewCompletionResponse>(
       `/api/v1/videos/${encodeURIComponent(videoId)}/review-completion`,
       { method: 'POST' },
+    )
+  },
+  deleteVideo(videoId: string) {
+    return request<void>(
+      `/api/v1/videos/${encodeURIComponent(videoId)}`,
+      { method: 'DELETE' },
     )
   },
 }

@@ -50,21 +50,25 @@ export default function SettingsPage() {
     setDeleteResult(null)
     try {
       const { items } = await apiClient.history('ALL', 0, 100)
+      if (items.length === 0) {
+        setDeleteResult('삭제할 항목이 없습니다.')
+        return
+      }
       let deleted = 0
+      let failed = 0
       for (const item of items) {
         try {
-          await fetch(
-            `${(import.meta.env.VITE_API_BASE_URL as string) || ''}/api/v1/videos/${item.videoId}`,
-            { method: 'DELETE' },
-          )
+          await apiClient.deleteVideo(item.videoId)
           deleted++
         } catch {
-          /* skip failed ones */
+          failed++
         }
       }
-      setDeleteResult(`${deleted}건 삭제 완료`)
+      setDeleteResult(
+        failed > 0 ? `${deleted}건 삭제, ${failed}건 실패` : `${deleted}건 삭제 완료`,
+      )
     } catch {
-      setDeleteResult('삭제에 실패했습니다.')
+      setDeleteResult('이력을 불러오지 못했습니다.')
     } finally {
       setIsDeleting(false)
     }

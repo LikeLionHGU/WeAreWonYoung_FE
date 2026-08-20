@@ -96,6 +96,8 @@ interface VideoRecord {
   reviewedAt: string | null
   failure: { code: string; message: string } | null
   report?: Report
+  genre?: string | null
+  sourceUrl?: string | null
 }
 
 interface State {
@@ -443,6 +445,43 @@ const upload = multer({
 })
 
 app.post('/api/v1/videos', (req, res) => {
+  // YouTube URL registration (JSON body)
+  if (req.is('application/json')) {
+    const { url, genre } = req.body ?? {}
+    if (!url) return failure(res, 400, 'INVALID_REQUEST', '영상 URL은 필수입니다.')
+    const id = String(state.nextVideoId++)
+    const now = new Date().toISOString()
+    const record: VideoRecord = {
+      videoId: id,
+      filename: url,
+      uploadedAt: now,
+      durationMs: 1,
+      storagePath: '',
+      mimeType: 'video/mp4',
+      jobId: `job_${Math.random().toString(16).slice(2, 8)}`,
+      status: 'PENDING',
+      progress: 0,
+      stage: 'UPLOAD',
+      message: '분석 요청을 준비 중',
+      startedAt: null,
+      updatedAt: now,
+      completedAt: null,
+      failure: null,
+      reviewedAt: null,
+      genre: genre ?? null,
+      sourceUrl: url,
+    }
+    state.videos[id] = record
+    void saveState()
+    res.status(201).json({
+      success: true,
+      data: { videoId: id, jobId: record.jobId, filename: url, durationMs: null, status: 'PENDING', streamUrl: `/api/v1/videos/${id}/stream` },
+      error: null,
+    })
+    void advance(record)
+    return
+  }
+  // File upload (multipart)
   upload.single('file')(req, res, async error => {
     if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE')
       return failure(res, 413, 'MAX_UPLOAD_SIZE_EXCEEDED', '파일 크기가 500MB를 초과했습니다.')
