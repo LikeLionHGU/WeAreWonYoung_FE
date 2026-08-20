@@ -119,6 +119,7 @@ export default function UploadPage() {
         </div>
 
         {mode === 'file' && (
+          <div role="tabpanel" aria-label="파일 업로드">
           <label
             className={`dropzone ${fileName ? 'has-file' : ''} ${isDragging ? 'is-dragging' : ''}`}
             htmlFor="video-file"
@@ -154,9 +155,11 @@ export default function UploadPage() {
               onChange={event => acceptFiles(event.target.files)}
             />
           </label>
+          </div>
         )}
 
         {mode === 'url' && (
+          <div role="tabpanel" aria-label="YouTube 링크">
           <div className="url-input-area">
             <label htmlFor="video-url" className="url-label">
               YouTube 영상 링크
@@ -171,6 +174,7 @@ export default function UploadPage() {
             />
             {urlError && <p className="url-error">{urlError}</p>}
             <small className="url-hint">YouTube 영상 링크를 붙여넣으면 자동으로 분석합니다.</small>
+          </div>
           </div>
         )}
 

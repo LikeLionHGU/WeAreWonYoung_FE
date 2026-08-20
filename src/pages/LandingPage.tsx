@@ -27,6 +27,8 @@ function LandingUploadCta({ compact = false }: { compact?: boolean }) {
 function LandingSteps() {
   const [active, setActive] = useState(2)
   useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
     const timer = window.setInterval(
       () => setActive(value => (value + 1) % landingSteps.length),
       1500,

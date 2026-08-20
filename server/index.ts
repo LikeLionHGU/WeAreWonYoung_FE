@@ -62,7 +62,8 @@ interface Report {
   filename: string
   generatedAt: string
   durationMs: number
-  streamUrl: string
+  streamUrl: string | null
+  sourceUrl: string | null
   reviewStatus: ReviewStatus
   summary: { total: number; speechReview: number; factCheck: number }
   reviewSummary: {
@@ -315,7 +316,8 @@ function reportFor(record: VideoRecord): Report {
     filename: record.filename,
     generatedAt: record.completedAt ?? new Date().toISOString(),
     durationMs: record.durationMs,
-    streamUrl: `/api/v1/videos/${record.videoId}/stream`,
+    streamUrl: record.storagePath ? `/api/v1/videos/${record.videoId}/stream` : null,
+    sourceUrl: record.sourceUrl ?? null,
     reviewStatus: 'NOT_STARTED',
     summary: { total: 3, speechReview: 1, factCheck: 2 },
     reviewSummary: reviewSummary(events),

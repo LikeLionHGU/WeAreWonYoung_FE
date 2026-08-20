@@ -36,11 +36,13 @@ export default function CompletionPage() {
   async function copyTimecodes() {
     const text = actionEvents.map(event => formatTime(event.startMs)).join('\n')
     try {
-      await navigator.clipboard?.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      }
     } catch {
-      /* clipboard may be unavailable in preview */
+      /* clipboard may be unavailable */
     }
   }
   return (
