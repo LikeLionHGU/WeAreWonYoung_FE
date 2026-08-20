@@ -87,6 +87,9 @@ export function useReportState() {
         if (videoRef.current) {
           videoRef.current.currentTime = nextTime
         }
+        window.requestAnimationFrame(() =>
+          selectedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+        )
       }
     } catch (err) {
       setDecisions(current => ({ ...current, [eventId]: previous }))
