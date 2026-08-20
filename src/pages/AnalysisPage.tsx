@@ -14,6 +14,10 @@ export default function AnalysisPage() {
   const { retry, isRetrying, error: retryError } = useAnalysisRetry()
   const [isCancelling, setIsCancelling] = useState(false)
   const [cancelError, setCancelError] = useState<string | null>(null)
+  const trickleProgress = useTrickleProgress(
+    status?.progress ?? 0,
+    status ? ['COMPLETED', 'FAILED', 'CANCELLED'].includes(status.status) : false,
+  )
   useEffect(() => {
     if (status?.status !== 'COMPLETED') return
     const timer = window.setTimeout(() => navigate(`/videos/${id}/report`, { replace: true }), 650)
@@ -74,8 +78,6 @@ export default function AnalysisPage() {
     COMPLETED: 5,
   }
   const completed = status.status === 'COMPLETED'
-  const isTerminal = completed || failed || cancelled
-  const trickleProgress = useTrickleProgress(status.progress, isTerminal)
   const displayProgress = completed ? 100 : trickleProgress
   const fallbackStep = Math.min(5, Math.max(1, Math.ceil(status.progress / 20)))
   const currentStep = completed ? 5 : (stageStep[status.stage] ?? fallbackStep)
