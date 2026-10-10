@@ -11,6 +11,7 @@ interface ReviewSidebarProps {
   finishError: string | null
   onFinishReview: () => void
   onSelect: (event: TimelineEvent) => void
+  textOnly?: boolean
 }
 
 export default function ReviewSidebar({
@@ -23,6 +24,7 @@ export default function ReviewSidebar({
   finishError,
   onFinishReview,
   onSelect,
+  textOnly = false,
 }: ReviewSidebarProps) {
   const decided = events.length - remaining
 
@@ -75,7 +77,7 @@ export default function ReviewSidebar({
               onClick={() => onSelect(event)}
             >
               <i>{decisions[event.id] ? '✓' : ''}</i>
-              <b>{formatTime(event.startMs)}</b>
+              {!textOnly && <b>{formatTime(event.startMs)}</b>}
               <span>{reportEventKind(event)}</span>
             </button>
           ))}

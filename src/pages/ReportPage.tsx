@@ -16,6 +16,7 @@ export default function ReportPage() {
 
   useEffect(() => {
     function handleGlobalKeyDown(e: KeyboardEvent) {
+      if (stateRef.current.isScriptOnly) return
       const tag = (e.target as HTMLElement)?.tagName
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
 
@@ -97,6 +98,7 @@ export default function ReportPage() {
           finishError={null}
           onFinishReview={() => undefined}
           onSelect={() => undefined}
+          textOnly={state.isScriptOnly}
         />
       </main>
     )
@@ -178,7 +180,9 @@ export default function ReportPage() {
                     key={event.id}
                     onClick={() => state.selectEvent(event)}
                   >
-                    <span className="report-time-pill">{formatTime(event.startMs)}</span>
+                    {!state.isScriptOnly && (
+                      <span className="report-time-pill">{formatTime(event.startMs)}</span>
+                    )}
                     <span>{kind}</span>
                     <strong>{reportEventTitle(event)}</strong>
                     <small aria-hidden="true">{kind}</small>
@@ -200,6 +204,7 @@ export default function ReportPage() {
           durationLabel={state.durationLabel}
           streamUrl={report.streamUrl ?? ''}
           youtubeUrl={report.sourceUrl ?? undefined}
+          textOnly={state.isScriptOnly}
           videoRef={state.videoRef}
           isPlaying={state.isPlaying}
           currentTime={state.currentTime}
@@ -224,6 +229,7 @@ export default function ReportPage() {
             selectedId={selected.id}
             onSelect={state.selectEvent}
             decisionLabel={state.decisionLabel}
+            textOnly={state.isScriptOnly}
           />
         )}
 
@@ -234,7 +240,11 @@ export default function ReportPage() {
 
       <ReviewSidebar
         filename={report.filename}
-        events={[...report.events].sort((a, b) => a.startMs - b.startMs)}
+        events={
+          state.isScriptOnly
+            ? report.events
+            : [...report.events].sort((a, b) => a.startMs - b.startMs)
+        }
         remaining={remaining}
         selectedId={selected.id}
         decisions={state.decisions}
@@ -242,6 +252,7 @@ export default function ReportPage() {
         finishError={state.decisionError}
         onFinishReview={() => void state.finishReview()}
         onSelect={state.selectEvent}
+        textOnly={state.isScriptOnly}
       />
     </main>
   )

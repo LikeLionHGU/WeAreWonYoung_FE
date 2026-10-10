@@ -6,9 +6,16 @@ interface EventListProps {
   selectedId: string
   onSelect: (event: TimelineEvent) => void
   decisionLabel: (event: TimelineEvent) => string
+  textOnly?: boolean
 }
 
-export default function EventList({ events, selectedId, onSelect, decisionLabel }: EventListProps) {
+export default function EventList({
+  events,
+  selectedId,
+  onSelect,
+  decisionLabel,
+  textOnly = false,
+}: EventListProps) {
   return (
     <section className="report-candidates">
       <div className="report-candidates-card">
@@ -23,7 +30,7 @@ export default function EventList({ events, selectedId, onSelect, decisionLabel 
               key={event.id}
               onClick={() => onSelect(event)}
             >
-              <span className="report-time-pill">{formatTime(event.startMs)}</span>
+              {!textOnly && <span className="report-time-pill">{formatTime(event.startMs)}</span>}
               <span>{kind}</span>
               <strong>{reportEventTitle(event)}</strong>
               <small aria-hidden="true">{kind}</small>

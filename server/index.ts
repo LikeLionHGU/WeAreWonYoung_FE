@@ -62,6 +62,7 @@ interface Report {
   filename: string
   generatedAt: string
   durationMs: number
+  sourceType: 'UPLOAD' | 'YOUTUBE'
   streamUrl: string | null
   sourceUrl: string | null
   reviewStatus: ReviewStatus
@@ -84,6 +85,7 @@ interface VideoRecord {
   filename: string
   uploadedAt: string
   durationMs: number
+  sourceType: 'UPLOAD' | 'YOUTUBE'
   storagePath: string
   mimeType: string
   jobId: string
@@ -160,6 +162,7 @@ async function init() {
           filename: legacy.filename ?? 'uploaded-video.mp4',
           uploadedAt: legacy.uploadedAt ?? now,
           durationMs: legacy.durationMs ?? 0,
+          sourceType: legacy.sourceType ?? (legacy.sourceUrl ? 'YOUTUBE' : 'UPLOAD'),
           storagePath: legacy.storagePath ?? '',
           mimeType: legacy.mimeType ?? 'video/mp4',
           jobId: legacy.jobId ?? `job_${key}`,
@@ -316,6 +319,7 @@ function reportFor(record: VideoRecord): Report {
     filename: record.filename,
     generatedAt: record.completedAt ?? new Date().toISOString(),
     durationMs: record.durationMs,
+    sourceType: record.sourceType,
     streamUrl: record.storagePath ? `/api/v1/videos/${record.videoId}/stream` : null,
     sourceUrl: record.sourceUrl ?? null,
     reviewStatus: 'NOT_STARTED',
@@ -447,17 +451,21 @@ const upload = multer({
 })
 
 app.post('/api/v1/videos', (req, res) => {
-  // YouTube URL registration (JSON body)
+  // Script registration (JSON body)
   if (req.is('application/json')) {
-    const { url, genre } = req.body ?? {}
-    if (!url) return failure(res, 400, 'INVALID_REQUEST', '영상 URL은 필수입니다.')
+    const { script, url, title, genre } = req.body ?? {}
+    const pastedScript = typeof script === 'string' ? script.trim() : ''
+    if (!pastedScript) return failure(res, 400, 'INVALID_REQUEST', '스크립트를 입력해 주세요.')
+    if (pastedScript.length > 500_000)
+      return failure(res, 400, 'INVALID_REQUEST', '스크립트가 너무 깁니다 (최대 500,000자).')
     const id = String(state.nextVideoId++)
     const now = new Date().toISOString()
     const record: VideoRecord = {
       videoId: id,
-      filename: url,
+      filename: typeof title === 'string' && title.trim() ? title.trim() : '붙여넣은 스크립트',
       uploadedAt: now,
       durationMs: 1,
+      sourceType: 'YOUTUBE',
       storagePath: '',
       mimeType: 'video/mp4',
       jobId: `job_${Math.random().toString(16).slice(2, 8)}`,
@@ -471,13 +479,13 @@ app.post('/api/v1/videos', (req, res) => {
       failure: null,
       reviewedAt: null,
       genre: genre ?? null,
-      sourceUrl: url,
+      sourceUrl: typeof url === 'string' && url.trim() ? url.trim() : null,
     }
     state.videos[id] = record
     void saveState()
     res.status(201).json({
       success: true,
-      data: { videoId: id, jobId: record.jobId, filename: url, durationMs: null, status: 'PENDING', streamUrl: `/api/v1/videos/${id}/stream` },
+      data: { videoId: id, jobId: record.jobId, filename: record.filename, durationMs: null, status: 'PENDING', streamUrl: `/api/v1/videos/${id}/stream` },
       error: null,
     })
     void advance(record)
@@ -500,6 +508,7 @@ app.post('/api/v1/videos', (req, res) => {
       filename: req.file.originalname,
       uploadedAt: now,
       durationMs,
+      sourceType: 'UPLOAD',
       storagePath: req.file.path,
       mimeType: mimeFor(req.file.originalname),
       jobId: `job_${Math.random().toString(16).slice(2, 8)}`,

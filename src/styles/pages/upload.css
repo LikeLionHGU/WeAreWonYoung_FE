@@ -260,6 +260,7 @@
   color: #16181d;
   transition: border-color 0.15s;
 }
+.url-input:where(textarea) { min-height: 280px; resize: vertical; }
 .url-input:focus {
   border-color: #2e7df7;
 }
