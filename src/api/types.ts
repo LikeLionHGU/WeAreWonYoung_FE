@@ -36,7 +36,7 @@ export interface VideoUploadResponse {
   videoId: string
   jobId: string
   filename: string
-  durationMs: number
+  durationMs: number | null
   status: 'PENDING'
   streamUrl: string
 }
@@ -152,6 +152,7 @@ export interface AnalysisReportResponse {
   filename: string
   generatedAt: string
   durationMs: number
+  sourceType?: 'UPLOAD' | 'YOUTUBE'
   streamUrl: string | null
   sourceUrl: string | null
   reviewStatus: ReviewStatus

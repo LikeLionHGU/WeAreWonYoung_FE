@@ -11,6 +11,7 @@ export function useReportState() {
   const id = videoId ?? ''
   const navigate = useNavigate()
   const { report: reportResponse, error } = useAnalysisReport(id)
+  const isScriptOnly = reportResponse?.sourceType === 'YOUTUBE' && !reportResponse.sourceUrl
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const selectedCardRef = useRef<HTMLElement>(null)
@@ -36,11 +37,13 @@ export function useReportState() {
   const reportEvents = useMemo(() => reportResponse?.events ?? [], [reportResponse])
 
   const orderedEvents = useMemo(
-    () =>
-      reportEvents
-        .filter(event => filter === 'ALL' || event.candidateType === filter)
-        .sort((left, right) => left.startMs - right.startMs),
-    [reportEvents, filter],
+    () => {
+      const filtered = reportEvents.filter(
+        event => filter === 'ALL' || event.candidateType === filter,
+      )
+      return isScriptOnly ? filtered : filtered.sort((left, right) => left.startMs - right.startMs)
+    },
+    [reportEvents, filter, isScriptOnly],
   )
 
   const speechCount = useMemo(
@@ -82,10 +85,10 @@ export function useReportState() {
       await apiClient.saveReviewAction(id, eventId, decision)
       if (nextEvent) {
         setSelectedId(nextEvent.id)
-        const nextTime = nextEvent.startMs / 1000
-        setCurrentTime(nextTime)
-        if (videoRef.current) {
-          videoRef.current.currentTime = nextTime
+        if (!isScriptOnly) {
+          const nextTime = nextEvent.startMs / 1000
+          setCurrentTime(nextTime)
+          if (videoRef.current) videoRef.current.currentTime = nextTime
         }
         window.requestAnimationFrame(() =>
           selectedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
@@ -101,12 +104,14 @@ export function useReportState() {
 
   function selectEvent(event: TimelineEvent) {
     setSelectedId(event.id)
-    const nextTime = event.startMs / 1000
-    setCurrentTime(nextTime)
-    if (videoRef.current) {
-      videoRef.current.currentTime = nextTime
-      videoRef.current.pause()
-      setIsPlaying(false)
+    if (!isScriptOnly) {
+      const nextTime = event.startMs / 1000
+      setCurrentTime(nextTime)
+      if (videoRef.current) {
+        videoRef.current.currentTime = nextTime
+        videoRef.current.pause()
+        setIsPlaying(false)
+      }
     }
     window.requestAnimationFrame(() =>
       selectedCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
@@ -196,6 +201,7 @@ export function useReportState() {
     reportResponse,
     error,
     report: reportResponse,
+    isScriptOnly,
     reportEvents,
     orderedEvents,
     speechCount,

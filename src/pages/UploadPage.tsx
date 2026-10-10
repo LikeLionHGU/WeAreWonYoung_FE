@@ -3,31 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import { ErrorNotice } from '../components/AppShell'
 import { useVideoUpload } from '../hooks/useVideoUpload'
 
-type UploadMode = 'file' | 'url'
-
-function isYouTubeUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url)
-    return (
-      parsed.hostname === 'www.youtube.com' ||
-      parsed.hostname === 'youtube.com' ||
-      parsed.hostname === 'youtu.be' ||
-      parsed.hostname === 'm.youtube.com'
-    )
-  } catch {
-    return false
-  }
-}
+type UploadMode = 'file' | 'script'
+const MAX_SCRIPT_LENGTH = 500_000
 
 export default function UploadPage() {
   const navigate = useNavigate()
   const inputRef = useRef<HTMLInputElement>(null)
-  const { upload, registerUrl, isUploading, progress, error } = useVideoUpload()
+  const { upload, registerScript, isUploading, progress, error } = useVideoUpload()
   const [mode, setMode] = useState<UploadMode>('file')
   const [fileName, setFileName] = useState('')
-  const [videoUrl, setVideoUrl] = useState('')
+  const [script, setScript] = useState('')
   const [isDragging, setIsDragging] = useState(false)
-  const [urlError, setUrlError] = useState<string | null>(null)
+  const [scriptError, setScriptError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isUploading) return
@@ -36,7 +23,7 @@ export default function UploadPage() {
     return () => window.removeEventListener('beforeunload', handler)
   }, [isUploading])
 
-  const canSubmit = mode === 'file' ? Boolean(fileName) : Boolean(videoUrl.trim()) && !urlError
+  const canSubmit = mode === 'file' ? Boolean(fileName) : Boolean(script.trim()) && !scriptError
 
   async function submit() {
     if (mode === 'file') {
@@ -45,13 +32,13 @@ export default function UploadPage() {
       const result = await upload(file)
       if (result) navigate(`/videos/${result.videoId}/analysis`)
     } else {
-      const trimmed = videoUrl.trim()
-      if (!isYouTubeUrl(trimmed)) {
-        setUrlError('유효한 YouTube 링크를 입력해 주세요.')
+      const trimmed = script.trim()
+      if (!trimmed) {
+        setScriptError('스크립트를 입력해 주세요.')
         return
       }
-      setUrlError(null)
-      const result = await registerUrl(trimmed)
+      setScriptError(null)
+      const result = await registerScript(trimmed)
       if (result) navigate(`/videos/${result.videoId}/analysis`)
     }
   }
@@ -61,6 +48,8 @@ export default function UploadPage() {
     if (file) {
       setFileName(file.name)
       setMode('file')
+      setScript('')
+      setScriptError(null)
       if (inputRef.current) {
         const transfer = new DataTransfer()
         transfer.items.add(file)
@@ -70,21 +59,22 @@ export default function UploadPage() {
     setIsDragging(false)
   }
 
-  function handleUrlChange(value: string) {
-    setVideoUrl(value)
-    setMode('url')
-    setUrlError(null)
+  function handleScriptChange(value: string) {
+    setScript(value)
+    setMode('script')
+    setScriptError(null)
     if (fileName) setFileName('')
   }
 
   function switchToFile() {
     setMode('file')
-    setVideoUrl('')
-    setUrlError(null)
+    setScript('')
+    setScriptError(null)
   }
 
-  function switchToUrl() {
-    setMode('url')
+  function switchToScript() {
+    setMode('script')
+    setScriptError(null)
     setFileName('')
     if (inputRef.current) inputRef.current.value = ''
   }
@@ -94,7 +84,7 @@ export default function UploadPage() {
       <section className="upload-main">
         <h1>영상 업로드</h1>
         <p className="upload-subtitle">
-          공개 전 다시 확인하고 싶은 영상을 올리거나, YouTube 링크를 입력해 주세요.
+          공개 전 다시 확인하고 싶은 영상을 올리거나, STT 스크립트를 붙여넣어 주세요.
         </p>
 
         <div className="upload-mode-tabs" role="tablist" aria-label="업로드 방식">
@@ -110,71 +100,79 @@ export default function UploadPage() {
           <button
             type="button"
             role="tab"
-            aria-selected={mode === 'url'}
-            className={mode === 'url' ? 'is-active' : ''}
-            onClick={switchToUrl}
+            aria-selected={mode === 'script'}
+            className={mode === 'script' ? 'is-active' : ''}
+            onClick={switchToScript}
           >
-            YouTube 링크
+            스크립트 입력
           </button>
         </div>
 
         {mode === 'file' && (
           <div role="tabpanel" aria-label="파일 업로드">
-          <label
-            className={`dropzone ${fileName ? 'has-file' : ''} ${isDragging ? 'is-dragging' : ''}`}
-            htmlFor="video-file"
-            onDragEnter={event => {
-              event.preventDefault()
-              setIsDragging(true)
-            }}
-            onDragOver={event => {
-              event.preventDefault()
-              setIsDragging(true)
-            }}
-            onDragLeave={() => setIsDragging(false)}
-            onDrop={event => {
-              event.preventDefault()
-              acceptFiles(event.dataTransfer.files)
-            }}
-          >
-            <div className="upload-icon" aria-hidden="true">
-              <svg viewBox="0 0 14 14" focusable="false">
-                <path d="M6.5 10.58V1.93L4.17 4.26l-.71-.72L7 0l3.54 3.54-.71.72L7.5 1.93v8.65h-1ZM0 14V9.96h1V13h12V9.96h1V14H0Z" />
-              </svg>
-            </div>
-            <strong>{fileName || '파일을 이 영역으로 끌어다 놓으세요'}</strong>
-            <span>
-              {fileName ? '다른 파일을 선택하려면 클릭' : '또는 눌러서 파일을 선택하세요'}
-            </span>
-            <small>mp4, mov 또는 avi · 최대 90분 · 500MB</small>
-            <input
-              ref={inputRef}
-              id="video-file"
-              type="file"
-              accept=".mp4,.mov,.avi,video/mp4,video/quicktime,video/x-msvideo"
-              onChange={event => acceptFiles(event.target.files)}
-            />
-          </label>
+            <label
+              className={`dropzone ${fileName ? 'has-file' : ''} ${isDragging ? 'is-dragging' : ''}`}
+              htmlFor="video-file"
+              onDragEnter={event => {
+                event.preventDefault()
+                setIsDragging(true)
+              }}
+              onDragOver={event => {
+                event.preventDefault()
+                setIsDragging(true)
+              }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={event => {
+                event.preventDefault()
+                acceptFiles(event.dataTransfer.files)
+              }}
+            >
+              <div className="upload-icon" aria-hidden="true">
+                <svg viewBox="0 0 14 14" focusable="false">
+                  <path d="M6.5 10.58V1.93L4.17 4.26l-.71-.72L7 0l3.54 3.54-.71.72L7.5 1.93v8.65h-1ZM0 14V9.96h1V13h12V9.96h1V14H0Z" />
+                </svg>
+              </div>
+              <strong>{fileName || '파일을 이 영역으로 끌어다 놓으세요'}</strong>
+              <span>
+                {fileName ? '다른 파일을 선택하려면 클릭' : '또는 눌러서 파일을 선택하세요'}
+              </span>
+              <small>mp4, mov 또는 avi · 최대 90분 · 500MB</small>
+              <input
+                ref={inputRef}
+                id="video-file"
+                type="file"
+                accept=".mp4,.mov,.avi,video/mp4,video/quicktime,video/x-msvideo"
+                onChange={event => acceptFiles(event.target.files)}
+              />
+            </label>
           </div>
         )}
 
-        {mode === 'url' && (
-          <div role="tabpanel" aria-label="YouTube 링크">
-          <div className="url-input-area">
-            <label htmlFor="video-url" className="url-label">
-              YouTube 영상 링크
-            </label>
-            <input
-              id="video-url"
-              type="url"
-              className={`url-input ${urlError ? 'is-error' : ''}`}
-              placeholder="https://www.youtube.com/watch?v=..."
-              value={videoUrl}
-              onChange={e => handleUrlChange(e.target.value)}
-            />
-            {urlError && <p className="url-error">{urlError}</p>}
-            <small className="url-hint">YouTube 영상 링크를 붙여넣으면 자동으로 분석합니다.</small>
-          </div>
+        {mode === 'script' && (
+          <div role="tabpanel" aria-label="스크립트 입력">
+            <div className="url-input-area">
+              <label htmlFor="video-script" className="url-label">
+                STT 스크립트
+              </label>
+              <textarea
+                id="video-script"
+                className={`url-input ${scriptError ? 'is-error' : ''}`}
+                placeholder="스크립트 내용을 붙여넣어 주세요. 타임스탬프가 있어도 됩니다."
+                value={script}
+                maxLength={MAX_SCRIPT_LENGTH}
+                onChange={e => handleScriptChange(e.target.value)}
+                aria-invalid={Boolean(scriptError)}
+                aria-describedby={scriptError ? 'script-error' : undefined}
+              />
+              {scriptError && (
+                <p id="script-error" className="url-error">
+                  {scriptError}
+                </p>
+              )}
+              <small className="url-hint">
+                {script.length.toLocaleString()} / {MAX_SCRIPT_LENGTH.toLocaleString()}
+              </small>
+            </div>
           </div>
         )}
 
@@ -193,7 +191,7 @@ export default function UploadPage() {
           <p>
             {mode === 'file'
               ? '업로드가 끝나면 분석이 곧바로 시작됩니다.'
-              : '링크를 등록하면 분석이 곧바로 시작됩니다.'}
+              : '스크립트를 등록하면 분석이 곧바로 시작됩니다.'}
           </p>
           <button
             className="button button-primary"

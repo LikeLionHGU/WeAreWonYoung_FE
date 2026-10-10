@@ -45,6 +45,7 @@ interface EventDetailCardProps {
   onSkipBy: (seconds: number) => void
   onVideoKeyDown: (e: React.KeyboardEvent) => void
   onDecision: (action: ReviewAction) => void
+  textOnly?: boolean
 }
 
 export default function EventDetailCard({
@@ -73,6 +74,7 @@ export default function EventDetailCard({
   onSkipBy,
   onVideoKeyDown,
   onDecision,
+  textOnly = false,
 }: EventDetailCardProps) {
   const formattedDuration = durationLabel ?? formatSeconds(mediaDuration)
   const selectedSpeech = reportEventSpeech(selected)
@@ -82,24 +84,26 @@ export default function EventDetailCard({
     <article ref={cardRef} className="report-selected-card">
       <div className="report-card-top">
         <div className="report-card-meta">
-          <span className="report-time-pill">{formatTime(selected.startMs)}</span>
+          {!textOnly && <span className="report-time-pill">{formatTime(selected.startMs)}</span>}
           <span>{reportEventKind(selected)}</span>
         </div>
-        <div className="report-card-position">
-          <span className="report-scrubber-mini">
-            <i
-              style={{
-                width: `${mediaDuration ? Math.min(100, Math.max(4, (selected.startMs / 1000 / mediaDuration) * 100)) : 0}%`,
-              }}
-            />
-          </span>
-          <span>
-            {formattedDuration} 중 {formatTime(selected.startMs)}
-          </span>
-          <span>
-            {selectedIndex + 1} / {totalCount}
-          </span>
-        </div>
+        {!textOnly && (
+          <div className="report-card-position">
+            <span className="report-scrubber-mini">
+              <i
+                style={{
+                  width: `${mediaDuration ? Math.min(100, Math.max(4, (selected.startMs / 1000 / mediaDuration) * 100)) : 0}%`,
+                }}
+              />
+            </span>
+            <span>
+              {formattedDuration} 중 {formatTime(selected.startMs)}
+            </span>
+            <span>
+              {selectedIndex + 1} / {totalCount}
+            </span>
+          </div>
+        )}
       </div>
 
       <h2>{reportEventTitle(selected)}</h2>
@@ -108,26 +112,28 @@ export default function EventDetailCard({
         <p>{selected.reason}</p>
       </div>
 
-      <VideoPlayer
-        videoRef={videoRef}
-        streamUrl={streamUrl}
-        youtubeUrl={youtubeUrl}
-        posterUrl={selected.frameUrl}
-        isPlaying={isPlaying}
-        currentTime={currentTime}
-        mediaDuration={mediaDuration}
-        scrubberMax={scrubberMax}
-        scrubberValue={scrubberValue}
-        durationLabel={durationLabel}
-        onLoadedMetadata={onLoadedMetadata}
-        onTimeUpdate={onTimeUpdate}
-        onPlay={onPlay}
-        onPause={onPause}
-        onTogglePlay={onTogglePlay}
-        onSeek={onSeek}
-        onSkipBy={onSkipBy}
-        onKeyDown={onVideoKeyDown}
-      />
+      {!textOnly && (
+        <VideoPlayer
+          videoRef={videoRef}
+          streamUrl={streamUrl}
+          youtubeUrl={youtubeUrl}
+          posterUrl={selected.frameUrl}
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          mediaDuration={mediaDuration}
+          scrubberMax={scrubberMax}
+          scrubberValue={scrubberValue}
+          durationLabel={durationLabel}
+          onLoadedMetadata={onLoadedMetadata}
+          onTimeUpdate={onTimeUpdate}
+          onPlay={onPlay}
+          onPause={onPause}
+          onTogglePlay={onTogglePlay}
+          onSeek={onSeek}
+          onSkipBy={onSkipBy}
+          onKeyDown={onVideoKeyDown}
+        />
+      )}
 
       {selectedSpeech && (
         <section className="report-evidence-block">

@@ -108,11 +108,11 @@ export const apiClient = {
       xhr.send(form)
     })
   },
-  registerUrl(url: string, genre?: UploadGenre) {
+  registerScript(script: string, genre?: UploadGenre) {
     return request<VideoUploadResponse>('/api/v1/videos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url, genre: genre ?? undefined }),
+      body: JSON.stringify({ script, genre: genre ?? undefined }),
     })
   },
   history(status: 'ALL' | 'COMPLETED' | 'FAILED' = 'ALL', page = 0, size = 20) {
