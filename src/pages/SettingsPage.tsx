@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { apiClient } from '../api/client'
 import { fetchAllPages } from '../utils/fetchAllPages'
 
+// The API has no accounts yet, so deleting everything would remove every user's reports.
+const isDeleteAllAvailable = false
+
 function SettingsRow({
   title,
   description,
@@ -95,10 +98,14 @@ export default function SettingsPage() {
           />
           <SettingsRow
             title="모든 리포트 삭제"
-            description={deleteResult ?? '되돌릴 수 없습니다'}
+            description={
+              isDeleteAllAvailable
+                ? (deleteResult ?? '되돌릴 수 없습니다')
+                : '로그인 기능이 연결되면 사용할 수 있습니다'
+            }
             action="전체 삭제"
             tone="danger"
-            disabled={isDeleting}
+            disabled={!isDeleteAllAvailable || isDeleting}
             loading={isDeleting}
             onClick={() => void deleteAllVideos()}
           />
