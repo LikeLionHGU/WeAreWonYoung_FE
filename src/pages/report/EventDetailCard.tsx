@@ -5,7 +5,8 @@ import {
   formatSeconds,
   reportEventTitle,
   reportEventSpeech,
-  reportEventKind,
+  reportEventRiskLabel,
+  reportEventHighlight,
 } from '../../utils/format'
 import VideoPlayer from './VideoPlayer'
 import ReviewActions from './ReviewActions'
@@ -19,7 +20,21 @@ function isSafeUrl(url: string): boolean {
   }
 }
 
+function HighlightedText({ text, term }: { text: string; term: string | null }) {
+  if (!term) return <>{text}</>
+  const index = text.indexOf(term)
+  if (index < 0) return <>{text}</>
+  return (
+    <>
+      {text.slice(0, index)}
+      <mark className="report-highlight">{term}</mark>
+      {text.slice(index + term.length)}
+    </>
+  )
+}
+
 interface EventDetailCardProps {
+  relatedTimes: number[]
   selected: TimelineEvent
   selectedIndex: number
   totalCount: number
@@ -50,6 +65,7 @@ interface EventDetailCardProps {
 
 export default function EventDetailCard({
   selected,
+  relatedTimes,
   selectedIndex,
   totalCount,
   mediaDuration,
@@ -79,38 +95,42 @@ export default function EventDetailCard({
   const formattedDuration = durationLabel ?? formatSeconds(mediaDuration)
   const selectedSpeech = reportEventSpeech(selected)
   const selectedReferences = selected.references
+  const showTimestamp = !textOnly || (selected.startMs > 0 && !selected.timeUnknown)
+  const riskLabel = reportEventRiskLabel(selected)
+  const highlight = reportEventHighlight(selected)
+  const shownRelated = relatedTimes.slice(0, 4)
+  const hiddenRelated = relatedTimes.length - shownRelated.length
 
   return (
     <article ref={cardRef} className="report-selected-card">
-      <div className="report-card-top">
-        <div className="report-card-meta">
-          {!textOnly && <span className="report-time-pill">{formatTime(selected.startMs)}</span>}
-          <span>{reportEventKind(selected)}</span>
+      <div className="report-card-summary">
+        <div className="report-card-timestamp">
+          <span className="report-card-label">{showTimestamp ? '타임스탬프' : '검토 후보'}</span>
+          <strong>
+            {showTimestamp
+              ? formatTime(selected.startMs)
+              : `${selectedIndex + 1} / ${totalCount}`}
+          </strong>
+          {showTimestamp && shownRelated.length > 0 && (
+            <small>
+              {shownRelated.map(formatTime).join(' · ')}
+              {hiddenRelated > 0 ? ` 외 ${hiddenRelated}곳` : ''}
+            </small>
+          )}
+          {!textOnly && (
+            <small className="report-card-position">
+              {formattedDuration} 중 {formatTime(selected.startMs)} · {selectedIndex + 1} /{' '}
+              {totalCount}
+            </small>
+          )}
         </div>
-        {!textOnly && (
-          <div className="report-card-position">
-            <span className="report-scrubber-mini">
-              <i
-                style={{
-                  width: `${mediaDuration ? Math.min(100, Math.max(4, (selected.startMs / 1000 / mediaDuration) * 100)) : 0}%`,
-                }}
-              />
-            </span>
-            <span>
-              {formattedDuration} 중 {formatTime(selected.startMs)}
-            </span>
-            <span>
-              {selectedIndex + 1} / {totalCount}
-            </span>
-          </div>
-        )}
+        <div className="report-card-risk">
+          <span className="report-card-label">논란 유형</span>
+          <span className="report-risk-chip">{riskLabel}</span>
+        </div>
       </div>
 
-      <h2>{reportEventTitle(selected)}</h2>
-      <div className="report-reason">
-        <h3>왜 확인하나요?</h3>
-        <p>{selected.reason}</p>
-      </div>
+      <hr className="report-card-divider" />
 
       {!textOnly && (
         <VideoPlayer
@@ -135,25 +155,32 @@ export default function EventDetailCard({
         />
       )}
 
-      {selectedSpeech && (
-        <section className="report-evidence-block">
-          <h3>{selected.type === 'SPEECH' ? '실제 발언' : '화면 정보'}</h3>
-          <blockquote>{selectedSpeech}</blockquote>
+      <section className="report-card-section report-card-speech">
+        <h3 className="report-card-label">{selected.type === 'SPEECH' ? '발언' : '화면 정보'}</h3>
+        <p>
+          {selectedSpeech ? (
+            <HighlightedText text={selectedSpeech} term={highlight} />
+          ) : (
+            reportEventTitle(selected)
+          )}
+        </p>
+      </section>
+
+      {selected.type === 'SPEECH' && (selected.contextBefore || selected.contextAfter) && (
+        <section className="report-card-section report-card-context">
+          <h3 className="report-card-label">앞뒤 맥락</h3>
+          {selected.contextBefore && <p className="context-before">{selected.contextBefore}</p>}
+          {selected.contextAfter && <p className="context-after">{selected.contextAfter}</p>}
         </section>
       )}
 
-      {selected.type === 'SPEECH' &&
-        selected.candidateType === 'SPEECH_REVIEW' &&
-        (selected.contextBefore || selected.contextAfter) && (
-          <section className="report-evidence-block report-context-block">
-            <h3>앞뒤 맥락</h3>
-            {selected.contextBefore && <p className="context-before">{selected.contextBefore}</p>}
-            {selected.contextAfter && <p className="context-after">{selected.contextAfter}</p>}
-          </section>
-        )}
+      <section className="report-card-section report-card-reason">
+        <h3 className="report-card-label">AI 검토 이유</h3>
+        <p>{selected.reason}</p>
+      </section>
 
-      <section className="report-evidence-block report-reference-block">
-        <h3>참고 자료</h3>
+      <section className="report-card-section report-reference-block">
+        <h3 className="report-card-label">참고자료</h3>
         {selectedReferences.length > 0 ? (
           <div className="report-reference-items">
             {selectedReferences.map(reference => (
@@ -185,6 +212,8 @@ export default function EventDetailCard({
           <p className="report-reference-empty">제공된 참고 자료가 없습니다.</p>
         )}
       </section>
+
+      <hr className="report-card-divider" />
 
       <ReviewActions
         selectedDecision={selectedDecision}

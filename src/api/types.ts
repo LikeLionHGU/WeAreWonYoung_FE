@@ -113,6 +113,7 @@ interface TimelineEventBase {
   frameUrl: string
   references: CandidateReference[]
   reviewAction: ReviewAction | null
+  timeUnknown?: boolean
 }
 
 export interface SpeechTimelineEvent extends TimelineEventBase {

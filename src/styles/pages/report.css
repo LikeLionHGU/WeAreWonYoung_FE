@@ -139,7 +139,7 @@
 .shell-report .report-outline-list { border-left: 2px solid #edeef0; }
 .shell-report .report-outline button { position: relative; width: 100%; min-height: 32px; margin-left: -2px; padding: 7px 12px; display: flex; align-items: center; gap: 9px; border: 0; border-left: 2px solid transparent; background: transparent; color: #8a8f98; text-align: left; }
 .shell-report .report-outline button.is-current { border-left-color: #2e7df7; color: #2e7df7; }
-.shell-report .report-outline button i { width: 10px; color: #c9ccd1; font: 400 10px/1 Inter, sans-serif; font-style: normal; }
+.shell-report .report-outline button i { width: 10px; color: #2e7df7; font: 400 10px/1 Inter, sans-serif; font-style: normal; }
 .shell-report .report-outline button b { font: 500 12px/1.5 Inter, sans-serif; }
 .shell-report .report-outline button span { font: 400 11px/1.5 'Noto Sans KR', sans-serif; }
 .shell-report .report-outline > small { display: block; padding-top: 14px; color: #c9ccd1; font: 400 10px/1.5 'Noto Sans KR', sans-serif; }
@@ -185,7 +185,7 @@
 /* Report retouch: keep the review workspace calm, bright, and connected to the
    landing/upload visual language without changing its information architecture. */
 .shell-report .report-page { background: #f7fbff; }
-.shell-report .report-content { padding: 48px clamp(80px, 12.22vw, 176px) 104px; background: #fff; }
+.shell-report .report-content { padding: 32px clamp(80px, 12.22vw, 176px) 104px; background: #fff; }
 .shell-report .report-heading { padding-bottom: 26px; }
 .shell-report .report-meta { color: #2e7df7; font-weight: 500; }
 .shell-report .report-heading h1 { font-weight: 600; letter-spacing: -.035em; }
@@ -234,7 +234,8 @@
 }
 
 @media (max-width: 1200px) and (min-width: 901px) {
-  .shell-report .report-content { padding-left: clamp(48px, 9vw, 112px); padding-right: clamp(48px, 9vw, 112px); }
+  .shell-report .report-content { padding-left: clamp(24px, 5vw, 112px); padding-right: clamp(24px, 5vw, 112px); }
+  .shell-report .report-actions { flex-wrap: wrap; }
 }
 
 @media (max-width: 900px) {
@@ -253,3 +254,41 @@
 .empty-report-secondary:hover { color: #111; }
 
 .video-shortcut-hint { margin: 8px 0 0; text-align: center; color: #9ca3af; font: 400 12px/1.5 'Noto Sans KR', sans-serif; }
+
+/* Figma '화면 수정본 · 변경 후' — 검수 리포트 발언 중심 카드 */
+.shell-report .report-transcript-notice { margin: 0 0 34px; padding: 15px; border: 1px solid #f3dfb4; border-radius: 8px; background: #fffaf0; color: #7a5b1e; font: 500 14px/22px 'Noto Sans KR', sans-serif; }
+.shell-report .report-heading .report-meta { margin: 0; font: 500 12px/18px 'Noto Sans KR', sans-serif; }
+.shell-report .report-heading h1 { margin: 14px 0 16px; font: 600 40px/52px 'Noto Sans KR', sans-serif; letter-spacing: -1.4px; }
+.shell-report .report-heading > p:not(.report-meta) { margin: 0; color: #16181d; font: 400 16px/23px 'Noto Sans KR', sans-serif; }
+.shell-report .report-heading .report-warnings p { color: #7a5b1e; font: 400 12px/19.2px 'Noto Sans KR', sans-serif; }
+.shell-report .report-selected-card { display: flex; flex-direction: column; gap: 24px; padding: 28px 30px; box-shadow: 0 18px 21px rgba(54, 125, 183, .08); }
+.shell-report .report-card-label { display: block; margin: 0; color: #9aa0a6; font: 500 12px/18px 'Noto Sans KR', sans-serif; }
+.shell-report .report-card-summary { display: flex; align-items: flex-start; gap: 24px; }
+.shell-report .report-card-timestamp { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.shell-report .report-card-timestamp strong { color: #2e7df7; font: 500 16px/24px 'Noto Sans KR', sans-serif; font-variant-numeric: tabular-nums; }
+.shell-report .report-card-timestamp small { color: #6b7280; font: 400 11px/18px 'Noto Sans KR', sans-serif; }
+.shell-report .report-card-timestamp small.report-card-position { display: block; color: #b6bac0; }
+.shell-report .report-card-risk { flex: 0 0 196px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.shell-report .report-risk-chip { padding: 6px 12px; border: 1px solid #dceefa; border-radius: 20px; background: #fff; color: #16181d; font: 500 12px/18px 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-report .report-card-divider { width: 100%; height: 0; margin: 0; border: 0; border-top: 1px solid #dceefa; }
+.shell-report .report-selected-card .report-player { margin-top: 0; }
+.shell-report .report-card-section { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+.shell-report .report-card-speech p { margin: 0; color: #16181d; font: 400 20px/33px 'Noto Sans KR', sans-serif; }
+.shell-report .report-highlight { background: none; color: #2e7df7; }
+.shell-report .report-card-context { gap: 8px; }
+.shell-report .report-card-context p { margin: 0; color: #6b7280; font: 400 15px/24px 'Noto Sans KR', sans-serif; }
+.shell-report .report-card-reason p { margin: 0; color: #6b7280; font: 400 15px/25.5px 'Noto Sans KR', sans-serif; }
+.shell-report .report-card-section.report-reference-block { margin-top: 0; }
+.shell-report .report-card-section .report-reference-empty { padding: 0; border-left: 0; color: #9aa0a6; font: 400 13px/20.8px 'Noto Sans KR', sans-serif; }
+.shell-report .report-selected-card .report-actions { gap: 12px; padding-top: 0; }
+.shell-report .report-selected-card { scroll-margin-top: 132px; }
+.shell-report .report-selected-card .report-next { margin: -10px 0 0; }
+.shell-report .upload-submit .button { width: auto; height: 51px; padding: 0 24px; border-radius: 10px; background: #111; font: 500 15px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-report .upload-submit .button:hover { background: #2e7df7; }
+@media (max-width: 900px) {
+  .shell-report .report-card-summary { flex-direction: column; gap: 16px; }
+  .shell-report .report-card-risk { flex-basis: auto; }
+  .shell-report .report-card-speech p { font-size: 17px; line-height: 1.65; }
+  .shell-report .report-heading h1 { font-size: 30px; line-height: 40px; letter-spacing: -.8px; }
+  .shell-report .report-selected-card { scroll-margin-top: 177px; }
+}

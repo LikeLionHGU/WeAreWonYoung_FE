@@ -6,3 +6,14 @@
 .main-nav { display: flex; align-items: center; gap: 30px; color: var(--ink); font-size: 13px; }
 .main-nav a { padding: 7px 0; color: var(--muted); }
 .main-nav a:hover, .main-nav a.active { color: var(--ink); }
+
+/* 모바일에서도 모든 메뉴로 이동할 수 있어야 한다. */
+.shell h1, .shell h2 { word-break: keep-all; overflow-wrap: anywhere; }
+@media (max-width: 800px) {
+  .shell .topbar .main-nav { gap: 12px; }
+  .shell .topbar .main-nav a:not(.topbar-start) { display: inline; font-size: 12px; white-space: nowrap; }
+}
+@media (max-width: 360px) {
+  .shell .topbar .main-nav { gap: 9px; }
+  .shell .topbar .main-nav a:not(.topbar-start) { font-size: 11px; }
+}

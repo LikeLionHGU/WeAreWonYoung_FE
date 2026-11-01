@@ -347,3 +347,48 @@
   .shell-landing .landing-compare { height: auto; }
   .shell-landing .landing-compare-card { height: auto; min-height: 0; }
 }
+
+/* 1440px 시안을 기준으로 폭이 줄어도 진행 단계가 화면 안에 남도록 보정한다. */
+.shell-landing { --landing-gutter: clamp(48px, 8.334vw, 120px); }
+@media (min-width: 1201px) {
+  .shell-landing .landing-steps {
+    right: var(--landing-gutter);
+    left: auto;
+    width: min(450px, calc(100% - 2 * var(--landing-gutter) - 665px));
+  }
+}
+@media (min-width: 901px) and (max-width: 1439px) {
+  .shell-landing .landing-hero { height: auto; }
+  .shell-landing .landing-hero-main { padding: 110px var(--landing-gutter) 72px; }
+  .shell-landing .landing-three,
+  .shell-landing .landing-compare,
+  .shell-landing .landing-limitations,
+  .shell-landing .landing-evidence { height: auto; padding-inline: var(--landing-gutter); }
+  .shell-landing .landing-belief { height: auto; padding-bottom: 72px; }
+  .shell-landing .landing-cta { height: auto; padding-bottom: 96px; }
+  .shell-landing .landing-three-grid .landing-info,
+  .shell-landing .landing-evidence-grid .landing-info,
+  .shell-landing .landing-evidence-grid .landing-info + .landing-info { height: auto; }
+  .shell-landing .landing-compare-card { height: auto; }
+  .shell-landing .landing-limit-list .landing-info { height: auto; min-height: 69px; grid-template-columns: 180px minmax(0, 1fr); gap: 24px; }
+  .shell-landing .landing-footer { height: auto; gap: 40px; padding-inline: var(--landing-gutter); }
+}
+@media (min-width: 901px) and (max-width: 1200px) {
+  .shell-landing .landing-hero { min-height: 0; }
+  .shell-landing .landing-hero h1 { font-size: clamp(38px, 4.4vw, 52px); }
+  .shell-landing .landing-steps { position: static; width: 100%; margin-top: 40px; }
+  .shell-landing .landing-limitations { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+}
+@media (max-width: 600px) {
+  .shell-landing .landing-hero h1 { font-size: 30px; }
+  .shell-landing .landing-belief h2,
+  .shell-landing .landing-three h2,
+  .shell-landing .landing-compare h2,
+  .shell-landing .landing-limitations h2,
+  .shell-landing .landing-evidence h2 { font-size: 24px; }
+  .shell-landing .landing-cta h2 { font-size: 28px; }
+  .shell-landing .landing-compare-card strong { font-size: 20px; }
+  .shell-landing .landing-compare-card div { padding: 24px; }
+  .shell-landing .landing-brand-heading { flex-wrap: wrap; }
+  .shell-landing .landing-footer { gap: 28px; }
+}

@@ -68,7 +68,7 @@ export default function LandingPage() {
           <LandingKicker label="업로드 전 검수" />
           <h1>공개 전 영상에서, 다시 확인할 구간과 근거를 먼저 보여드립니다</h1>
           <p className="landing-lead">
-            발언, 사실 정보, 관련 맥락을 분석해 사람이 다시 확인할 지점을 타임라인으로 제시합니다.
+            발언, 사실 정보, 관련 맥락을 분석해 사람이 다시 확인할 지점을 타임라인으로 제시합니다.{' '}
             <br />
             판정하거나 고치지 않습니다. 최종 판단은 제작자가 합니다.
           </p>
@@ -99,8 +99,8 @@ export default function LandingPage() {
             단정적인 표현이나 일반화, 확인이 필요한 발언 등을 검토 후보로 보여드립니다.
           </LandingInfo>
           <LandingInfo title="사실 확인">
-            화면 자막과 발언에서 인물명, 기업명, 날짜, 숫자, 통계처럼 확인 가능한 정보를 찾고,
-            필요한 경우 관련 근거를 함께 제공합니다.
+            발언에서 인물명, 기업명, 날짜, 숫자, 통계처럼 확인 가능한 정보를 찾고, 필요한 경우
+            관련 근거를 함께 제공합니다.
           </LandingInfo>
           <LandingInfo title="맥락 참고">
             제작 과정에서 놓쳤을 수 있는 사회적·문화적·역사적 배경이나 특정 표현과 관련된 맥락을
@@ -113,7 +113,7 @@ export default function LandingPage() {
           <span className="landing-orange-label">핵심은 이것입니다</span>
           <h2>근거를 함께 보여드립니다.</h2>
           <p>
-            해당 구간이 왜 검토 후보로 선정되었는지, 실제 발언이나 화면 문구는 무엇인지, 필요한 경우
+            해당 구간이 왜 검토 후보로 선정되었는지, 실제 발언은 무엇인지, 필요한 경우
             관련 외부 자료까지 함께 보여줍니다. 사용자는 AI의 판단을 그대로 따르는 대신, 제공된
             근거를 직접 확인하고 수정할지 유지할지 스스로 결정할 수 있습니다.
           </p>
@@ -159,7 +159,7 @@ export default function LandingPage() {
         <h2>모든 검토 후보에 근거를 함께 제공합니다</h2>
         <div className="landing-evidence-grid">
           <LandingInfo title="직접 근거">
-            실제 발언이나 화면 정보를 직접 확인할 수 있습니다.
+            문제가 될 수 있는 실제 발언를 직접 확인할 수 있습니다.
           </LandingInfo>
           <LandingInfo title="외부 자료">
             공식 자료나 관련 Source를 함께 확인할 수 있습니다.

@@ -27,24 +27,5 @@ export function useVideoUpload() {
     }
   }
 
-  async function registerScript(script: string): Promise<VideoUploadResponse | null> {
-    setIsUploading(true)
-    setError(null)
-    setProgress(0)
-    try {
-      return await apiClient.registerScript(script)
-    } catch (e) {
-      const err =
-        e instanceof ApiRequestError
-          ? e
-          : new ApiRequestError('INTERNAL_SERVER_ERROR', '스크립트 등록에 실패했습니다.', 500)
-      setError(err)
-      return null
-    } finally {
-      setIsUploading(false)
-      setProgress(0)
-    }
-  }
-
-  return { upload, registerScript, isUploading, progress, error }
+  return { upload, isUploading, progress, error }
 }

@@ -106,6 +106,15 @@ export default function ReportPage() {
 
   if (!selected) return <EmptyReportPage />
 
+  // 같은 표현·같은 논란 유형으로 걸린 다른 구간의 타임스탬프를 함께 보여준다.
+  const relatedTimes = report.events
+    .filter(
+      event =>
+        event.id !== selected.id && event.title === selected.title && !event.timeUnknown,
+    )
+    .map(event => event.startMs)
+    .sort((a, b) => a - b)
+  const hasSpeech = report.events.some(event => event.type === 'SPEECH')
   const filterLabel = filter === 'FACT_CHECK' ? '사실 확인' : '발언'
   const generatedDate = new Date(report.generatedAt)
   const generatedLabel = Number.isNaN(generatedDate.valueOf())
@@ -115,6 +124,11 @@ export default function ReportPage() {
   return (
     <main className="report-page">
       <div className="report-content">
+        {hasSpeech && (
+          <p className="report-transcript-notice" role="note">
+            전사된 발언에 오류가 있을 수 있습니다. 원본을 다시 한번 확인해 주세요.
+          </p>
+        )}
         <div className="report-heading">
           <p className="report-meta">검수 리포트 · {generatedLabel}</p>
           <h1>다시 확인할 구간 {remaining}건 남음</h1>
@@ -196,6 +210,7 @@ export default function ReportPage() {
 
         <EventDetailCard
           selected={selected}
+          relatedTimes={relatedTimes}
           selectedIndex={state.selectedIndex}
           totalCount={report.events.length}
           mediaDuration={state.mediaDuration}
