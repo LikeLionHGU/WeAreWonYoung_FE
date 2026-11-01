@@ -26,7 +26,7 @@ export default function EventList({
             <button
               type="button"
               aria-current={event.id === selectedId ? 'true' : undefined}
-              className={`report-candidate-row ${event.id === selectedId ? 'is-current' : ''}`}
+              className={`report-candidate-row ${event.id === selectedId ? 'is-current' : ''} ${textOnly ? 'is-text-only' : ''}`}
               key={event.id}
               onClick={() => onSelect(event)}
             >

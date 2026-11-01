@@ -282,6 +282,8 @@
 .shell-report .report-card-section .report-reference-empty { padding: 0; border-left: 0; color: #9aa0a6; font: 400 13px/20.8px 'Noto Sans KR', sans-serif; }
 .shell-report .report-selected-card .report-actions { gap: 12px; padding-top: 0; }
 .shell-report .report-selected-card { scroll-margin-top: 132px; }
+.shell-report .report-candidate-row.is-text-only,
+.shell-report .report-filter-result.is-text-only { grid-template-columns: 68px minmax(0, 1fr) auto auto; }
 .shell-report .report-selected-card .report-next { margin: -10px 0 0; }
 .shell-report .upload-submit .button { width: auto; height: 51px; padding: 0 24px; border-radius: 10px; background: #111; font: 500 15px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
 .shell-report .upload-submit .button:hover { background: #2e7df7; }
@@ -291,4 +293,8 @@
   .shell-report .report-card-speech p { font-size: 17px; line-height: 1.65; }
   .shell-report .report-heading h1 { font-size: 30px; line-height: 40px; letter-spacing: -.8px; }
   .shell-report .report-selected-card { scroll-margin-top: 177px; }
+  .shell-report .report-candidate-row.is-text-only,
+  .shell-report .report-filter-result.is-text-only { grid-template-columns: 68px minmax(0, 1fr); }
+  .shell-report .is-text-only small, .shell-report .is-text-only em { grid-column: 2; }
+  .shell-report .is-text-only strong { overflow: visible; white-space: normal; word-break: keep-all; overflow-wrap: anywhere; }
 }
