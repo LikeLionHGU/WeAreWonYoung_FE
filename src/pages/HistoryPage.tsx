@@ -1,10 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { apiClient, hasConfiguredApi } from '../api/client'
 import type { VideoHistoryItem } from '../api/types'
 import { formatHistoryDate } from '../utils/format'
 import { LandingKicker } from '../components/LandingKicker'
+
+type HistoryFilter = 'ALL' | 'COMPLETED' | 'FAILED'
+
+const historyFilters: readonly (readonly [HistoryFilter, string])[] = [
+  ['ALL', '전체'],
+  ['COMPLETED', '완료'],
+  ['FAILED', '실패'],
+]
 
 function EmptyUploadPage({
   eyebrow,
@@ -66,19 +74,23 @@ function HistoryRow({ item }: { item: VideoHistoryItem }) {
 export default function HistoryPage() {
   const [items, setItems] = useState<VideoHistoryItem[] | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [filter, setFilter] = useState<'ALL' | 'COMPLETED' | 'FAILED'>('ALL')
+  const [filter, setFilter] = useState<HistoryFilter>('ALL')
+  const [counts, setCounts] = useState<Partial<Record<HistoryFilter, number>>>({})
   const [hasMore, setHasMore] = useState(false)
   const [page, setPage] = useState(0)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const latestFilter = useRef(filter)
   const pageSize = 20
 
   useEffect(() => {
     let active = true
+    latestFilter.current = filter
     void apiClient
-      .history('ALL', 0, pageSize)
+      .history(filter, 0, pageSize)
       .then(value => {
         if (active) {
           setItems(value.items)
+          setPage(0)
           setHasMore(value.totalPages > 1)
         }
       })
@@ -91,13 +103,34 @@ export default function HistoryPage() {
     return () => {
       active = false
     }
+  }, [filter])
+
+  useEffect(() => {
+    let active = true
+    void Promise.all(
+      historyFilters.map(async ([status]) => {
+        const { totalElements } = await apiClient.history(status, 0, 1)
+        return [status, totalElements] as const
+      }),
+    )
+      .then(entries => {
+        if (active) setCounts(Object.fromEntries(entries))
+      })
+      .catch(() => {
+        /* 개수 없이 필터 이름만 보여준다 */
+      })
+    return () => {
+      active = false
+    }
   }, [])
 
   async function loadMore() {
     const nextPage = page + 1
+    const requestedFilter = filter
     setIsLoadingMore(true)
     try {
-      const res = await apiClient.history('ALL', nextPage, pageSize)
+      const res = await apiClient.history(requestedFilter, nextPage, pageSize)
+      if (latestFilter.current !== requestedFilter) return
       setItems(prev => [...(prev ?? []), ...res.items])
       setPage(nextPage)
       setHasMore(nextPage + 1 < res.totalPages)
@@ -122,49 +155,33 @@ export default function HistoryPage() {
         <Loading label="검수 이력을 불러오는 중" />
       </main>
     )
-  const completedCount = items.filter(item => item.analysisStatus === 'COMPLETED').length
-  const failedCount = items.filter(item => item.analysisStatus === 'FAILED').length
-  const visibleItems = items.filter(item => filter === 'ALL' || item.analysisStatus === filter)
   return (
     <main className="history-page">
       <h1>검수 이력</h1>
       <p className="history-intro">직접 업로드하고 검수를 시작한 영상만 이곳에 표시됩니다.</p>
       <div className="history-filters" role="group" aria-label="상태 필터">
-        <button
-          type="button"
-          aria-pressed={filter === 'ALL'}
-          className={filter === 'ALL' ? 'is-selected' : ''}
-          onClick={() => setFilter('ALL')}
-        >
-          전체 {items.length}
-        </button>
-        <button
-          type="button"
-          aria-pressed={filter === 'COMPLETED'}
-          className={filter === 'COMPLETED' ? 'is-selected' : ''}
-          onClick={() => setFilter('COMPLETED')}
-        >
-          완료 {completedCount}
-        </button>
-        <button
-          type="button"
-          aria-pressed={filter === 'FAILED'}
-          className={filter === 'FAILED' ? 'is-selected' : ''}
-          onClick={() => setFilter('FAILED')}
-        >
-          실패 {failedCount}
-        </button>
+        {historyFilters.map(([status, label]) => (
+          <button
+            type="button"
+            aria-pressed={filter === status}
+            className={filter === status ? 'is-selected' : ''}
+            key={status}
+            onClick={() => setFilter(status)}
+          >
+            {label} {counts[status]}
+          </button>
+        ))}
       </div>
       <div className="history-card">
-        {visibleItems.length > 0 ? (
-          visibleItems.map(item => <HistoryRow item={item} key={item.videoId} />)
+        {items.length > 0 ? (
+          items.map(item => <HistoryRow item={item} key={item.videoId} />)
         ) : (
           <div className="history-empty">
             <p>이 상태의 검수 이력이 없습니다.</p>
           </div>
         )}
       </div>
-      {hasMore && filter === 'ALL' && (
+      {hasMore && (
         <button
           type="button"
           className="history-load-more"

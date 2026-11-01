@@ -350,16 +350,25 @@
 
 /* 1440px 시안을 기준으로 폭이 줄어도 진행 단계가 화면 안에 남도록 보정한다. */
 .shell-landing { --landing-gutter: clamp(48px, 8.334vw, 120px); }
-@media (min-width: 1201px) {
-  .shell-landing .landing-steps {
-    right: var(--landing-gutter);
-    left: auto;
-    width: min(450px, calc(100% - 2 * var(--landing-gutter) - 665px));
+/* 다음 섹션이 첫 화면 끝에 걸치지 않도록 히어로를 화면 높이에 맞춘다. */
+.shell-landing .landing-hero { height: auto; min-height: max(628px, calc(100svh - 68px)); }
+@media (min-width: 901px) {
+  .shell-landing .landing-hero-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    padding: 110px var(--landing-gutter) 85px;
   }
+  .shell-landing .landing-hero-bottom .landing-upload-cta { margin-top: 0; }
+  .shell-landing .landing-privacy { margin-bottom: 0; }
+}
+@media (min-width: 1201px) {
+  .shell-landing .landing-hero-main { grid-template-columns: minmax(640px, 1fr) minmax(0, 450px); column-gap: 40px; }
+  .shell-landing .landing-kicker,
+  .shell-landing .landing-hero h1 { grid-column: 1 / -1; }
+  .shell-landing .landing-steps { position: static; grid-column: 2; grid-row: 3 / span 3; align-self: start; width: 100%; transform: translateY(30px); }
 }
 @media (min-width: 901px) and (max-width: 1439px) {
-  .shell-landing .landing-hero { height: auto; }
-  .shell-landing .landing-hero-main { padding: 110px var(--landing-gutter) 72px; }
   .shell-landing .landing-three,
   .shell-landing .landing-compare,
   .shell-landing .landing-limitations,
@@ -374,10 +383,14 @@
   .shell-landing .landing-footer { height: auto; gap: 40px; padding-inline: var(--landing-gutter); }
 }
 @media (min-width: 901px) and (max-width: 1200px) {
-  .shell-landing .landing-hero { min-height: 0; }
   .shell-landing .landing-hero h1 { font-size: clamp(38px, 4.4vw, 52px); }
   .shell-landing .landing-steps { position: static; width: 100%; margin-top: 40px; }
   .shell-landing .landing-limitations { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+}
+@media (max-width: 900px) {
+  .shell-landing .landing-hero { min-height: calc(100svh - 68px); }
+  .shell-landing .landing-hero-main { min-height: calc(100svh - 68px); display: flex; flex-direction: column; justify-content: center; }
+  .shell-landing .landing-hero-bottom .landing-upload-cta { margin-top: 0; }
 }
 @media (max-width: 600px) {
   .shell-landing .landing-hero h1 { font-size: 30px; }

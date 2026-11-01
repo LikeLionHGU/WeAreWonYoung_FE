@@ -190,7 +190,7 @@ export default function ReportPage() {
                   <button
                     type="button"
                     aria-current={event.id === selected.id ? 'true' : undefined}
-                    className={`report-filter-result ${event.id === selected.id ? 'is-current' : ''}`}
+                    className={`report-filter-result ${event.id === selected.id ? 'is-current' : ''} ${state.isScriptOnly ? 'is-text-only' : ''}`}
                     key={event.id}
                     onClick={() => state.selectEvent(event)}
                   >
