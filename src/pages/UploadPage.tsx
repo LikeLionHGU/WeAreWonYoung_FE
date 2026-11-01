@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ErrorNotice } from '../components/AppShell'
 import { useVideoUpload } from '../hooks/useVideoUpload'
+import { validateVideoFile } from '../utils/uploadValidation'
 
 export default function UploadPage() {
   const navigate = useNavigate()
@@ -9,6 +10,8 @@ export default function UploadPage() {
   const { upload, isUploading, progress, error } = useVideoUpload()
   const [fileName, setFileName] = useState('')
   const [isDragging, setIsDragging] = useState(false)
+  const [validationError, setValidationError] = useState<string | null>(null)
+  const errorMessage = validationError ?? error?.message
 
   useEffect(() => {
     if (!isUploading) return
@@ -26,15 +29,21 @@ export default function UploadPage() {
 
   function acceptFiles(files: FileList | null) {
     const file = files?.[0]
-    if (file) {
-      setFileName(file.name)
-      if (inputRef.current) {
-        const transfer = new DataTransfer()
-        transfer.items.add(file)
-        inputRef.current.files = transfer.files
-      }
-    }
     setIsDragging(false)
+    if (!file) return
+    const invalidReason = validateVideoFile(file)
+    setValidationError(invalidReason)
+    if (invalidReason) {
+      setFileName('')
+      if (inputRef.current) inputRef.current.value = ''
+      return
+    }
+    setFileName(file.name)
+    if (inputRef.current) {
+      const transfer = new DataTransfer()
+      transfer.items.add(file)
+      inputRef.current.files = transfer.files
+    }
   }
 
   return (
@@ -77,7 +86,7 @@ export default function UploadPage() {
           />
         </label>
 
-        {error && <ErrorNotice message={error.message} />}
+        {errorMessage && <ErrorNotice message={errorMessage} />}
 
         {isUploading && progress > 0 && (
           <div className="upload-progress">

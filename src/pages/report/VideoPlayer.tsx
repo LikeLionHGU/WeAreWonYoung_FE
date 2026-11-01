@@ -1,20 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { assetUrl } from '../../api/client'
 import { formatSeconds } from '../../utils/format'
-
-function extractYouTubeId(url: string): string | null {
-  try {
-    const parsed = new URL(url)
-    if (parsed.hostname === 'youtu.be') return parsed.pathname.slice(1)
-    if (parsed.hostname.includes('youtube.com')) {
-      if (parsed.pathname.startsWith('/shorts/')) return parsed.pathname.split('/')[2]
-      return parsed.searchParams.get('v')
-    }
-    return null
-  } catch {
-    return null
-  }
-}
+import { extractYouTubeId } from '../../utils/youtube'
 
 let ytApiLoaded = false
 let ytApiLoading = false
