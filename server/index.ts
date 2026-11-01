@@ -437,7 +437,7 @@ function stageMessage(stage: Stage) {
 }
 
 const app = express()
-app.use(cors())
+app.use(cors({ origin: /^http:\/\/(localhost|127\.0\.0\.1):\d+$/ }))
 app.use(express.json())
 const upload = multer({
   storage: multer.diskStorage({
@@ -755,6 +755,6 @@ httpServer.on('upgrade', (request, socket, head) => {
 await init()
 for (const record of Object.values(state.videos))
   if (record.status === 'PENDING' || record.status === 'PROCESSING') void advance(record)
-httpServer.listen(port, () =>
+httpServer.listen(port, 'localhost', () =>
   console.log(`Creator Risk mock server listening on http://localhost:${port}`),
 )
