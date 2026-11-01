@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { apiClient } from '../api/client'
+import { fetchAllPages } from '../utils/fetchAllPages'
 
 function SettingsRow({
   title,
@@ -49,7 +50,7 @@ export default function SettingsPage() {
     setIsDeleting(true)
     setDeleteResult(null)
     try {
-      const { items } = await apiClient.history('ALL', 0, 100)
+      const items = await fetchAllPages(page => apiClient.history('ALL', page, 100))
       if (items.length === 0) {
         setDeleteResult('삭제할 항목이 없습니다.')
         return
