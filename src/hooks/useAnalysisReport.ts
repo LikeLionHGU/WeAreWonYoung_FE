@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { apiClient } from '../api/client'
 import type { AnalysisReportResponse } from '../api/types'
 import { ApiRequestError } from '../api/types'
+import { normalizeScriptReport } from '../utils/scriptCue'
 
 export function useAnalysisReport(videoId: string, enabled = true) {
   const [report, setReport] = useState<AnalysisReportResponse | null>(null)
@@ -14,7 +15,7 @@ export function useAnalysisReport(videoId: string, enabled = true) {
     void apiClient
       .report(videoId)
       .then(value => {
-        if (active) setReport(value)
+        if (active) setReport(normalizeScriptReport(value))
       })
       .catch(value => {
         if (active)

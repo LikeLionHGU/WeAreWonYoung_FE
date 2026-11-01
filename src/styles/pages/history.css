@@ -27,7 +27,15 @@
 .shell-history .history-status { color: #b6bac0; font: 400 13px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
 .shell-history .history-status-failed { color: #2e7df7; font-weight: 500; }
 .shell-history .history-status-processing, .shell-history .history-status-pending { color: #2e7df7; }
-.shell-history .landing-empty-page { min-height: calc(100svh - 68px); }
+.shell-history .landing-empty-page { width: 1040px; max-width: calc(100% - 40px); min-height: calc(100svh - 68px); padding: 64px 0 100px; color: #16181d; }
+.shell-history .landing-empty-page h1 { max-width: none; margin: 8px 0 14px; color: #16181d; font: 700 36px/1.5 'Noto Sans KR', sans-serif; letter-spacing: 0; }
+.shell-history .landing-empty-page > p { max-width: 900px; color: #6b7280; font: 400 16px/1.7 'Noto Sans KR', sans-serif; }
+.shell-history .landing-kicker { gap: 0; color: #2e7df7; font: 500 19.5px/1.5 'Noto Sans KR', sans-serif; }
+.shell-history .landing-kicker strong { color: #2e7df7; font-weight: 500; }
+.shell-history .landing-kicker-line, .shell-history .landing-kicker i { display: none; }
+.shell-history .landing-empty-action { width: 100%; max-width: 420px; height: auto; margin-top: 40px; padding: 22px 28px; border: 0; border-radius: 12px; background: #111; color: #fff; font: 500 16px/1.5 'Noto Sans KR', sans-serif; transition: background .15s; }
+.shell-history .landing-empty-action strong { font: 300 22px/1 'Noto Sans KR', sans-serif; }
+.shell-history .landing-empty-action:hover { background: #2e7df7; color: #fff; }
 @media (min-width: 901px) and (max-width: 1120px) {
   .shell-history .history-page { width: auto; max-width: none; margin-inline: 64px; }
   .shell-history .history-row { grid-template-columns: minmax(0, 1fr) 100px 70px 110px 60px; }
@@ -39,13 +47,13 @@
   .shell-history .history-page h1 { font-size: 32px; }
   .shell-history .history-intro { font-size: 14px; }
   .shell-history .history-card { border-radius: 12px; }
-  .shell-history .history-row { height: auto; min-height: 94px; padding: 16px; grid-template-columns: minmax(0, 1fr) auto; gap: 7px 12px; }
-  .shell-history .history-file { grid-column: 1 / -1; grid-row: 1; }
+  .shell-history .history-row { height: auto; min-height: 78px; padding: 16px; grid-template-columns: auto auto auto minmax(0, 1fr); gap: 6px 10px; }
+  .shell-history .history-row > .history-file { grid-column: 1 / -1; grid-row: 1; justify-self: stretch; }
   .shell-history .history-file strong { width: 100%; font-size: 14px; }
-  .shell-history .history-uploaded-at { grid-column: 1; grid-row: 2; font-size: 11px; }
-  .shell-history .history-event-count { grid-column: 1; grid-row: 3; }
-  .shell-history .history-edited { grid-column: 1; grid-row: 4; }
-  .shell-history .history-status { grid-column: 2; grid-row: 3 / span 2; align-self: center; }
+  .shell-history .history-row > .history-uploaded-at { grid-column: 1; grid-row: 2; justify-self: start; }
+  .shell-history .history-row > .history-event-count { grid-column: 2; grid-row: 2; justify-self: start; }
+  .shell-history .history-row > .history-edited { grid-column: 3; grid-row: 2; justify-self: start; }
+  .shell-history .history-row > .history-status { grid-column: 4; grid-row: 2; justify-self: end; }
 }
 
 @media (min-width: 901px) {

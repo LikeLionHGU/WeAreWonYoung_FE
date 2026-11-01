@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { useAnalysisReport } from '../hooks/useAnalysisReport'
-import { formatTime, reportEventTitle, reportEventKind } from '../utils/format'
+import { formatEventTime, reportEventTitle, reportEventKind } from '../utils/format'
 
 export default function CompletionPage() {
   const { videoId } = useParams()
@@ -34,7 +34,7 @@ export default function CompletionPage() {
   const kept = report.events.filter(event => event.reviewAction === 'CONFIRMED')
   const actionEvents = edited
   async function copyTimecodes() {
-    const text = actionEvents.map(event => formatTime(event.startMs)).join('\n')
+    const text = actionEvents.map(formatEventTime).join('\n')
     try {
       if (navigator.clipboard) {
         await navigator.clipboard.writeText(text)
@@ -87,7 +87,7 @@ export default function CompletionPage() {
           {actionEvents.length > 0 ? (
             actionEvents.map(event => (
               <div className="completion-row" key={event.id}>
-                <span className="completion-time">{formatTime(event.startMs)}</span>
+                <span className="completion-time">{formatEventTime(event)}</span>
                 <span className="completion-kind">{reportEventKind(event)}</span>
                 <p>{reportEventTitle(event)}</p>
                 <strong>수정함</strong>
