@@ -14,10 +14,12 @@ import type {
 } from './types'
 import { ApiRequestError } from './types'
 import { createCsrfSession, type CsrfToken } from '../utils/csrf'
+import { createStallTimer } from '../utils/stallTimer'
 
 const baseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 
 const defaultLoginPath = '/oauth2/authorization/google'
+const UPLOAD_STALL_MS = 300_000
 
 const errorMessages: Record<string, string> = {
   UNAUTHORIZED: '로그인이 필요합니다.',
@@ -27,7 +29,7 @@ const errorMessages: Record<string, string> = {
   ANALYSIS_NOT_COMPLETED: '분석이 끝난 뒤 리포트를 확인할 수 있습니다.',
   INVALID_ANALYSIS_STATE: '현재 상태에서는 이 작업을 진행할 수 없습니다.',
   REVIEW_INCOMPLETE: '아직 결정하지 않은 검토 후보가 남아 있습니다.',
-  MAX_UPLOAD_SIZE_EXCEEDED: '500MB 이하의 영상을 올려 주세요.',
+  MAX_UPLOAD_SIZE_EXCEEDED: '4GB 이하의 영상을 올려 주세요.',
   UNSUPPORTED_VIDEO_FORMAT: 'mp4, mov 또는 avi 형식의 영상을 올려 주세요.',
   MAX_VIDEO_DURATION_EXCEEDED: '90분 이하의 영상을 올려 주세요.',
   RANGE_NOT_SATISFIABLE: '영상의 해당 구간을 재생할 수 없습니다.',
@@ -103,9 +105,22 @@ export const apiClient = {
       xhr.open('POST', `${baseUrl}/api/v1/videos`)
       xhr.withCredentials = true
       for (const [name, value] of Object.entries(headers)) xhr.setRequestHeader(name, value)
+      // A 4GB file can take longer than any fixed limit, so only give up when progress stops.
+      const stall = createStallTimer(() => {
+        reject(
+          new ApiRequestError(
+            'INTERNAL_SERVER_ERROR',
+            '업로드 시간이 초과되었습니다. 다시 시도해 주세요.',
+            0,
+          ),
+        )
+        xhr.abort()
+      }, UPLOAD_STALL_MS)
       xhr.upload.onprogress = e => {
+        stall.reset()
         if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100))
       }
+      xhr.onloadend = stall.stop
       xhr.onload = () => {
         try {
           const body = JSON.parse(xhr.responseText) as ApiResponse<VideoUploadResponse>
@@ -123,17 +138,9 @@ export const apiClient = {
         reject(
           new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, 0),
         )
-      xhr.ontimeout = () =>
-        reject(
-          new ApiRequestError(
-            'INTERNAL_SERVER_ERROR',
-            '업로드 시간이 초과되었습니다. 다시 시도해 주세요.',
-            0,
-          ),
-        )
       xhr.onabort = () =>
         reject(new ApiRequestError('INTERNAL_SERVER_ERROR', '업로드가 취소되었습니다.', 0))
-      xhr.timeout = 300000
+      stall.reset()
       xhr.send(form)
     }))
   },
