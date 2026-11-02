@@ -1,9 +1,26 @@
 /* Login: logo and one action, centered on a plain page. */
-.shell-login { background: #fff; }
+.shell-login { background: #fff; overflow: hidden; }
 .login-page { width: 320px; max-width: calc(100% - 40px); min-height: 100svh; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; }
-.login-page h1 { margin: 0; line-height: 0; }
-.login-page .brand-logo { width: 116px; height: 40px; }
-.login-page .notice { width: 100%; justify-content: center; }
-.login-page .notice-icon { display: none; }
-.login-action { width: 100%; padding: 14px 20px; border: 1px solid #d9dce1; border-radius: 10px; color: #16181d; font: 500 15px/24px 'Noto Sans KR', sans-serif; text-align: center; transition: background .15s; }
+.login-page h1 { position: relative; width: 116px; height: 40px; margin: 0; }
+.login-page .brand-logo { position: absolute; top: 50%; left: 50%; z-index: 1; width: 116px; height: auto; transform: translate(-50%, -50%); pointer-events: none; }
+.login-actions { position: relative; width: 100%; }
+.login-action { display: block; width: 100%; padding: 14px 20px; border: 1px solid #d9dce1; border-radius: 10px; color: #16181d; font: 500 15px/24px 'Noto Sans KR', sans-serif; text-align: center; transition: background .15s; }
 .login-action:hover { background: #f5f6f8; }
+.login-error { position: absolute; top: 100%; left: 0; width: 100%; margin: 16px 0 0; color: #16181d; font: 400 14px/22px 'Noto Sans KR', sans-serif; text-align: center; }
+
+/* Failure: the logo fills the screen, squeezes left and right once, returns, then the message appears.
+   43px moves it from its resting spot to the viewport center. */
+.login-page.is-failed .brand-logo { animation: login-logo-burst 1.8s cubic-bezier(.65, 0, .35, 1) both; }
+.login-page.is-failed .login-action { animation: login-fade-in .3s ease 1.8s both; }
+.login-page.is-failed .login-error { animation: login-fade-in .3s ease 1.9s both; }
+@keyframes login-logo-burst {
+  35%, 60% { width: 92vw; transform: translate(-50%, calc(-50% + 43px)); }
+  43% { width: 92vw; transform: translate(-50%, calc(-50% + 43px)) scaleX(.86); }
+  52% { width: 92vw; transform: translate(-50%, calc(-50% + 43px)) scaleX(1.03); }
+}
+@keyframes login-fade-in {
+  from { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-page.is-failed .brand-logo, .login-page.is-failed .login-action, .login-page.is-failed .login-error { animation: none; }
+}

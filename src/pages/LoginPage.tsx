@@ -1,5 +1,5 @@
 import { Navigate, useSearchParams } from 'react-router-dom'
-import { ErrorNotice, Loading, Logo } from '../components/AppShell'
+import { Loading, Logo } from '../components/AppShell'
 import { useAuth } from '../hooks/useAuth'
 
 const loginErrors = new Map([
@@ -23,14 +23,20 @@ export default function LoginPage() {
   if (user) return <Navigate to="/" replace />
 
   return (
-    <main className="login-page">
+    <main className={`login-page ${notice ? 'is-failed' : ''}`}>
       <h1>
         <Logo />
       </h1>
-      {notice && <ErrorNotice message={notice} />}
-      <a className="login-action" href={loginHref}>
-        Google로 로그인
-      </a>
+      <div className="login-actions">
+        <a className="login-action" href={loginHref}>
+          Google로 로그인
+        </a>
+        {notice && (
+          <p className="login-error" role="alert">
+            {notice}
+          </p>
+        )}
+      </div>
     </main>
   )
 }
