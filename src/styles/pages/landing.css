@@ -39,6 +39,7 @@
 .landing-evidence-grid { margin-top: 40px; }
 .landing-email-compact { margin-top: 39px; }
 .landing-upload-cta { margin-top: 39px; }
+.landing-upload-cta.is-pending { visibility: hidden; }
 .landing-upload-button { display: inline-flex; align-items: center; justify-content: space-between; width: 100%; max-width: 420px; padding: 22px 28px; border-radius: 12px; background: #111; color: #fff; font: 500 16px/1.5 'Noto Sans KR', sans-serif; transition: background .15s; }
 .landing-upload-button:hover { background: #2e7df7; }
 .landing-upload-button strong { font-size: 22px; font-weight: 300; }

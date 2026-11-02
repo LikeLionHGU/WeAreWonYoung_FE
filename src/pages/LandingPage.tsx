@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import logoUrl from '../assets/logo/oops-logo.svg'
 import landingLogoUrl from '../assets/logo/oops-landing-logo.svg'
 import { LandingKicker } from '../components/LandingKicker'
+import { useAuth } from '../hooks/useAuth'
 export { LandingKicker }
 
 const landingSteps = [
@@ -14,10 +15,13 @@ const landingSteps = [
 ] as const
 
 function LandingUploadCta({ compact = false }: { compact?: boolean }) {
+  const { status, user } = useAuth()
   return (
-    <div className={`landing-upload-cta ${compact ? 'landing-upload-cta-compact' : ''}`}>
-      <Link className="landing-upload-button" to="/upload">
-        <span>영상 업로드하러가기</span>
+    <div
+      className={`landing-upload-cta ${compact ? 'landing-upload-cta-compact' : ''} ${status === 'loading' ? 'is-pending' : ''}`}
+    >
+      <Link className="landing-upload-button" to={user ? '/upload' : '/login'}>
+        <span>{user ? '영상 업로드하러가기' : '로그인하러가기'}</span>
         <strong aria-hidden="true">→</strong>
       </Link>
     </div>
@@ -61,6 +65,11 @@ function LandingInfo({ title, children }: { title: string; children: React.React
 }
 
 export default function LandingPage() {
+  const [params] = useSearchParams()
+
+  // The backend reports login=failed|blocked on the root URL.
+  if (params.has('login')) return <Navigate to={`/login?${params}`} replace />
+
   return (
     <main className="landing-page">
       <section className="landing-hero">
