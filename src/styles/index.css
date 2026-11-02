@@ -4,6 +4,7 @@
 @import './base.css';
 @import './pages/upload.css';
 @import './pages/landing.css';
+@import './pages/login.css';
 @import './pages/settings.css';
 @import './pages/completion.css';
 @import './pages/analysis.css';

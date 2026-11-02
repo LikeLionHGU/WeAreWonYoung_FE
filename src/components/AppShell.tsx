@@ -23,11 +23,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             ? 'shell-history'
             : pathname === '/settings'
               ? 'shell-settings'
-              : pathname.startsWith('/videos/') && pathname.endsWith('/completed')
-                ? 'shell-completion'
-                : pathname.startsWith('/videos/') && pathname.endsWith('/analysis')
-                  ? 'shell-analysis'
-                  : ''
+              : pathname === '/login'
+                ? 'shell-login'
+                : pathname.startsWith('/videos/') && pathname.endsWith('/completed')
+                  ? 'shell-completion'
+                  : pathname.startsWith('/videos/') && pathname.endsWith('/analysis')
+                    ? 'shell-analysis'
+                    : ''
+  if (pathname === '/login') return <div className={`shell ${shellPage}`}>{children}</div>
   return (
     <div className={`shell ${shellPage}`}>
       <header className="topbar">
