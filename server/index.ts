@@ -518,7 +518,7 @@ const upload = multer({
     filename: (_req, file, cb) =>
       cb(null, `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_')}`),
   }),
-  limits: { fileSize: 500 * 1024 * 1024 },
+  limits: { fileSize: 4 * 1024 * 1024 * 1024 },
   fileFilter: (_req, file, cb) =>
     cb(null, ['.mp4', '.mov', '.avi'].includes(path.extname(file.originalname).toLowerCase())),
 })
@@ -567,7 +567,7 @@ app.post('/api/v1/videos', (req, res) => {
   // File upload (multipart)
   upload.single('file')(req, res, async error => {
     if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE')
-      return failure(res, 413, 'MAX_UPLOAD_SIZE_EXCEEDED', '파일 크기가 500MB를 초과했습니다.')
+      return failure(res, 413, 'MAX_UPLOAD_SIZE_EXCEEDED', '파일 크기가 4GB를 초과했습니다.')
     if (error)
       return failure(res, 415, 'UNSUPPORTED_VIDEO_FORMAT', '지원하지 않는 영상 형식입니다.')
     if (!req.file) return failure(res, 400, 'INVALID_REQUEST', '영상 파일을 첨부해 주세요.')

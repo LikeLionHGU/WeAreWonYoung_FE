@@ -76,7 +76,7 @@ export default function UploadPage() {
           </div>
           <strong>{fileName || '파일을 이 영역으로 끌어다 놓으세요'}</strong>
           <span>{fileName ? '다른 파일을 선택하려면 클릭' : '또는 눌러서 파일을 선택하세요'}</span>
-          <small>mp4, mov 또는 avi · 최대 90분 · 500MB</small>
+          <small>mp4, mov 또는 avi · 최대 90분 · 4GB</small>
           <input
             ref={inputRef}
             id="video-file"
