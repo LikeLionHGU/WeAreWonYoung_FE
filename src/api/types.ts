@@ -31,6 +31,19 @@ export interface ApiErrorBody {
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiErrorBody
 
+export interface AuthUser {
+  id: string
+  displayName: string | null
+  email: string | null
+}
+
+export interface AuthMeResponse {
+  loggedIn: boolean
+  authEnabled: boolean
+  loginUrl: string
+  user: AuthUser | null
+}
+
 export interface VideoUploadResponse {
   videoId: string
   jobId: string

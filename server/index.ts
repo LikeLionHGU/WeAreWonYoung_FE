@@ -3,7 +3,8 @@ import express, { type Request, type Response } from 'express'
 import { execFile } from 'node:child_process'
 import { createReadStream } from 'node:fs'
 import { mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises'
-import { createServer } from 'node:http'
+import { randomUUID } from 'node:crypto'
+import { createServer, type IncomingMessage } from 'node:http'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import multer from 'multer'
@@ -111,6 +112,12 @@ const dataDir = process.env.MOCK_DATA_DIR ?? path.join(root, 'mock-data')
 const uploadsDir = path.join(dataDir, 'uploads')
 const statePath = path.join(dataDir, 'state.json')
 const port = Number(process.env.PORT ?? 3001)
+// Mirrors oops.auth.enabled on the backend: off means one local developer with no CSRF.
+const authEnabled = process.env.MOCK_AUTH === 'true'
+const appOrigin = process.env.MOCK_APP_ORIGIN ?? 'http://localhost:5173'
+const loginPath = '/oauth2/authorization/google'
+const localDeveloper = { id: '1', displayName: '로컬 개발자', email: null }
+const mockUser = { id: '3', displayName: '테스트 사용자', email: 'tester@example.com' }
 const stepMs = Number(process.env.MOCK_STEP_MS ?? 900)
 const stages: Stage[] = [
   'STT',
@@ -125,6 +132,7 @@ let state: State = { nextVideoId: 1, videos: {} }
 let failedOnce = false
 let saveChain: Promise<void> = Promise.resolve()
 const subscriptions = new Map<WebSocket, Map<string, string>>()
+const sessions = new Map<string, { csrfToken: string; loggedIn: boolean }>()
 const execFileAsync = promisify(execFile)
 
 async function probeDurationMs(storagePath: string) {
@@ -449,8 +457,61 @@ function stageMessage(stage: Stage) {
 }
 
 const app = express()
-app.use(cors({ origin: /^http:\/\/(localhost|127\.0\.0\.1):\d+$/ }))
+app.use(cors({ origin: /^http:\/\/(localhost|127\.0\.0\.1):\d+$/, credentials: true }))
 app.use(express.json())
+
+function sessionIdOf(req: IncomingMessage) {
+  return /(?:^|;\s*)mock_session=([^;]+)/.exec(req.headers.cookie ?? '')?.[1]
+}
+
+function sessionOf(req: IncomingMessage) {
+  const id = sessionIdOf(req)
+  return id ? sessions.get(id) : undefined
+}
+
+function startSession(res: Response, loggedIn: boolean) {
+  const id = randomUUID()
+  const session = { csrfToken: randomUUID(), loggedIn }
+  sessions.set(id, session)
+  res.cookie('mock_session', id, { httpOnly: true, sameSite: 'lax', path: '/' })
+  return session
+}
+
+app.get(loginPath, (_req, res) => {
+  startSession(res, true)
+  res.redirect(`${appOrigin}/`)
+})
+
+app.get('/api/v1/auth/me', (req, res) => {
+  const user = authEnabled ? (sessionOf(req)?.loggedIn ? mockUser : null) : localDeveloper
+  success(res, 200, { loggedIn: user !== null, authEnabled, loginUrl: loginPath, user })
+})
+
+app.get('/api/v1/auth/csrf', (req, res) => {
+  if (!authEnabled) return success(res, 200, { headerName: null, token: null })
+  const session = sessionOf(req) ?? startSession(res, false)
+  success(res, 200, { headerName: 'X-CSRF-TOKEN', token: session.csrfToken })
+})
+
+// Same order as Spring Security: a missing CSRF token is a bare 403 even for an expired session.
+app.use('/api', (req, res, next) => {
+  if (!authEnabled) return next()
+  const session = sessionOf(req)
+  const isMutation = !['GET', 'HEAD', 'OPTIONS'].includes(req.method)
+  if (isMutation && req.get('X-CSRF-TOKEN') !== session?.csrfToken) return res.status(403).end()
+  if (!session?.loggedIn) {
+    return failure(res, 401, 'UNAUTHORIZED', '로그인이 필요합니다.', { loginUrl: loginPath })
+  }
+  next()
+})
+
+app.post('/api/v1/auth/logout', (req, res) => {
+  const id = sessionIdOf(req)
+  if (id) sessions.delete(id)
+  res.clearCookie('mock_session', { path: '/' })
+  res.status(204).end()
+})
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: (_req, _file, cb) => cb(null, uploadsDir),
@@ -685,6 +746,14 @@ app.post('/api/v1/videos/:id/analysis/cancel', async (req, res) => {
   success(res, 200, { videoId: record.videoId, jobId: record.jobId, status: record.status })
 })
 
+app.delete('/api/v1/videos/:id', async (req, res) => {
+  const record = video(req.params.id)
+  if (!record) return failure(res, 404, 'VIDEO_NOT_FOUND', '영상을 찾을 수 없습니다.')
+  delete state.videos[record.videoId]
+  await saveState()
+  res.status(204).end()
+})
+
 app.get('/api/v1/videos/:id/stream', async (req, res) => {
   const record = video(req.params.id)
   if (!record) return failure(res, 404, 'VIDEO_NOT_FOUND', '영상을 찾을 수 없습니다.')
@@ -757,7 +826,7 @@ wss.on('connection', socket => {
   }, 10000)
 })
 httpServer.on('upgrade', (request, socket, head) => {
-  if (request.url !== '/ws') {
+  if (request.url !== '/ws' || (authEnabled && !sessionOf(request)?.loggedIn)) {
     socket.destroy()
     return
   }

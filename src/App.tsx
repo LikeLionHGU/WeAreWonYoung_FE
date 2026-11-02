@@ -1,6 +1,9 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useSearchParams } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
+import { RequireAuth } from './components/RequireAuth'
+import { AuthProvider } from './hooks/useAuth'
 import LandingPage from './pages/LandingPage'
+import LoginPage from './pages/LoginPage'
 import UploadPage from './pages/UploadPage'
 import AnalysisPage from './pages/AnalysisPage'
 import ReportPage from './pages/ReportPage'
@@ -9,20 +12,34 @@ import HistoryPage from './pages/HistoryPage'
 import SettingsPage from './pages/SettingsPage'
 import ReportRedirectPage from './pages/ReportRedirectPage'
 
+function LandingEntry() {
+  const [params] = useSearchParams()
+  const loginResult = params.get('login')
+  if (loginResult) {
+    return <Navigate to={`/login?login=${encodeURIComponent(loginResult)}`} replace />
+  }
+  return <LandingPage />
+}
+
 export default function App() {
   return (
-    <AppShell>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/upload" element={<UploadPage />} />
-        <Route path="/report" element={<ReportRedirectPage />} />
-        <Route path="/history" element={<HistoryPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/videos/:videoId/analysis" element={<AnalysisPage />} />
-        <Route path="/videos/:videoId/report" element={<ReportPage />} />
-        <Route path="/videos/:videoId/completed" element={<CompletionPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AppShell>
+    <AuthProvider>
+      <AppShell>
+        <Routes>
+          <Route path="/" element={<LandingEntry />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route element={<RequireAuth />}>
+            <Route path="/upload" element={<UploadPage />} />
+            <Route path="/report" element={<ReportRedirectPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/videos/:videoId/analysis" element={<AnalysisPage />} />
+            <Route path="/videos/:videoId/report" element={<ReportPage />} />
+            <Route path="/videos/:videoId/completed" element={<CompletionPage />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AppShell>
+    </AuthProvider>
   )
 }
