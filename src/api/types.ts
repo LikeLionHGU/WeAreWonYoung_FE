@@ -8,7 +8,6 @@ export type AnalysisStage =
   | 'MULTIMODAL'
   | 'FINALIZING'
   | 'COMPLETED'
-export type Severity = 'LOW' | 'MEDIUM' | 'HIGH'
 export type UploadGenre = 'TALK_PODCAST' | 'GENERAL'
 export type CandidateType = 'SPEECH_REVIEW' | 'FACT_CHECK'
 export type ReviewStatus = 'NOT_STARTED' | 'IN_REVIEW' | 'COMPLETED'
@@ -31,6 +30,19 @@ export interface ApiErrorBody {
 }
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiErrorBody
+
+export interface AuthUser {
+  id: string
+  displayName: string | null
+  email: string | null
+}
+
+export interface AuthMeResponse {
+  loggedIn: boolean
+  authEnabled: boolean
+  loginUrl: string
+  user: AuthUser | null
+}
 
 export interface VideoUploadResponse {
   videoId: string
@@ -106,8 +118,8 @@ interface TimelineEventBase {
   id: string
   startMs: number
   endMs: number
-  severity: Severity
   candidateType: CandidateType
+  criterionId?: string | null
   title: string
   reason: string
   frameUrl: string
@@ -121,7 +133,6 @@ export interface SpeechTimelineEvent extends TimelineEventBase {
   text: string
   contextBefore?: string | null
   contextAfter?: string | null
-  riskTypes?: string[]
 }
 
 export interface CaptionTimelineEvent extends TimelineEventBase {

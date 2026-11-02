@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { apiClient } from '../api/client'
+import { useAuth } from '../hooks/useAuth'
 import { fetchAllPages } from '../utils/fetchAllPages'
-
-// The API has no accounts yet, so deleting everything would remove every user's reports.
-const isDeleteAllAvailable = false
 
 function SettingsRow({
   title,
@@ -45,8 +43,13 @@ function SettingsRow({
 }
 
 export default function SettingsPage() {
+  const { user, authEnabled, signOut } = useAuth()
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteResult, setDeleteResult] = useState<string | null>(null)
+  const [isSigningOut, setIsSigningOut] = useState(false)
+  const [signOutError, setSignOutError] = useState<string | null>(null)
+  // Without login every request shares one local account, so deleting everything stays off.
+  const hasAccount = authEnabled && user !== null
 
   async function deleteAllVideos() {
     if (!window.confirm('모든 리포트를 삭제합니다. 이 작업은 되돌릴 수 없습니다.')) return
@@ -78,6 +81,17 @@ export default function SettingsPage() {
     }
   }
 
+  async function handleSignOut() {
+    setIsSigningOut(true)
+    setSignOutError(null)
+    try {
+      await signOut()
+    } catch {
+      setSignOutError('로그아웃하지 못했습니다. 다시 시도해 주세요.')
+      setIsSigningOut(false)
+    }
+  }
+
   return (
     <main className="settings-page">
       <h1>설정</h1>
@@ -99,13 +113,13 @@ export default function SettingsPage() {
           <SettingsRow
             title="모든 리포트 삭제"
             description={
-              isDeleteAllAvailable
+              hasAccount
                 ? (deleteResult ?? '되돌릴 수 없습니다')
                 : '로그인 기능이 연결되면 사용할 수 있습니다'
             }
             action="전체 삭제"
             tone="danger"
-            disabled={!isDeleteAllAvailable || isDeleting}
+            disabled={!hasAccount || isDeleting}
             loading={isDeleting}
             onClick={() => void deleteAllVideos()}
           />
@@ -132,8 +146,15 @@ export default function SettingsPage() {
       <section className="settings-group settings-account-group">
         <h2>계정</h2>
         <div className="settings-row-list">
-          <SettingsRow title="이메일" description="로그인 계정이 연결되면 표시됩니다" />
-          <SettingsRow title="로그아웃" action="로그아웃" compact />
+          <SettingsRow title="이메일" description={user?.email ?? '이메일 정보가 없습니다'} />
+          <SettingsRow
+            title="로그아웃"
+            description={signOutError ?? undefined}
+            action="로그아웃"
+            compact
+            disabled={!hasAccount || isSigningOut}
+            onClick={() => void handleSignOut()}
+          />
         </div>
       </section>
     </main>

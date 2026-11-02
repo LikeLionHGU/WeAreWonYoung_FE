@@ -3,6 +3,7 @@ import type {
   AnalysisReportResponse,
   AnalysisRetryResponse,
   ApiResponse,
+  AuthMeResponse,
   ReviewAction,
   ReviewActionResponse,
   ReviewCompletionResponse,
@@ -12,10 +13,14 @@ import type {
   VideoUploadResponse,
 } from './types'
 import { ApiRequestError } from './types'
+import { createCsrfSession, type CsrfToken } from '../utils/csrf'
 
 const baseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
 
+const defaultLoginPath = '/oauth2/authorization/google'
+
 const errorMessages: Record<string, string> = {
+  UNAUTHORIZED: '로그인이 필요합니다.',
   INVALID_REQUEST: '요청 내용을 다시 확인해 주세요.',
   VIDEO_NOT_FOUND: '영상을 찾을 수 없습니다.',
   ANALYSIS_IN_PROGRESS: '이미 분석 중인 영상입니다.',
@@ -30,50 +35,74 @@ const errorMessages: Record<string, string> = {
   INTERNAL_SERVER_ERROR: '잠시 후 다시 시도해 주세요.',
 }
 
+let handleUnauthorized: (() => void) | null = null
+
+const csrf = createCsrfSession(() => request<CsrfToken>('/api/v1/auth/csrf'))
+
 export function hasConfiguredApi() {
   return Boolean(baseUrl)
 }
 
+export function setUnauthorizedHandler(handler: (() => void) | null) {
+  handleUnauthorized = handler
+}
+
+function apiError(code: string, message: string, status: number, details: unknown | null = null) {
+  if (status === 401) {
+    csrf.clear()
+    handleUnauthorized?.()
+  }
+  return new ApiRequestError(code, message, status, details)
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${baseUrl}${path}`, init)
+  const response = await fetch(`${baseUrl}${path}`, { ...init, credentials: 'include' })
+  if (response.status === 204) return undefined as T
   let body: ApiResponse<T>
   try {
     body = (await response.json()) as ApiResponse<T>
   } catch {
-    throw new ApiRequestError(
-      'INTERNAL_SERVER_ERROR',
-      errorMessages.INTERNAL_SERVER_ERROR,
-      response.status,
-    )
+    throw apiError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, response.status)
   }
 
   if (!response.ok || !body.success) {
     if (!body.success) {
       const message =
         errorMessages[body.error.code] ?? body.error.message ?? errorMessages.INTERNAL_SERVER_ERROR
-      throw new ApiRequestError(body.error.code, message, response.status, body.error.details)
+      throw apiError(body.error.code, message, response.status, body.error.details)
     }
-    throw new ApiRequestError(
-      'INTERNAL_SERVER_ERROR',
-      errorMessages.INTERNAL_SERVER_ERROR,
-      response.status,
-    )
+    throw apiError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, response.status)
   }
 
   return body.data
 }
 
+function mutate<T>(path: string, init: RequestInit & { headers?: Record<string, string> }) {
+  return csrf.send(headers =>
+    request<T>(path, { ...init, headers: { ...init.headers, ...headers } }),
+  )
+}
+
 export const apiClient = {
+  me() {
+    return request<AuthMeResponse>('/api/v1/auth/me')
+  },
+  async logout() {
+    await mutate<void>('/api/v1/auth/logout', { method: 'POST' })
+    csrf.clear()
+  },
   upload(file: File, genre?: UploadGenre, onProgress?: (percent: number) => void) {
     const form = new FormData()
     form.append('file', file)
     if (genre) form.append('genre', genre)
     if (!onProgress) {
-      return request<VideoUploadResponse>('/api/v1/videos', { method: 'POST', body: form })
+      return mutate<VideoUploadResponse>('/api/v1/videos', { method: 'POST', body: form })
     }
-    return new Promise<VideoUploadResponse>((resolve, reject) => {
+    return csrf.send(headers => new Promise<VideoUploadResponse>((resolve, reject) => {
       const xhr = new XMLHttpRequest()
       xhr.open('POST', `${baseUrl}/api/v1/videos`)
+      xhr.withCredentials = true
+      for (const [name, value] of Object.entries(headers)) xhr.setRequestHeader(name, value)
       xhr.upload.onprogress = e => {
         if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100))
       }
@@ -82,12 +111,12 @@ export const apiClient = {
           const body = JSON.parse(xhr.responseText) as ApiResponse<VideoUploadResponse>
           if (!body.success) {
             const msg = errorMessages[body.error.code] ?? body.error.message ?? errorMessages.INTERNAL_SERVER_ERROR
-            reject(new ApiRequestError(body.error.code, msg, xhr.status, body.error.details))
+            reject(apiError(body.error.code, msg, xhr.status, body.error.details))
           } else {
             resolve(body.data)
           }
         } catch {
-          reject(new ApiRequestError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, xhr.status))
+          reject(apiError('INTERNAL_SERVER_ERROR', errorMessages.INTERNAL_SERVER_ERROR, xhr.status))
         }
       }
       xhr.onerror = () =>
@@ -106,7 +135,7 @@ export const apiClient = {
         reject(new ApiRequestError('INTERNAL_SERVER_ERROR', '업로드가 취소되었습니다.', 0))
       xhr.timeout = 300000
       xhr.send(form)
-    })
+    }))
   },
   history(status: 'ALL' | 'COMPLETED' | 'FAILED' = 'ALL', page = 0, size = 20) {
     const query = new URLSearchParams({ status, page: String(page), size: String(size) })
@@ -119,13 +148,13 @@ export const apiClient = {
     return request<AnalysisReportResponse>(`/api/v1/videos/${encodeURIComponent(videoId)}/report`)
   },
   retry(videoId: string) {
-    return request<AnalysisRetryResponse>(
+    return mutate<AnalysisRetryResponse>(
       `/api/v1/videos/${encodeURIComponent(videoId)}/analysis/retry`,
       { method: 'POST' },
     )
   },
   cancel(videoId: string) {
-    return request<AnalysisCancelResponse>(
+    return mutate<AnalysisCancelResponse>(
       `/api/v1/videos/${encodeURIComponent(videoId)}/analysis/cancel`,
       { method: 'POST' },
     )
@@ -136,7 +165,7 @@ export const apiClient = {
     action: ReviewAction,
     note: string | null = null,
   ) {
-    return request<ReviewActionResponse>(
+    return mutate<ReviewActionResponse>(
       `/api/v1/videos/${encodeURIComponent(videoId)}/review-actions/${encodeURIComponent(eventId)}`,
       {
         method: 'PUT',
@@ -146,17 +175,21 @@ export const apiClient = {
     )
   },
   completeReview(videoId: string) {
-    return request<ReviewCompletionResponse>(
+    return mutate<ReviewCompletionResponse>(
       `/api/v1/videos/${encodeURIComponent(videoId)}/review-completion`,
       { method: 'POST' },
     )
   },
   deleteVideo(videoId: string) {
-    return request<void>(
+    return mutate<void>(
       `/api/v1/videos/${encodeURIComponent(videoId)}`,
       { method: 'DELETE' },
     )
   },
+}
+
+export function loginHref(loginUrl = defaultLoginPath) {
+  return assetUrl(loginUrl)
 }
 
 export function assetUrl(path: string) {

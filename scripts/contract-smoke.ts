@@ -55,7 +55,7 @@ async function run() {
     const reportBody = await report.json() as { data: { filename: string; durationMs: number; events: Array<{ id: string; title: string; references: unknown[]; reviewAction: null }> } }
     assert.equal(reportBody.data.filename, 'contract.mp4')
     assert.equal(reportBody.data.durationMs > 0, true)
-    assert.equal(reportBody.data.events.length, 3)
+    assert.equal(reportBody.data.events.length, 4)
     assert.equal(typeof reportBody.data.events[0].title, 'string')
     assert.equal(Array.isArray(reportBody.data.events[0].references), true)
 
