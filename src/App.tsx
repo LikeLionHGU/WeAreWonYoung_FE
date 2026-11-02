@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useSearchParams } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
 import { RequireAuth } from './components/RequireAuth'
 import { AuthProvider } from './hooks/useAuth'
@@ -12,23 +12,14 @@ import HistoryPage from './pages/HistoryPage'
 import SettingsPage from './pages/SettingsPage'
 import ReportRedirectPage from './pages/ReportRedirectPage'
 
-function LandingEntry() {
-  const [params] = useSearchParams()
-  const loginResult = params.get('login')
-  if (loginResult) {
-    return <Navigate to={`/login?login=${encodeURIComponent(loginResult)}`} replace />
-  }
-  return <LandingPage />
-}
-
 export default function App() {
   return (
     <AuthProvider>
       <AppShell>
         <Routes>
-          <Route path="/" element={<LandingEntry />} />
           <Route path="/login" element={<LoginPage />} />
           <Route element={<RequireAuth />}>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/report" element={<ReportRedirectPage />} />
             <Route path="/history" element={<HistoryPage />} />

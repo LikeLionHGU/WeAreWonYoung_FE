@@ -1,9 +1,10 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { ErrorNotice, Loading } from './AppShell'
 import { useAuth } from '../hooks/useAuth'
 
 export function RequireAuth() {
   const { status, user, retry } = useAuth()
+  const { search } = useLocation()
 
   if (status === 'loading') {
     return (
@@ -24,5 +25,6 @@ export function RequireAuth() {
     )
   }
 
-  return user ? <Outlet /> : <Navigate to="/login" replace />
+  // The backend reports login=failed|blocked on the root URL, so keep the query.
+  return user ? <Outlet /> : <Navigate to={`/login${search}`} replace />
 }

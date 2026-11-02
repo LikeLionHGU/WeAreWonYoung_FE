@@ -1,0 +1,9 @@
+/* Login: logo and one action, centered on a plain page. */
+.shell-login { background: #fff; }
+.login-page { width: 320px; max-width: calc(100% - 40px); min-height: 100svh; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; }
+.login-page h1 { margin: 0; line-height: 0; }
+.login-page .brand-logo { width: 116px; height: 40px; }
+.login-page .notice { width: 100%; justify-content: center; }
+.login-page .notice-icon { display: none; }
+.login-action { width: 100%; padding: 14px 20px; border: 1px solid #d9dce1; border-radius: 10px; color: #16181d; font: 500 15px/24px 'Noto Sans KR', sans-serif; text-align: center; transition: background .15s; }
+.login-action:hover { background: #f5f6f8; }
