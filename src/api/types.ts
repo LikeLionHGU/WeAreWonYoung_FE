@@ -8,7 +8,6 @@ export type AnalysisStage =
   | 'MULTIMODAL'
   | 'FINALIZING'
   | 'COMPLETED'
-export type Severity = 'LOW' | 'MEDIUM' | 'HIGH'
 export type UploadGenre = 'TALK_PODCAST' | 'GENERAL'
 export type CandidateType = 'SPEECH_REVIEW' | 'FACT_CHECK'
 export type ReviewStatus = 'NOT_STARTED' | 'IN_REVIEW' | 'COMPLETED'
@@ -106,8 +105,8 @@ interface TimelineEventBase {
   id: string
   startMs: number
   endMs: number
-  severity: Severity
   candidateType: CandidateType
+  criterionId?: string | null
   title: string
   reason: string
   frameUrl: string
@@ -121,7 +120,6 @@ export interface SpeechTimelineEvent extends TimelineEventBase {
   text: string
   contextBefore?: string | null
   contextAfter?: string | null
-  riskTypes?: string[]
 }
 
 export interface CaptionTimelineEvent extends TimelineEventBase {

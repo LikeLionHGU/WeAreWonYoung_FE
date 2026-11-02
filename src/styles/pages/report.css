@@ -269,7 +269,7 @@
 .shell-report .report-card-timestamp small { color: #6b7280; font: 400 11px/18px 'Noto Sans KR', sans-serif; }
 .shell-report .report-card-timestamp small.report-card-position { display: block; color: #b6bac0; }
 .shell-report .report-card-risk { flex: 0 0 196px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-.shell-report .report-risk-chip { padding: 6px 12px; border: 1px solid #dceefa; border-radius: 20px; background: #fff; color: #16181d; font: 500 12px/18px 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-report .report-risk-chip { padding: 6px 12px; border: 1px solid #dceefa; border-radius: 20px; background: #fff; color: #16181d; font: 500 12px/18px 'Noto Sans KR', sans-serif; }
 .shell-report .report-card-divider { width: 100%; height: 0; margin: 0; border: 0; border-top: 1px solid #dceefa; }
 .shell-report .report-selected-card .report-player { margin-top: 0; }
 .shell-report .report-card-section { display: flex; flex-direction: column; gap: 12px; margin: 0; }

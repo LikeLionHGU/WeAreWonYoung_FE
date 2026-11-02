@@ -7,7 +7,6 @@ function speechEvent(overrides: Partial<SpeechTimelineEvent>): SpeechTimelineEve
     id: '1',
     startMs: 1148820,
     endMs: 1169340,
-    severity: 'LOW',
     candidateType: 'SPEECH_REVIEW',
     title: "'개그맨' — 조롱",
     reason: '이유',

@@ -45,10 +45,7 @@ export const candidateLabels: Record<CandidateType, string> = {
 export function reportEventRiskLabel(event: TimelineEvent) {
   const [, risk] = event.title.split(/\s+—\s+/)
   if (risk?.trim()) return risk.trim()
-  // riskTypes가 사람이 읽을 수 있는 한글 라벨일 때만 노출하고, 내부 코드값은 숨긴다.
-  const readable =
-    event.type === 'SPEECH' ? (event.riskTypes ?? []).filter(type => /[^\x00-\x7F]/.test(type)) : []
-  return readable.length > 0 ? readable.join('·') : candidateLabels[event.candidateType]
+  return event.criterionId ? event.title : candidateLabels[event.candidateType]
 }
 
 /** 제목의 따옴표 안 표현이 발언에 포함되어 있으면 강조할 표현으로 사용한다. */

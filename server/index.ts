@@ -19,7 +19,6 @@ type Stage =
   | 'MULTIMODAL'
   | 'FINALIZING'
   | 'COMPLETED'
-type Severity = 'LOW' | 'MEDIUM' | 'HIGH'
 type ReviewStatus = 'NOT_STARTED' | 'IN_REVIEW' | 'COMPLETED'
 type ReviewAction = 'CONFIRMED' | 'EDITED' | 'HOLD' | 'NOT_USEFUL'
 type CandidateType = 'SPEECH_REVIEW' | 'FACT_CHECK'
@@ -37,8 +36,8 @@ interface EventBase {
   id: string
   startMs: number
   endMs: number
-  severity: Severity
   candidateType: CandidateType
+  criterionId: string | null
   title: string
   reason: string
   frameUrl: string
@@ -50,7 +49,6 @@ type TimelineEvent =
   | (EventBase & {
       type: 'SPEECH'
       text: string
-      riskTypes: string[]
       contextBefore?: string | null
       contextAfter?: string | null
     })
@@ -254,14 +252,29 @@ function reportFor(record: VideoRecord): Report {
       startMs: 3200,
       endMs: 6100,
       type: 'SPEECH',
-      severity: 'HIGH',
       candidateType: 'SPEECH_REVIEW',
+      criterionId: 'G01-C01',
       title: '특정 세대를 단정하는 표현',
       text: '요즘 젊은 사람들은 다 책임감이 없는 것 같아요.',
       contextBefore: '제가 최근에 몇 명을 만나봤는데요.',
       contextAfter: '물론 제가 만난 사례만 보고 느낀 생각입니다.',
-      riskTypes: ['GENERALIZATION'],
       reason: '특정 세대 전체를 하나의 특성으로 묶어 표현하고 있습니다.',
+      frameUrl: frame('event-1'),
+      references: [],
+      reviewAction: null,
+    },
+    {
+      id: 'event-1b',
+      startMs: 3200,
+      endMs: 6100,
+      type: 'SPEECH',
+      candidateType: 'SPEECH_REVIEW',
+      criterionId: 'G02-C01',
+      title: '개인 경험을 집단 전체의 특성으로 확대하는 표현',
+      text: '요즘 젊은 사람들은 다 책임감이 없는 것 같아요.',
+      contextBefore: '제가 최근에 몇 명을 만나봤는데요.',
+      contextAfter: '물론 제가 만난 사례만 보고 느낀 생각입니다.',
+      reason: '몇 명을 만난 경험을 세대 전체의 특성처럼 말하고 있습니다.',
       frameUrl: frame('event-1'),
       references: [],
       reviewAction: null,
@@ -271,11 +284,10 @@ function reportFor(record: VideoRecord): Report {
       startMs: 7310,
       endMs: 9220,
       type: 'SPEECH',
-      severity: 'MEDIUM',
       candidateType: 'FACT_CHECK',
+      criterionId: null,
       title: '설립 연도 사실 확인',
       text: 'OO회사는 2019년에 설립됐습니다.',
-      riskTypes: ['FACT_CHECK'],
       reason:
         '영상에서는 설립 연도를 2019년이라고 언급했지만 확인된 자료에서는 2020년으로 안내하고 있습니다.',
       frameUrl: frame('event-2'),
@@ -294,8 +306,8 @@ function reportFor(record: VideoRecord): Report {
       startMs: 12600,
       endMs: 15000,
       type: 'CAPTION',
-      severity: 'MEDIUM',
       candidateType: 'FACT_CHECK',
+      criterionId: null,
       title: '화면 수치 출처 확인',
       speechText: '',
       captionText: '2024년 국내 이용자 80%',
@@ -323,7 +335,7 @@ function reportFor(record: VideoRecord): Report {
     streamUrl: record.storagePath ? `/api/v1/videos/${record.videoId}/stream` : null,
     sourceUrl: record.sourceUrl ?? null,
     reviewStatus: 'NOT_STARTED',
-    summary: { total: 3, speechReview: 1, factCheck: 2 },
+    summary: { total: 4, speechReview: 2, factCheck: 2 },
     reviewSummary: reviewSummary(events),
     coverage: { speechAnalyzed: true, screenTextAnalyzed: true, sceneAnalyzed: true },
     warnings: [],
