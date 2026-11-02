@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import logoUrl from '../assets/logo/oops-logo.svg'
+import { useAuth } from '../hooks/useAuth'
 
 export function Logo() {
   return <img className="brand-logo" src={logoUrl} alt="OoPs!?" />
@@ -8,6 +9,7 @@ export function Logo() {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
+  const { user } = useAuth()
   useEffect(() => {
     window.scrollTo({ left: 0, top: 0, behavior: 'auto' })
   }, [pathname])
@@ -37,17 +39,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Link className="brand" to="/">
           <Logo />
         </Link>
-        <nav className="main-nav" aria-label="주요 메뉴">
-          <NavLink to="/upload">업로드</NavLink>
-          <NavLink to="/report">검수 리포트</NavLink>
-          <NavLink to="/history">검수 이력</NavLink>
-          <NavLink to="/settings">설정</NavLink>
-          {pathname === '/' && (
-            <Link className="topbar-start" to="/upload">
-              시작하기
-            </Link>
-          )}
-        </nav>
+        {user && (
+          <nav className="main-nav" aria-label="주요 메뉴">
+            <NavLink to="/upload">업로드</NavLink>
+            <NavLink to="/report">검수 리포트</NavLink>
+            <NavLink to="/history">검수 이력</NavLink>
+            <NavLink to="/settings">설정</NavLink>
+            {pathname === '/' && (
+              <Link className="topbar-start" to="/upload">
+                시작하기
+              </Link>
+            )}
+          </nav>
+        )}
       </header>
       {children}
     </div>

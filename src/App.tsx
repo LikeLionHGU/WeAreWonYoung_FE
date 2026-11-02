@@ -17,9 +17,9 @@ export default function App() {
     <AuthProvider>
       <AppShell>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route element={<RequireAuth />}>
-            <Route path="/" element={<LandingPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/report" element={<ReportRedirectPage />} />
             <Route path="/history" element={<HistoryPage />} />
