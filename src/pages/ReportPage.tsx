@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { formatTime, reportEventTitle, reportEventKind } from '../utils/format'
-import EmptyReportPage from './EmptyReportPage'
 import EventDetailCard from './report/EventDetailCard'
 import EventList from './report/EventList'
 import ReviewSidebar from './report/ReviewSidebar'
@@ -58,7 +57,7 @@ export default function ReportPage() {
 
   if (!state.report) return null
 
-  const { report, selected, orderedEvents, remaining, filter } = state
+  const { report, selected, orderedEvents, remaining, filter, warnings } = state
 
   if (!selected && report.events.length === 0) {
     const generatedDate = new Date(report.generatedAt)
@@ -73,10 +72,10 @@ export default function ReportPage() {
             <p className="report-meta">검수 리포트 · {generatedLabel}</p>
             <h1>검출된 검토 후보가 없습니다</h1>
             <p>이 영상에서는 다시 확인할 구간을 찾지 못했습니다.</p>
-            {report.warnings.length > 0 && (
+            {warnings.length > 0 && (
               <div className="report-warnings" role="status">
                 <strong>분석 안내</strong>
-                {report.warnings.map(warning => (
+                {warnings.map(warning => (
                   <p key={`${warning.stage}-${warning.code}`}>{warning.message}</p>
                 ))}
               </div>
@@ -104,13 +103,14 @@ export default function ReportPage() {
     )
   }
 
-  if (!selected) return <EmptyReportPage />
-
   // 같은 표현·같은 논란 유형으로 걸린 다른 구간의 타임스탬프를 함께 보여준다.
   const relatedTimes = report.events
     .filter(
       event =>
-        event.id !== selected.id && event.title === selected.title && !event.timeUnknown,
+        selected !== null &&
+        event.id !== selected.id &&
+        event.title === selected.title &&
+        !event.timeUnknown,
     )
     .map(event => event.startMs)
     .sort((a, b) => a - b)
@@ -133,10 +133,10 @@ export default function ReportPage() {
           <p className="report-meta">검수 리포트 · {generatedLabel}</p>
           <h1>다시 확인할 구간 {remaining}건 남음</h1>
           <p>판정이 아니라 확인 요청입니다. 하나씩 읽고 직접 결정하세요.</p>
-          {report.warnings.length > 0 && (
+          {warnings.length > 0 && (
             <div className="report-warnings" role="status">
               <strong>일부 분석 안내</strong>
-              {report.warnings.map(warning => (
+              {warnings.map(warning => (
                 <p key={`${warning.stage}-${warning.code}`}>{warning.message}</p>
               ))}
             </div>
@@ -183,14 +183,17 @@ export default function ReportPage() {
               <span>{orderedEvents.length}건</span>
             </div>
             <div className="report-filter-results-list">
+              {orderedEvents.length === 0 && (
+                <p className="report-filter-empty">{filterLabel} 검토 후보가 없습니다.</p>
+              )}
               {orderedEvents.map(event => {
                 const kind = reportEventKind(event)
                 const label = state.decisionLabel(event)
                 return (
                   <button
                     type="button"
-                    aria-current={event.id === selected.id ? 'true' : undefined}
-                    className={`report-filter-result ${event.id === selected.id ? 'is-current' : ''} ${state.isScriptOnly ? 'is-text-only' : ''}`}
+                    aria-current={event.id === selected?.id ? 'true' : undefined}
+                    className={`report-filter-result ${event.id === selected?.id ? 'is-current' : ''} ${state.isScriptOnly ? 'is-text-only' : ''}`}
                     key={event.id}
                     onClick={() => state.selectEvent(event)}
                   >
@@ -208,40 +211,42 @@ export default function ReportPage() {
           </section>
         )}
 
-        <EventDetailCard
-          selected={selected}
-          relatedTimes={relatedTimes}
-          selectedIndex={state.selectedIndex}
-          totalCount={report.events.length}
-          mediaDuration={state.mediaDuration}
-          scrubberMax={state.scrubberMax}
-          scrubberValue={state.scrubberValue}
-          durationLabel={state.durationLabel}
-          streamUrl={report.streamUrl ?? ''}
-          youtubeUrl={report.sourceUrl ?? undefined}
-          textOnly={state.isScriptOnly}
-          videoRef={state.videoRef}
-          isPlaying={state.isPlaying}
-          currentTime={state.currentTime}
-          selectedDecision={state.selectedDecision}
-          isSaving={state.savingEventId === selected.id}
-          decisionError={state.decisionError}
-          cardRef={state.selectedCardRef}
-          onLoadedMetadata={state.handleSetDuration}
-          onTimeUpdate={state.handleSetCurrentTime}
-          onPlay={state.handleSetIsPlayingTrue}
-          onPause={state.handleSetIsPlayingFalse}
-          onTogglePlay={state.togglePlay}
-          onSeek={state.seek}
-          onSkipBy={state.skipBy}
-          onVideoKeyDown={state.handleVideoKeyDown}
-          onDecision={state.setDecision}
-        />
+        {selected && (
+          <EventDetailCard
+            selected={selected}
+            relatedTimes={relatedTimes}
+            selectedIndex={state.selectedIndex}
+            totalCount={report.events.length}
+            mediaDuration={state.mediaDuration}
+            scrubberMax={state.scrubberMax}
+            scrubberValue={state.scrubberValue}
+            durationLabel={state.durationLabel}
+            streamUrl={report.streamUrl ?? ''}
+            youtubeUrl={report.sourceUrl ?? undefined}
+            textOnly={state.isScriptOnly}
+            videoRef={state.videoRef}
+            isPlaying={state.isPlaying}
+            currentTime={state.currentTime}
+            selectedDecision={state.selectedDecision}
+            isSaving={state.savingEventId === selected.id}
+            decisionError={state.decisionError}
+            cardRef={state.selectedCardRef}
+            onLoadedMetadata={state.handleSetDuration}
+            onTimeUpdate={state.handleSetCurrentTime}
+            onPlay={state.handleSetIsPlayingTrue}
+            onPause={state.handleSetIsPlayingFalse}
+            onTogglePlay={state.togglePlay}
+            onSeek={state.seek}
+            onSkipBy={state.skipBy}
+            onVideoKeyDown={state.handleVideoKeyDown}
+            onDecision={state.setDecision}
+          />
+        )}
 
         {filter === 'ALL' && (
           <EventList
             events={orderedEvents}
-            selectedId={selected.id}
+            selectedId={selected?.id ?? ''}
             onSelect={state.selectEvent}
             decisionLabel={state.decisionLabel}
             textOnly={state.isScriptOnly}
@@ -261,7 +266,7 @@ export default function ReportPage() {
             : [...report.events].sort((a, b) => a.startMs - b.startMs)
         }
         remaining={remaining}
-        selectedId={selected.id}
+        selectedId={selected?.id ?? ''}
         decisions={state.decisions}
         isCompleting={state.isCompleting}
         finishError={state.decisionError}
