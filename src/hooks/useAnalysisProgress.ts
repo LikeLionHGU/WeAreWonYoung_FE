@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Client, type IMessage, type StompSubscription } from '@stomp/stompjs'
+import { Client, ReconnectionTimeMode, type IMessage } from '@stomp/stompjs'
 import { apiClient, websocketUrl } from '../api/client'
 import type { VideoStatusResponse } from '../api/types'
+import { startProgressSync } from '../utils/progressSync'
+
+const CONNECTED_POLL_MS = 15_000
+const FALLBACK_POLL_MS = 2000
 
 export function useAnalysisProgress(videoId: string) {
   const [status, setStatus] = useState<VideoStatusResponse | null>(null)
@@ -9,7 +13,6 @@ export function useAnalysisProgress(videoId: string) {
   const [connectionError, setConnectionError] = useState(false)
   const jobId = useRef<string | null>(null)
   const progressState = useRef({ jobId: null as string | null, value: 0, terminal: false })
-  const clientRef = useRef<Client | null>(null)
 
   const applyStatus = useCallback((next: VideoStatusResponse) => {
     if (jobId.current && next.jobId !== jobId.current) return
@@ -48,56 +51,44 @@ export function useAnalysisProgress(videoId: string) {
     }
   }, [applyStatus, videoId])
 
-  useEffect(() => {
-    let mounted = true
-    let pollTimer: number | undefined
-    let subscription: StompSubscription | undefined
-    void refresh()
-    const startPolling = () => {
-      if (!mounted || pollTimer) return
-      setIsFallback(true)
-      pollTimer = window.setInterval(() => {
-        void refresh()
-      }, 3000)
-    }
-    const client = new Client({
-      brokerURL: websocketUrl(),
-      reconnectDelay: 5000,
-      heartbeatIncoming: 10000,
-      heartbeatOutgoing: 10000,
-      onConnect: () => {
-        if (!mounted) return
-        setIsFallback(false)
-        if (pollTimer) {
-          window.clearInterval(pollTimer)
-          pollTimer = undefined
-        }
-        subscription = client.subscribe(
-          `/topic/videos/${videoId}/progress`,
-          (message: IMessage) => {
-            try {
-              const next = JSON.parse(message.body) as VideoStatusResponse
-              applyStatus(next)
-            } catch {
-              /* ignore malformed broker messages */
-            }
-          },
-        )
-      },
-      onWebSocketError: startPolling,
-      onStompError: startPolling,
-      onWebSocketClose: startPolling,
-    })
-    clientRef.current = client
-    client.activate()
-    return () => {
-      mounted = false
-      if (pollTimer) window.clearInterval(pollTimer)
-      subscription?.unsubscribe()
-      void client.deactivate()
-      clientRef.current = null
-    }
-  }, [applyStatus, refresh, videoId])
+  useEffect(
+    () =>
+      startProgressSync({
+        topic: `/topic/videos/${videoId}/progress`,
+        refresh: () => void refresh(),
+        onMessage: body => {
+          try {
+            applyStatus(JSON.parse(body) as VideoStatusResponse)
+          } catch {
+            /* ignore malformed broker messages */
+          }
+        },
+        onFallbackChange: setIsFallback,
+        connectedPollMs: CONNECTED_POLL_MS,
+        fallbackPollMs: FALLBACK_POLL_MS,
+        createClient: ({ onConnect, onDisconnect }) => {
+          const client = new Client({
+            brokerURL: websocketUrl(),
+            reconnectDelay: 1000,
+            reconnectTimeMode: ReconnectionTimeMode.EXPONENTIAL,
+            maxReconnectDelay: 10_000,
+            heartbeatIncoming: 10000,
+            heartbeatOutgoing: 10000,
+            onConnect,
+            onWebSocketError: onDisconnect,
+            onStompError: onDisconnect,
+            onWebSocketClose: onDisconnect,
+          })
+          return {
+            activate: () => client.activate(),
+            deactivate: () => client.deactivate(),
+            subscribe: (topic, onMessage) =>
+              client.subscribe(topic, (message: IMessage) => onMessage(message.body)),
+          }
+        },
+      }),
+    [applyStatus, refresh, videoId],
+  )
 
   return { status, isFallback, connectionError, refresh }
 }

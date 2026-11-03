@@ -2,7 +2,12 @@ import { useCallback, useEffect, useState } from 'react'
 import { apiClient } from '../api/client'
 import type { AnalysisReportResponse } from '../api/types'
 import { ApiRequestError } from '../api/types'
+import { createPrefetchCache } from '../utils/prefetchCache'
 import { normalizeScriptReport } from '../utils/scriptCue'
+
+const reportCache = createPrefetchCache(videoId => apiClient.report(videoId))
+
+export const prefetchReport = reportCache.prefetch
 
 export function useAnalysisReport(videoId: string, enabled = true) {
   const [report, setReport] = useState<AnalysisReportResponse | null>(null)
@@ -12,8 +17,8 @@ export function useAnalysisReport(videoId: string, enabled = true) {
   useEffect(() => {
     if (!enabled || !videoId) return
     let active = true
-    void apiClient
-      .report(videoId)
+    void reportCache
+      .take(videoId)
       .then(value => {
         if (active) setReport(normalizeScriptReport(value))
       })

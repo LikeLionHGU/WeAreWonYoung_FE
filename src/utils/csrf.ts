@@ -23,6 +23,10 @@ export function createCsrfSession(fetchToken: () => Promise<CsrfToken>) {
     return headerName && token ? { [headerName]: token } : {}
   }
 
+  function warm() {
+    headers().catch(() => {})
+  }
+
   async function send<T>(attempt: (headers: Record<string, string>) => Promise<T>): Promise<T> {
     try {
       return await attempt(await headers())
@@ -33,5 +37,5 @@ export function createCsrfSession(fetchToken: () => Promise<CsrfToken>) {
     }
   }
 
-  return { clear, send }
+  return { clear, send, warm }
 }

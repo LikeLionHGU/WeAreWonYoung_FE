@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { apiClient } from '../api/client'
 import { useAnalysisProgress } from '../hooks/useAnalysisProgress'
+import { prefetchReport } from '../hooks/useAnalysisReport'
 import { useAnalysisRetry } from '../hooks/useAnalysisRetry'
 import { useTrickleProgress } from '../hooks/useTrickleProgress'
 
@@ -20,8 +21,8 @@ export default function AnalysisPage() {
   )
   useEffect(() => {
     if (status?.status !== 'COMPLETED') return
-    const timer = window.setTimeout(() => navigate(`/videos/${id}/report`, { replace: true }), 650)
-    return () => window.clearTimeout(timer)
+    prefetchReport(id)
+    navigate(`/videos/${id}/report`, { replace: true })
   }, [id, navigate, status?.status])
   if (!id) return <Navigate to="/" replace />
   if (!status && connectionError)
@@ -62,7 +63,6 @@ export default function AnalysisPage() {
   }
   const stages = [
     ['STT', '음성을 텍스트로 변환'],
-    ['OCR', '화면 글자 인식'],
     ['TEXT_RISK', '발언 검토 및 사실 확인'],
     ['MULTIMODAL', '관련 맥락 확인'],
     ['FINALIZING', '검토 후보와 근거 정리'],
@@ -70,17 +70,17 @@ export default function AnalysisPage() {
   const stageStep: Record<string, number> = {
     UPLOAD: 1,
     STT: 1,
-    OCR: 2,
-    TEXT_RISK: 3,
-    SCENE_DETECTION: 3,
-    MULTIMODAL: 4,
-    FINALIZING: 5,
-    COMPLETED: 5,
+    OCR: 1,
+    TEXT_RISK: 2,
+    SCENE_DETECTION: 2,
+    MULTIMODAL: 3,
+    FINALIZING: 4,
+    COMPLETED: 4,
   }
   const completed = status.status === 'COMPLETED'
   const displayProgress = completed ? 100 : trickleProgress
-  const fallbackStep = Math.min(5, Math.max(1, Math.ceil(status.progress / 20)))
-  const currentStep = completed ? 5 : (stageStep[status.stage] ?? fallbackStep)
+  const fallbackStep = Math.min(stages.length, Math.max(1, Math.ceil((status.progress / 100) * stages.length)))
+  const currentStep = completed ? stages.length : (stageStep[status.stage] ?? fallbackStep)
   const title = failed
     ? '검수 중 문제가 발생했습니다.'
     : cancelled
@@ -112,7 +112,7 @@ export default function AnalysisPage() {
             <span style={{ width: `${displayProgress}%` }} />
           </div>
           <div className="analysis-progress-meta">
-            <span>5단계 중 {currentStep}번째</span>
+            <span>{stages.length}단계 중 {currentStep}번째</span>
             <strong>{displayProgress}%</strong>
           </div>
         </div>

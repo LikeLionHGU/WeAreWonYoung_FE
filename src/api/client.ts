@@ -93,6 +93,9 @@ export const apiClient = {
     await mutate<void>('/api/v1/auth/logout', { method: 'POST' })
     csrf.clear()
   },
+  prepareMutation() {
+    csrf.warm()
+  },
   upload(file: File, genre?: UploadGenre, onProgress?: (percent: number) => void) {
     const form = new FormData()
     form.append('file', file)

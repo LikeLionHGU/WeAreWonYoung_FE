@@ -90,6 +90,28 @@ async function sendsNoHeaderWhenAuthIsDisabled() {
   assert.deepEqual(await csrf.send(async h => h), {})
 }
 
+async function warmFetchesTheTokenAheadOfTime() {
+  const source = tokenSource(['a'])
+  const csrf = createCsrfSession(source.fetchToken)
+  csrf.warm()
+  assert.equal(source.calls(), 1)
+  assert.deepEqual(await csrf.send(async h => h), { 'X-CSRF-TOKEN': 'a' })
+  assert.equal(source.calls(), 1)
+}
+
+async function failedWarmIsRetriedOnSend() {
+  let calls = 0
+  const csrf = createCsrfSession(async () => {
+    calls += 1
+    if (calls === 1) throw new Error('network')
+    return { headerName: 'X-CSRF-TOKEN', token: 'a' }
+  })
+  csrf.warm()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  assert.deepEqual(await csrf.send(async h => h), { 'X-CSRF-TOKEN': 'a' })
+  assert.equal(calls, 2)
+}
+
 async function run() {
   await reusesTokenAcrossRequests()
   await retriesOnceWithFreshTokenAfter403()
@@ -98,6 +120,8 @@ async function run() {
   await clearForcesNewToken()
   await refetchesAfterTokenRequestFails()
   await sendsNoHeaderWhenAuthIsDisabled()
+  await warmFetchesTheTokenAheadOfTime()
+  await failedWarmIsRetriedOnSend()
   console.log('CSRF smoke test passed')
 }
 
