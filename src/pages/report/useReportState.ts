@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import type { ReviewAction, TimelineEvent } from '../../api/types'
 import { apiClient } from '../../api/client'
 import { useAnalysisReport } from '../../hooks/useAnalysisReport'
+import { visibleWarnings } from '../../utils/reportWarnings'
 
 export type ReportFilter = 'ALL' | 'SPEECH_REVIEW' | 'FACT_CHECK'
 
@@ -35,6 +36,7 @@ export function useReportState() {
   }, [reportResponse])
 
   const reportEvents = useMemo(() => reportResponse?.events ?? [], [reportResponse])
+  const warnings = useMemo(() => visibleWarnings(reportResponse?.warnings ?? []), [reportResponse])
 
   const orderedEvents = useMemo(
     () => {
@@ -203,6 +205,7 @@ export function useReportState() {
     report: reportResponse,
     isScriptOnly,
     reportEvents,
+    warnings,
     orderedEvents,
     speechCount,
     factCheckCount,

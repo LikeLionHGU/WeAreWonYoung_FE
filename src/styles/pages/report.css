@@ -48,6 +48,7 @@
 .shell-report .report-filter-results-head { min-height: 42px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf4f8; color: #6b7280; font: 500 12px/1.5 'Noto Sans KR', sans-serif; }
 .shell-report .report-filter-results-head span { color: #2e7df7; font: 500 11px/1.5 Inter, sans-serif; }
 .shell-report .report-filter-results-list { display: grid; }
+.shell-report .report-filter-empty { margin: 0; padding: 16px 18px; color: #8a8f98; font: 400 13px/1.5 'Noto Sans KR', sans-serif; }
 .shell-report .report-filter-result { width: 100%; min-height: 54px; padding: 12px 18px; display: grid; grid-template-columns: 64px 68px minmax(0, 1fr) auto auto; align-items: center; gap: 12px; border: 0; border-bottom: 1px solid #f2f6f8; background: #fff; color: #16181d; text-align: left; }
 .shell-report .report-filter-result:last-child { border-bottom: 0; }
 .shell-report .report-filter-result:hover, .shell-report .report-filter-result.is-current { background: #f7fbff; }

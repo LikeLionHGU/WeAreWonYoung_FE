@@ -16,6 +16,7 @@
     "test:fetch-all-pages": "tsx scripts/fetch-all-pages-smoke.ts",
     "test:prefetch-cache": "tsx scripts/prefetch-cache-smoke.ts",
     "test:progress-sync": "tsx scripts/progress-sync-smoke.ts",
+    "test:report-warnings": "tsx scripts/report-warnings-smoke.ts",
     "test:script-cue": "tsx scripts/script-cue-smoke.ts",
     "test:stall-timer": "tsx scripts/stall-timer-smoke.ts",
     "test:upload-validation": "tsx scripts/upload-validation-smoke.ts",
