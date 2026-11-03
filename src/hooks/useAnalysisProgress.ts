@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Client, type IMessage } from '@stomp/stompjs'
+import { Client, ReconnectionTimeMode, type IMessage } from '@stomp/stompjs'
 import { apiClient, websocketUrl } from '../api/client'
 import type { VideoStatusResponse } from '../api/types'
 import { startProgressSync } from '../utils/progressSync'
 
 const CONNECTED_POLL_MS = 15_000
-const FALLBACK_POLL_MS = 3000
+const FALLBACK_POLL_MS = 2000
 
 export function useAnalysisProgress(videoId: string) {
   const [status, setStatus] = useState<VideoStatusResponse | null>(null)
@@ -69,7 +69,9 @@ export function useAnalysisProgress(videoId: string) {
         createClient: ({ onConnect, onDisconnect }) => {
           const client = new Client({
             brokerURL: websocketUrl(),
-            reconnectDelay: 5000,
+            reconnectDelay: 1000,
+            reconnectTimeMode: ReconnectionTimeMode.EXPONENTIAL,
+            maxReconnectDelay: 10_000,
             heartbeatIncoming: 10000,
             heartbeatOutgoing: 10000,
             onConnect,

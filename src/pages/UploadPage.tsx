@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiClient } from '../api/client'
 import { ErrorNotice } from '../components/AppShell'
 import { useVideoUpload } from '../hooks/useVideoUpload'
 import {
@@ -17,6 +18,10 @@ export default function UploadPage() {
   const [isDragging, setIsDragging] = useState(false)
   const [validationError, setValidationError] = useState<string | null>(null)
   const errorMessage = validationError ?? error?.message
+
+  useEffect(() => {
+    apiClient.prepareMutation()
+  }, [])
 
   useEffect(() => {
     if (!isUploading) return
