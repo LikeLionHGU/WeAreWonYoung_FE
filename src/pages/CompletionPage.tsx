@@ -72,34 +72,26 @@ export default function CompletionPage() {
           <strong>{held.length}건</strong>
         </div>
       </section>
-      <section className="completion-actions-section">
-        <div className="completion-section-head">
-          <h2>수정하기로 한 구간</h2>
-          <button
-            type="button"
-            onClick={() => void copyTimecodes()}
-            disabled={actionEvents.length === 0}
-          >
-            {copied ? '복사됨 ✓' : '타임코드 목록 복사'}
-          </button>
-        </div>
-        <div className="completion-list">
-          {actionEvents.length > 0 ? (
-            actionEvents.map(event => (
+      {actionEvents.length > 0 && (
+        <section className="completion-actions-section">
+          <div className="completion-section-head">
+            <h2>수정하기로 한 구간</h2>
+            <button type="button" onClick={() => void copyTimecodes()}>
+              {copied ? '복사됨 ✓' : '타임코드 목록 복사'}
+            </button>
+          </div>
+          <div className="completion-list">
+            {actionEvents.map(event => (
               <div className="completion-row" key={event.id}>
                 <span className="completion-time">{formatEventTime(event)}</span>
                 <span className="completion-kind">{reportEventKind(event)}</span>
                 <p>{reportEventTitle(event)}</p>
                 <strong>수정함</strong>
               </div>
-            ))
-          ) : (
-            <div className="history-empty">
-              <p>수정하기로 한 구간이 없습니다.</p>
-            </div>
-          )}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
       <div className="completion-bottom">
         <div>
           <Link className="completion-primary" to="/upload">
@@ -109,7 +101,7 @@ export default function CompletionPage() {
             리포트 다시 보기
           </Link>
         </div>
-        <p>보류 {held.length}건은 리포트에 남아 있습니다.</p>
+        {held.length > 0 && <p>보류 {held.length}건은 리포트에 남아 있습니다.</p>}
       </div>
     </main>
   )
