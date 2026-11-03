@@ -1,5 +1,10 @@
 import assert from 'node:assert/strict'
-import { MAX_UPLOAD_BYTES, validateVideoFile } from '../src/utils/uploadValidation.js'
+import {
+  MAX_UPLOAD_BYTES,
+  MAX_VIDEO_SECONDS,
+  validateVideoDuration,
+  validateVideoFile,
+} from '../src/utils/uploadValidation.js'
 
 for (const name of ['clip.mp4', 'clip.mov', 'clip.avi', 'CLIP.MP4', 'my.final.cut.mov']) {
   assert.equal(validateVideoFile({ name, size: 1024 }), null, name)
@@ -20,5 +25,14 @@ for (const name of ['clip.exe', 'clip.mp4.exe', 'clip.mkv', 'clip', '.mp4x']) {
     name,
   )
 }
+
+assert.equal(MAX_VIDEO_SECONDS, 5400)
+assert.equal(validateVideoDuration(null), null)
+assert.equal(validateVideoDuration(60), null)
+assert.equal(validateVideoDuration(MAX_VIDEO_SECONDS), null)
+assert.equal(validateVideoDuration(MAX_VIDEO_SECONDS + 0.9), null)
+assert.equal(validateVideoDuration(MAX_VIDEO_SECONDS + 1), '90분 이하의 영상을 올려 주세요.')
+assert.equal(validateVideoDuration(Number.POSITIVE_INFINITY), null)
+assert.equal(validateVideoDuration(Number.NaN), null)
 
 console.log('Upload validation smoke test passed')

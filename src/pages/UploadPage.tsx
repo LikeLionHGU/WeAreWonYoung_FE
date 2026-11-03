@@ -2,11 +2,16 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ErrorNotice } from '../components/AppShell'
 import { useVideoUpload } from '../hooks/useVideoUpload'
-import { validateVideoFile } from '../utils/uploadValidation'
+import {
+  readVideoDuration,
+  validateVideoDuration,
+  validateVideoFile,
+} from '../utils/uploadValidation'
 
 export default function UploadPage() {
   const navigate = useNavigate()
   const inputRef = useRef<HTMLInputElement>(null)
+  const latestPick = useRef(0)
   const { upload, isUploading, progress, error } = useVideoUpload()
   const [fileName, setFileName] = useState('')
   const [isDragging, setIsDragging] = useState(false)
@@ -27,11 +32,14 @@ export default function UploadPage() {
     if (result) navigate(`/videos/${result.videoId}/analysis`)
   }
 
-  function acceptFiles(files: FileList | null) {
+  async function acceptFiles(files: FileList | null) {
     const file = files?.[0]
     setIsDragging(false)
     if (!file) return
-    const invalidReason = validateVideoFile(file)
+    const pick = ++latestPick.current
+    let invalidReason = validateVideoFile(file)
+    if (!invalidReason) invalidReason = validateVideoDuration(await readVideoDuration(file))
+    if (pick !== latestPick.current) return
     setValidationError(invalidReason)
     if (invalidReason) {
       setFileName('')
@@ -66,7 +74,7 @@ export default function UploadPage() {
           onDragLeave={() => setIsDragging(false)}
           onDrop={event => {
             event.preventDefault()
-            acceptFiles(event.dataTransfer.files)
+            void acceptFiles(event.dataTransfer.files)
           }}
         >
           <div className="upload-icon" aria-hidden="true">
@@ -82,7 +90,7 @@ export default function UploadPage() {
             id="video-file"
             type="file"
             accept=".mp4,.mov,.avi,video/mp4,video/quicktime,video/x-msvideo"
-            onChange={event => acceptFiles(event.target.files)}
+            onChange={event => void acceptFiles(event.target.files)}
           />
         </label>
 
