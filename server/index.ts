@@ -119,15 +119,8 @@ const loginPath = '/oauth2/authorization/google'
 const localDeveloper = { id: '1', displayName: '로컬 개발자', email: null }
 const mockUser = { id: '3', displayName: '테스트 사용자', email: 'tester@example.com' }
 const stepMs = Number(process.env.MOCK_STEP_MS ?? 900)
-const stages: Stage[] = [
-  'STT',
-  'TEXT_RISK',
-  'SCENE_DETECTION',
-  'OCR',
-  'MULTIMODAL',
-  'FINALIZING',
-  'COMPLETED',
-]
+// Same order as the backend AnalysisPipeline, which never reports OCR or SCENE_DETECTION.
+const stages: Stage[] = ['STT', 'TEXT_RISK', 'MULTIMODAL', 'FINALIZING', 'COMPLETED']
 let state: State = { nextVideoId: 1, videos: {} }
 let failedOnce = false
 let saveChain: Promise<void> = Promise.resolve()
