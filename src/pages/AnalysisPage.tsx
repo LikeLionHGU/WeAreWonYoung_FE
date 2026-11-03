@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { apiClient } from '../api/client'
 import { useAnalysisProgress } from '../hooks/useAnalysisProgress'
+import { prefetchReport } from '../hooks/useAnalysisReport'
 import { useAnalysisRetry } from '../hooks/useAnalysisRetry'
 import { useTrickleProgress } from '../hooks/useTrickleProgress'
 
@@ -20,8 +21,8 @@ export default function AnalysisPage() {
   )
   useEffect(() => {
     if (status?.status !== 'COMPLETED') return
-    const timer = window.setTimeout(() => navigate(`/videos/${id}/report`, { replace: true }), 650)
-    return () => window.clearTimeout(timer)
+    prefetchReport(id)
+    navigate(`/videos/${id}/report`, { replace: true })
   }, [id, navigate, status?.status])
   if (!id) return <Navigate to="/" replace />
   if (!status && connectionError)
