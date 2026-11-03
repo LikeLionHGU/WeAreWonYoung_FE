@@ -82,7 +82,7 @@ export default function ReviewSidebar({
             </button>
           ))}
         </div>
-        <small>클릭하면 해당 후보로 이동</small>
+        {events.length > 0 && <small>클릭하면 해당 후보로 이동</small>}
       </div>
     </aside>
   )

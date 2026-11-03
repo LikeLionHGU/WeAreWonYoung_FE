@@ -121,6 +121,24 @@
 .shell-report .report-candidate-row strong { overflow: hidden; font: 400 15px/1.5 'Noto Sans KR', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
 .shell-report .report-candidate-row small { color: #c9ccd1; font: 400 11px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
 .shell-report .report-candidate-row em { color: #9aa0a6; font: 400 12px/1.5 'Noto Sans KR', sans-serif; font-style: normal; white-space: nowrap; }
+.shell-report .report-empty-checks { margin-top: 8px; overflow: hidden; border: 1px solid #dceefa; border-radius: 12px; background: #fff; }
+.shell-report .report-empty-checks-head { min-height: 42px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf4f8; color: #6b7280; font: 500 12px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-empty-checks-head span { color: #9aa0a6; font-weight: 400; }
+.shell-report .report-empty-checks ul { margin: 0; padding: 0; list-style: none; }
+.shell-report .report-empty-checks li { padding: 18px; display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 14px; }
+.shell-report .report-empty-checks li + li { border-top: 1px solid #f2f6f8; }
+.shell-report .report-empty-checks i { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: #edf7ff; color: #2e7df7; font: 600 13px/1 Inter, sans-serif; font-style: normal; }
+.shell-report .report-empty-checks .is-skipped i { background: #f3f4f6; color: #9aa0a6; }
+.shell-report .report-empty-checks li strong { display: block; color: #16181d; font: 500 14px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-empty-checks li p { margin: 2px 0 0; color: #8a8f98; font: 400 12px/1.6 'Noto Sans KR', sans-serif; }
+.shell-report .report-empty-checks li > span { color: #2e7df7; font: 500 12px/1.5 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.shell-report .report-empty-checks .is-skipped > span { color: #9aa0a6; }
+.shell-report .report-empty .report-warnings { margin-top: 16px; }
+.shell-report .report-empty-note { margin: 20px 0 0; color: #8a8f98; font: 400 13px/1.7 'Noto Sans KR', sans-serif; }
+.shell-report .report-empty-actions { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 10px; }
+.shell-report .report-empty-actions .button { height: 48px; padding: 0 22px; border-radius: 10px; font: 500 14px/1.5 'Noto Sans KR', sans-serif; }
+.shell-report .report-empty-actions .button-dark { background: #111; }
+.shell-report .report-empty-actions .button-dark:hover { background: #2e7df7; }
 .shell-report .report-footnote { margin: 26px 0 0; color: #b6bac0; font: 400 12px/1.7 'Noto Sans KR', sans-serif; }
 .shell-report .report-sidebar { position: fixed; z-index: 10; top: 68px; right: 0; bottom: 0; width: 320px; height: auto; overflow-y: auto; box-sizing: border-box; flex: 0 0 320px; padding: 28px 24px; border-left: 1px solid #edeef0; background: #fff; }
 .shell-report .report-file-context { display: flex; flex-direction: column; gap: 6px; padding-bottom: 20px; }

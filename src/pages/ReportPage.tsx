@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { ErrorNotice, Loading } from '../components/AppShell'
 import { formatTime, reportEventTitle, reportEventKind } from '../utils/format'
+import EmptyReportResult from './report/EmptyReportResult'
 import EventDetailCard from './report/EventDetailCard'
 import EventList from './report/EventList'
 import ReviewSidebar from './report/ReviewSidebar'
@@ -67,35 +68,16 @@ export default function ReportPage() {
 
     return (
       <main className="report-page">
-        <div className="report-content">
-          <div className="report-heading">
-            <p className="report-meta">검수 리포트 · {generatedLabel}</p>
-            <h1>검출된 검토 후보가 없습니다</h1>
-            <p>이 영상에서는 다시 확인할 구간을 찾지 못했습니다.</p>
-            {warnings.length > 0 && (
-              <div className="report-warnings" role="status">
-                <strong>분석 안내</strong>
-                {warnings.map(warning => (
-                  <p key={`${warning.stage}-${warning.code}`}>{warning.message}</p>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="upload-submit" style={{ marginTop: '48px' }}>
-            <Link className="button button-dark" to="/history">
-              검수 이력으로 돌아가기
-            </Link>
-          </div>
-        </div>
+        <EmptyReportResult report={report} generatedLabel={generatedLabel} warnings={warnings} />
         <ReviewSidebar
           filename={report.filename}
           events={[]}
           remaining={0}
           selectedId=""
           decisions={{}}
-          isCompleting={false}
-          finishError={null}
-          onFinishReview={() => undefined}
+          isCompleting={state.isCompleting}
+          finishError={state.decisionError}
+          onFinishReview={() => void state.finishReview()}
           onSelect={() => undefined}
           textOnly={state.isScriptOnly}
         />
